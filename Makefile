@@ -12,6 +12,7 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 # Source files
 SRC_PATH = src/
 SRC =	main.c \
+		prompt.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 
@@ -42,7 +43,7 @@ $(LIBFT):
 
 # Link object files into target executable
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) 
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) -lreadline
 # Clean up object files and target executable
 clean:
 	rm -rf $(OBJS) $(NAME)

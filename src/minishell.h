@@ -13,17 +13,26 @@ typedef struct s_var
 	int 	type;
 	char 	data;
 	int		opprio;
+	// t_var 	*head;
+	// t_var 	*leftchild;
+	// t_var 	*rightchild;
 
 } t_var;
 
 typedef struct s_shell
 {
-	t_var 	*head;
-	t_var 	*leftchild;
-	t_var 	*rightchild;
+	// char	cwd[1024];
+	// char	*path;
+	// char	*hostname;
+	// char	*username;
 
-	char	cwd[1024];
+	char **envp;
+
 }	t_shell;
 
+
+char	*findpath(char *envp[]);
+char	*finduser(char *envp[]);
+char	*findhost(char *envp[]);
 
 #endif
