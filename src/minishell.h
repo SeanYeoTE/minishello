@@ -8,25 +8,30 @@
 #include <readline/history.h>
 #include "../libft/libft.h"
 
-typedef struct s_var
+typedef struct s_node
 {	
 	int 	type;
 	char 	data;
 	int		opprio;
-	// t_var 	*head;
-	// t_var 	*leftchild;
-	// t_var 	*rightchild;
 
-} t_var;
+	struct s_node 	*leftchild;
+	struct s_node 	*rightchild;
+	struct s_node	*parent;
+
+} t_node;
 
 typedef struct s_shell
 {
 	// char	cwd[1024];
-	// char	*path;
 	// char	*hostname;
 	// char	*username;
-
-	char **envp;
+	
+	char	**envp;
+	
+	char	*path;
+	char	**paths;
+	char	**argv;
+	t_node	*head;
 
 }	t_shell;
 
