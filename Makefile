@@ -14,6 +14,8 @@ SRC_PATH = src/
 SRC =	main.c \
 		prompt.c \
 		exec_utils.c \
+		args_init.c \
+		printer.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 

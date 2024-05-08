@@ -11,8 +11,11 @@
 typedef struct s_node
 {	
 	int 	type;
-	char 	data;
 	int		opprio;
+
+	char 	*data;
+	struct s_node	*next;
+	struct s_node	*prev;
 
 	struct s_node 	*leftchild;
 	struct s_node 	*rightchild;
@@ -37,10 +40,17 @@ typedef struct s_shell
 }	t_shell;
 
 
-char	*findpath(char *envp[]);
-char	*finduser(char *envp[]);
-char	*findhost(char *envp[]);
+char		*findpath(char *envp[]);
+char		*finduser(char *envp[]);
+char		*findhost(char *envp[]);
 
-char	*findprocesspath(t_shell *vars, int processnum);
+int			init_node_stack(t_shell *store);
+int 		init_node(char *value, t_node **head);
+t_node	*get_last(t_node *last);
+
+
+char		*findprocesspath(t_shell *vars, int processnum);
+
+int print_stack(t_node **head, char c);
 
 #endif

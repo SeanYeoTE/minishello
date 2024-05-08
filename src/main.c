@@ -46,12 +46,15 @@ int base_shell_init(t_shell *store, char *input)
 	int		i;
 
 	store->argvs1 = ft_split(input, ' ');
-	store->paths = ft_split(store->path + 5, ':');
-	while (store->argvs1[i])
-		i++;
+	store->head = NULL;
+	init_node_stack(store);
+	print_stack(&store->head, 'a');
+	// store->paths = ft_split(store->path + 5, ':');
+	// while (store->argvs1[i])
+	// 	i++;
 	// printf("%d\n", i);
-	if (i == 1)
-		execution_layer(store);
+	// if (i == 1)
+	// 	execution_layer(store);
 	return (0);
 }
 
