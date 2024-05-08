@@ -30,7 +30,8 @@ typedef struct s_shell
 	
 	char	*path;
 	char	**paths;
-	char	**argv;
+	char	**argvs1;
+	char	**argvs2;
 	t_node	*head;
 
 }	t_shell;
@@ -39,5 +40,7 @@ typedef struct s_shell
 char	*findpath(char *envp[]);
 char	*finduser(char *envp[]);
 char	*findhost(char *envp[]);
+
+char	*findprocesspath(t_shell *vars, int processnum);
 
 #endif

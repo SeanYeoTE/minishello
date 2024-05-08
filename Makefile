@@ -13,6 +13,7 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 SRC_PATH = src/
 SRC =	main.c \
 		prompt.c \
+		exec_utils.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 

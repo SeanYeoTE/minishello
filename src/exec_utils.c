@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+// takes in the struct and processnum int, returning
+// full path for execution
 char	*findprocesspath(t_shell *vars, int processnum)
 {
 	int		i;
