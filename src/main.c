@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/08 13:44:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/09 13:59:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // need to break this down to call exec functions, not call from within itself
 // example: this should execute the pipex function
 // currently it doesnt 
-int	execution_layer(t_shell *store)
+int	single_execution(t_shell *store)
 {
 	int 	execveresult;
 	char	*exepath;
@@ -44,17 +44,24 @@ int	execution_layer(t_shell *store)
 int base_shell_init(t_shell *store, char *input)
 {
 	int		i;
+	int		pid1;
 
 	store->argvs1 = ft_split(input, ' ');
 	store->head = NULL;
 	init_node_stack(store);
-	print_stack(&store->head, 'a');
-	// store->paths = ft_split(store->path + 5, ':');
-	// while (store->argvs1[i])
-	// 	i++;
-	// printf("%d\n", i);
-	// if (i == 1)
-	// 	execution_layer(store);
+	// print_stack(&store->head, 'a');
+	store->paths = ft_split(store->path + 5, ':');
+	if (store->head->next == NULL)
+	{
+		pid1 = fork();
+		if (pid1 == 0)
+			single_execution(store);
+		else
+		{
+			free_nonessential(store);
+		}
+		waitpid(pid1, NULL, 0);
+	}
 	return (0);
 }
 
@@ -70,7 +77,7 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 1)
 	{
 		perror("run without args");
-		return (1);
+		return (0);
 	}
 	store.envp = envp;
 	getcwd(cwd, sizeof(cwd));

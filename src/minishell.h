@@ -7,6 +7,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "../libft/libft.h"
+#include <sys/wait.h>
 
 typedef struct s_node
 {	
@@ -25,32 +26,39 @@ typedef struct s_node
 
 typedef struct s_shell
 {
-	// char	cwd[1024];
-	// char	*hostname;
-	// char	*username;
-	
 	char	**envp;
 	
 	char	*path;
+
 	char	**paths;
 	char	**argvs1;
-	char	**argvs2;
 	t_node	*head;
 
 }	t_shell;
 
-
+// prompt.c
 char		*findpath(char *envp[]);
 char		*finduser(char *envp[]);
 char		*findhost(char *envp[]);
 
+// args_init.c
 int			init_node_stack(t_shell *store);
 int 		init_node(char *value, t_node **head);
 t_node	*get_last(t_node *last);
 
+// main.c
+int	single_execution(t_shell *store);
+int base_shell_init(t_shell *store, char *input);
 
+// exec_utils.c
 char		*findprocesspath(t_shell *vars, int processnum);
 
+// printer.c
 int print_stack(t_node **head, char c);
+
+// mem_utils.c
+void	freechararray(char **v);
+void	free_stack(t_node **stack);
+void	free_nonessential(t_shell *store);
 
 #endif

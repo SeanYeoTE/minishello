@@ -16,6 +16,7 @@ SRC =	main.c \
 		exec_utils.c \
 		args_init.c \
 		printer.c \
+		mem_utils.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 
