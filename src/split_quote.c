@@ -85,35 +85,43 @@ static char	*ft_word(char const *str, char c)
 	return (word);
 }
 
-// char	**ft_split(char const *str, char c)
-// {
-// 	char	**strings;
-// 	int		i;
+static char	*ft_word(char const *str, char c)
+	while (str[i])
+	{
+		if (str[i] == '"')
+			i = ft_quotes(str[i]);
+		else if (str[i] == ' ')
+			i = ft_untilspace(str[i]);
+		i++;
+	}
 
-// 	i = 0;
-// 	strings = (char **)malloc(sizeof(char *) * (count_strings(str, c) + 1));
-// 	if (!strings)
-// 		return (NULL);
-// 	while (*str != '\0')
-// 	{
-// 		while (*str != '\0' && (*str == c))
-// 			str++;
-// 		if (*str != '\0')
-// 		{
-// 			strings[i] = ft_word(str, c);
-// 			if (strings[i] == NULL)
-// 				return (ft_freeup(strings));
-// 			i++;
-// 		}
-// 		while (*str && !(*str == c))
-// 			str++;
-// 	}
-// 	strings[i] = 0;
-// 	return (strings);
-// }
-
-
-
+int ft_quotes(char *str)
+{
+	int		i;
+	int		occur;
+	char	*word;
+	int		j;
+	i = 0;
+	occur = 0;
+	while (str[i])
+	{
+		if (str[i] == '"')
+			occur++;
+		if (occur == 2)
+			return (i);
+		i++;
+	}
+	word = (char *)malloc(sizeof(char) * (i + 1));
+	if (!word)
+		return (NULL);
+	while (j < i)
+	{
+		word[j] = str[j];
+		j++;
+	}
+	word[j] = '\0';
+	return (word);
+}
 
 // cat "ls -l "
 
