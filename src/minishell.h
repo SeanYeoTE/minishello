@@ -61,4 +61,11 @@ void	freechararray(char **v);
 void	free_stack(t_node **stack);
 void	free_nonessential(t_shell *store);
 
+// builtin_main.c
+int builtin_main(t_shell *store);
+
+// split_quote.c
+char	**ft_split_prompt(char const *str);
+
+
 #endif

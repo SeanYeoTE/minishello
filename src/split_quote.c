@@ -4,6 +4,7 @@
 // split arg into char ** by spaces and detecting for double quotes,
 // ignoring spaces when within quotes
 
+
 static int	count_strings(char const *str, char c)
 {
 	int	i;
@@ -15,23 +16,25 @@ static int	count_strings(char const *str, char c)
 	i = 0;
 	while (str[i] != '\0')
 	{
-		while (str[i] != '\0' && str[i] == c)
+		while (str[i] != '\0' && (str[i] == c || str[i] == '"'))
 			i++;
 		if (str[i] != '\0')
 		{
-			if (open % 2 != 0)
-			{
-				count--;
-				i++;
-			}
-			count++;
-		}
-		while (str[i] != '\0' && !(str[i] == c))
-		{
 			if (str[i] == '"')
+			{
 				open++;
+				if (open % 2 == 0)
+					count++;
+			}
+			else
+			{
+				if (open % 2 == 0)
+					count++;
+			}
 			i++;
 		}
+		while (str[i] != '\0' && !(str[i] == c || str[i] == '"'))
+			i++;
 	}
 	return (count);
 }
@@ -53,49 +56,7 @@ static char	**ft_freeup(char **strs)
 	return (NULL);
 }
 
-static char	*ft_word(char const *str, char c)
-{
-	int		len_word;
-	int		i;
-	char	*word;
-	int		open;
-
-	open = 0;
-	len_word = 0;
-	i = 0;
-	while (str[len_word])
-	{
-		if (str[len_word] == '"')
-			open++;
-		if (open % 2 == 0)
-			break;
-		else if (open % 2 == 1 && str[len_word])
-			continue;
-		len_word++;
-	}
-	word = (char *)malloc(sizeof(char) * (len_word + 1));
-	if (!word)
-		return (NULL);
-	while (i < len_word)
-	{
-		word[i] = str[i];
-		i++;
-	}
-	word[i] = '\0';
-	return (word);
-}
-
-static char	*ft_word(char const *str, char c)
-	while (str[i])
-	{
-		if (str[i] == '"')
-			i = ft_quotes(str[i]);
-		else if (str[i] == ' ')
-			i = ft_untilspace(str[i]);
-		i++;
-	}
-
-int ft_quotes(char *str)
+char	*ft_quotes(char const *str)
 {
 	int		i;
 	int		occur;
@@ -108,7 +69,7 @@ int ft_quotes(char *str)
 		if (str[i] == '"')
 			occur++;
 		if (occur == 2)
-			return (i);
+			break;
 		i++;
 	}
 	word = (char *)malloc(sizeof(char) * (i + 1));
@@ -123,28 +84,62 @@ int ft_quotes(char *str)
 	return (word);
 }
 
-// cat "ls -l "
+char	*ft_untilspace(char const *str)
+{
+	int		i;
+	char	*word;
+	int		j;
 
+	i = 0;
+	j = 0;
+	while (str[i] && !(str[i] == ' '))
+		i++;
+	word = (char *)malloc(sizeof(char) * (i + 1));
+	if (!word)
+		return (NULL);
+	while (j < i)
+	{
+		word[j] = str[j];
+		j++;
+	}
+	word[j] = '\0';
+	return (word);
+}
 
-
-
+static char	*ft_word(char const *str, char c)
+{
+	int		i;
+	char	*word;
+	
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '"')
+			return (ft_quotes(str));
+		else if (str[i] == ' ')
+			return (ft_untilspace(str));
+		i++;
+	}
+}
 char	**ft_split_prompt(char const *str)
 {
 	char	c;
 	char	ignore;
 	int		i;
 	int		open;
+	char	**strings;
 
 	open = 0;
 	i = 0;
 	c = ' ';
 	ignore = '"';
+	printf("%d\n", count_strings(str, c));
 	strings = (char **)malloc(sizeof(char *) * (count_strings(str, c)+ 1));
 	if (!strings)
 		return (NULL);
 	while (*str)
 	{
-		while (*str != '\0' && (*str == c))
+		while (*str != '\0' && (*str == c || *str == ignore))
 			str++;
 		if (*str != '\0')
 		{
@@ -153,10 +148,8 @@ char	**ft_split_prompt(char const *str)
 				return (ft_freeup(strings));
 			i++;
 		}
-		while (*str && !(*str == c))
-		{
+		while (*str && !(*str == c || *str == ignore))
 			str++;
-		}
 	}
 	strings[i] = 0;
 	return (strings);
