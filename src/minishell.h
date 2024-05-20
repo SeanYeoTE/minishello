@@ -15,9 +15,6 @@ typedef struct s_node
 	int		opprio;
 
 	char 	*data;
-	c
-
-
 
 	struct s_node	*next;
 	struct s_node	*prev;
@@ -64,9 +61,6 @@ int print_stack(t_node **head, char c);
 void	freechararray(char **v);
 void	free_stack(t_node **stack);
 void	free_nonessential(t_shell *store);
-
-// builtin_main.c
-int builtin_main(t_shell *store);
 
 // split_quote.c
 char	**ft_split_prompt(char const *str);

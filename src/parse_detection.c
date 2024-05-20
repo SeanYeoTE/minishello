@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/20 16:20:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/20 17:37:22 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,30 @@ int	detect_operator(char *str)
 
 int	scanner_comment(char *str)
 {
+	int	i;
 	
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == "\n")
+			return (i);
+		i++;
+	}
+	return (i);
 }
 
 int	scanner_quote(char *str)
 {
-	
+		int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		i++;
+		if (str[i] == '"')
+			return (i);	
+	}
+	return (i);
 }
 
 int	scanner_operator(char *str)
@@ -48,6 +66,8 @@ int scanner_word(char *str)
 {
 	
 }
+
+
 
 char	**ft_scanner(char const *str, t_shell *store)
 {
