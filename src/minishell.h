@@ -15,6 +15,10 @@ typedef struct s_node
 	int		opprio;
 
 	char 	*data;
+	c
+
+
+
 	struct s_node	*next;
 	struct s_node	*prev;
 

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/17 17:13:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/20 16:20:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int	scanner_operator(char *str)
 {
 	
 }
-
 int	scannner_space(char *str)
 {
 	
