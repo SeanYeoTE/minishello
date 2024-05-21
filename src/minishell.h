@@ -15,9 +15,6 @@ typedef struct s_node
 	int		opprio;
 
 	char 	*data;
-	c
-
-
 
 	struct s_node	*next;
 	struct s_node	*prev;
@@ -33,9 +30,7 @@ typedef struct s_shell
 	char	**envp;
 	
 	char	*path;
-
 	char	**paths;
-	char	**argvs1;
 	t_node	*head;
 
 }	t_shell;
@@ -68,8 +63,13 @@ void	free_nonessential(t_shell *store);
 // builtin_main.c
 int builtin_main(t_shell *store);
 
-// split_quote.c
-char	**ft_split_prompt(char const *str);
-
+// parse_detection.c
+int	detect_operator(char *str);
+int	scanner_comment(char *str, int start, t_shell *store);
+int	scanner_quote(char *str, int start, t_shell *store);
+int	scanner_operator(char *str, int start, t_shell *store);
+int	scanner_space(char *str, int start, t_shell *store);
+int scanner_word(char *str, int start, t_shell *store);
+int	ft_scanner(char *str, t_shell *store);
 
 #endif

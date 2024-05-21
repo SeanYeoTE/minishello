@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/20 15:12:43 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/21 17:32:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,26 @@
 // need to break this down to call exec functions, not call from within itself
 // example: this should execute the pipex function
 // currently it doesnt 
-int	single_execution(t_shell *store)
-{
-	int 	execveresult;
-	char	*exepath;
+// int	single_execution(t_shell *store)
+// {
+// 	int 	execveresult;
+// 	char	*exepath;
 
-	execveresult = 0;
-	exepath = findprocesspath(store, 1);
-	if (exepath == NULL)
-	{
-		perror("Path not found");
-		free(exepath);
-		return (1);
-	}
-	execveresult = execve(exepath, store->argvs1, store->envp);
-	if (execveresult == -1)
-		perror("execve error");
-	if (exepath)
-		free(exepath);
-	return (0);
-}
+// 	execveresult = 0;
+// 	exepath = findprocesspath(store, 1);
+// 	if (exepath == NULL)
+// 	{
+// 		perror("Path not found");
+// 		free(exepath);
+// 		return (1);
+// 	}
+// 	execveresult = execve(exepath, ft_split(store->head->data), store->envp);
+// 	if (execveresult == -1)
+// 		perror("execve error");
+// 	if (exepath)
+// 		free(exepath);
+// 	return (0);
+// }
 
 int cd(char *path) {
     return chdir(path);
@@ -51,28 +51,28 @@ int base_shell_init(t_shell *store, char *input)
 	int		i;
 	int		pid1;
 
-	store->argvs1 = ft_split(input, ' ');
-	// store->argvs1 = ft_split_prompt(input);
 	store->head = NULL;
-	init_node_stack(store);
-	// print_stack(&store->head, 'a');
-	if (strcmp(store->head->data, "cd") == 0)
-			{
-				if (cd(store->head->next->data) < 0)
-					perror(input);
-			}
-	store->paths = ft_split(store->path + 5, ':');
-	// if (store->head->next == NULL)
+	ft_scanner(input, store);
+	
+
+	
+	print_stack(&store->head, 'a');
+	
+	// if (strcmp(store->head->data, "cd") == 0)
+	// 		{
+	// 			if (cd(store->head->next->data) < 0)
+	// 				perror(input);
+	// 		}
+	// store->paths = ft_split(store->path + 5, ':');
+
+	// pid1 = fork();
+	// if (pid1 == 0)
+	// 	single_execution(store);
+	// else
 	// {
-	pid1 = fork();
-	if (pid1 == 0)
-		single_execution(store);
-	else
-	{
-		free_nonessential(store);
-	}
-	waitpid(pid1, NULL, 0);
+	// 	free_nonessential(store);
 	// }
+	// waitpid(pid1, NULL, 0);
 	return (0);
 }
 

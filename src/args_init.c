@@ -6,24 +6,24 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/09 13:49:03 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/21 17:08:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	init_node_stack(t_shell *store)
-{
-	int	i;
+// int	init_node_stack(t_shell *store)
+// {
+// 	int	i;
 
-	i = 0;
-	while (store->argvs1[i])
-	{
-		init_node(store->argvs1[i], &store->head);
-		i++;
-	}
-	return (0);
-}
+// 	i = 0;
+// 	while (store->argvs1[i])
+// 	{
+// 		init_node(store->argvs1[i], &store->head);
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
 int init_node(char *value, t_node **head)
 {

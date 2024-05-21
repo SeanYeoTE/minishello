@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/09 13:59:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/21 17:08:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,25 @@
 
 // takes in the struct and processnum int, returning
 // full path for execution
-char	*findprocesspath(t_shell *vars, int processnum)
-{
-	int		i;
-	char	*temp;
-	char	*joined;
+// char	*findprocesspath(t_shell *vars, int processnum)
+// {
+// 	int		i;
+// 	char	*temp;
+// 	char	*joined;
 
-	i = 0;
-	joined = NULL;
-	while ((vars->paths)[i])
-	{
-		temp = ft_strjoin((vars->paths)[i], "/");
-		if (processnum == 1)
-			joined = ft_strjoin(temp, vars->argvs1[0]);
-		if (access(joined, X_OK) == 0)
-			break ;
-		free(joined);
-		joined = NULL;
-		i++;
-	}
-	free(temp);
-	return (joined);
-}
+// 	i = 0;
+// 	joined = NULL;
+// 	while ((vars->paths)[i])
+// 	{
+// 		temp = ft_strjoin((vars->paths)[i], "/");
+// 		if (processnum == 1)
+// 			joined = ft_strjoin(temp, vars->head->data);
+// 		if (access(joined, X_OK) == 0)
+// 			break ;
+// 		free(joined);
+// 		joined = NULL;
+// 		i++;
+// 	}
+// 	free(temp);
+// 	return (joined);
+// }
