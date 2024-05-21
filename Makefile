@@ -17,7 +17,8 @@ SRC =	main.c \
 		args_init.c \
 		printer.c \
 		mem_utils.c \
-		split_quote.c \
+		parse_detection.c \
+		 #	builtin_main.c \
 	
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
