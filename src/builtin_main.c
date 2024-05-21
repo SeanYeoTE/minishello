@@ -6,7 +6,7 @@
 /*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/20 21:52:23 by mchua            ###   ########.fr       */
+/*   Updated: 2024/05/21 16:02:48 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,50 @@ int builtin_main(t_shell *store)
 //to handle when there is not input. 
 void echo_handler(t_shell *store)
 {
-	if (store->next->argvs1 == NULL)
-		ft_printf("\n");
-	while (store->next->argvs1)
+	store = store->next;
+	if (store->argvs1[1] == n)
 	{
-		ft_printf("%c", store->next->*argvs1);
-		ft_printf(" ");
-		i++;
+		store = store->next;
+		while (store)
+		{
+			ft_printf("%c", store->next->*argvs1);
+			ft_printf(" ");
+			store = store->next;
+		}
 	}
-	ft_printf("\n");
+	else
+	{
+		if (store == NULL)
+			ft_printf("'\n");
+		store = store->next;
+		while (store)
+		{
+			ft_printf("%c", store->next->argvs1);
+			ft_printf(" ");
+			store = store->next;
+		}
+		ft_printf("\n");
+	}
 }
 
 void	pwd_handler(t_shell *store)
 {
-	ft_printf
+	char	*cwd;
+	size_t	cwd_buf;
+
+	cwd = malloc (cwd_buf * sizeof(char));
+	if (cwd == NULL)
+		//handle error;
+	if (getcwd(cwd, size) != NULL)
+		ft_printf("%s\n", cwd);
+	else
+	{
+		//handle error
+		free (cwd);
+	}
+}
+
+void	pipe_handler(t_shell *store)
+{
+
 }
