@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/23 16:14:28 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/23 16:41:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	scanner_operator(char *str, int start, t_shell *store)
 	i = 0;
 	while (str[start + i])
 	{
-		if (str[start + i] == '<' || str[start + i] == '>') // to confirm which other operator we should add in
+		if (str[start + i] == ' ') // to confirm which other operator we should add in
 			break;
 		i++;
 	}

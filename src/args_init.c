@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/21 17:47:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/23 16:46:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,15 +54,4 @@ t_node	*get_last(t_node *last)
 	while (last->next != NULL)
 		last = last->next;
 	return (last);
-}
-
-
-int test(char *str, t_shell *store)
-{
-	int		i;
-	char	*data;
-	int		size;
-
-	ft_strlcpy(data, str + i, size);
-	init_node(data, &store->head);
 }

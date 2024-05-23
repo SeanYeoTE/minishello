@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/23 13:28:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/23 16:41:58 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@
 // 	return (0);
 // }
 
+
+// if (strcmp(store->head->data, "cd") == 0)
+// 		{
+// 			if (cd(store->head->next->data) < 0)
+// 				perror(input);
+// 		}
+	
 int cd(char *path) {
     return chdir(path);
 }
@@ -52,28 +59,18 @@ int base_shell_init(t_shell *store, char *input)
 	int		pid1;
 
 	store->head = NULL;
-	// ft_scanner(input, store);
 	ft_sscan(input, store, 0);
-	
-
-	
 	print_stack(&store->head, 'a');
-	
-	// if (strcmp(store->head->data, "cd") == 0)
-	// 		{
-	// 			if (cd(store->head->next->data) < 0)
-	// 				perror(input);
-	// 		}
-	// store->paths = ft_split(store->path + 5, ':');
-
 	// pid1 = fork();
 	// if (pid1 == 0)
-	// 	single_execution(store);
-	// else
 	// {
-	// 	free_nonessential(store);
+		
 	// }
+	// else
+	// 	free_nonessential(store);
 	// waitpid(pid1, NULL, 0);
+
+	
 	return (0);
 }
 
@@ -105,11 +102,7 @@ int	main(int argc, char **argv, char **envp)
 			printf("%s@%s:~%s$ ",username, hostname, cwd);
 			input = readline(" ");
 			add_history(input);
-			
-		
-		
 			base_shell_init(&store, input);
-			// printf("%s\n", input);
 			free(input);
 		}
 	}
