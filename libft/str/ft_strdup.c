@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/11 17:00:34 by seayeo            #+#    #+#             */
-/*   Updated: 2024/02/02 22:51:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/23 16:01:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,4 +30,17 @@ char	*ft_strdup(const char *s)
 	}
 	str[tmp] = '\0';
 	return (str);
+}
+
+char	*ft_strndup(const char *s, size_t n)
+{
+	char	*dup;
+
+	if (s == NULL || n <= 0)
+		return (NULL);
+	if (ft_strlen(s) < n)
+		n = ft_strlen(s);
+	dup = (char *)malloc((n + 1) * sizeof(char));
+	ft_strlcpy(dup, s, n + 1);
+	return (dup);
 }
