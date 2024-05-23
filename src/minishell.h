@@ -72,4 +72,7 @@ int	scanner_space(char *str, int start, t_shell *store);
 int scanner_word(char *str, int start, t_shell *store);
 int	ft_scanner(char *str, t_shell *store);
 
+
+int ft_sscan(char *str, t_shell *store, int index);
+
 #endif

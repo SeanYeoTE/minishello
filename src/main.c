@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/21 17:32:55 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/23 13:28:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ int base_shell_init(t_shell *store, char *input)
 	int		pid1;
 
 	store->head = NULL;
-	ft_scanner(input, store);
+	// ft_scanner(input, store);
+	ft_sscan(input, store, 0);
 	
 
 	
