@@ -3,52 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/21 16:02:48 by mchua            ###   ########.fr       */
+/*   Updated: 2024/05/27 15:50:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int builtin_main(t_shell *store)
+int builtin_main(t_shell *store, t_node	*current)
 {
-	if (store->head == "echo")
-		echo_handler(store);
-	if (store->head == "pwd")
-		pwd_handler(store);
-	else if (store->head == "|")
-		pipe_handler(store);
+	if (current->data == "echo")
+		echo_handler(current);
+	if (current->data == "pwd")
+		pwd_handler(current);
+	else if (current->data == "|")
+		pipe_handler(current);
 }
 
-//to handle when there is not input. 
-void echo_handler(t_shell *store)
+// untested
+t_node	*echo_handler(t_node *current)
 {
-	store = store->next;
-	if (store->argvs1[1] == n)
+	int	option;
+
+	option = 0;
+	current = current->next;
+	if (ft_strncmp(current->data, "-n", 2) == 0)
+		option = 1;
+	if (option == 1)
+		current = current->next;
+	while (current)
 	{
-		store = store->next;
-		while (store)
-		{
-			ft_printf("%c", store->next->*argvs1);
-			ft_printf(" ");
-			store = store->next;
-		}
+		printf("%c", current->data);
+		printf(" ");
+		current = current->next;
 	}
-	else
-	{
-		if (store == NULL)
-			ft_printf("'\n");
-		store = store->next;
-		while (store)
-		{
-			ft_printf("%c", store->next->argvs1);
-			ft_printf(" ");
-			store = store->next;
-		}
-		ft_printf("\n");
-	}
+	if (option == 0)
+		printf("\n");
+	return (current);
 }
 
 void	pwd_handler(t_shell *store)

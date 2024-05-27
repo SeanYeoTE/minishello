@@ -28,7 +28,9 @@ typedef struct s_node
 typedef struct s_shell
 {
 	char	**envp;
-	
+	int		input_fd;
+	int		output_fd;
+
 	char	*path;
 	char	**paths;
 	t_node	*head;
@@ -41,9 +43,9 @@ char		*finduser(char *envp[]);
 char		*findhost(char *envp[]);
 
 // args_init.c
-int			init_node_stack(t_shell *store);
 int 		init_node(char *value, t_node **head);
 t_node	*get_last(t_node *last);
+t_node	*get_node(t_node *ret, int num);
 
 // main.c
 int	single_execution(t_shell *store);
