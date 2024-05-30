@@ -1,5 +1,5 @@
 # Compiler
-CC = gcc
+CC = cc
 
 # Compiler flags
 CFLAGS = -g
@@ -18,7 +18,8 @@ SRC =	main.c \
 		printer.c \
 		mem_utils.c \
 		parse_detection.c \
-		 #	builtin_main.c \
+		builtin_main.c \
+		base.c \
 	
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
@@ -35,7 +36,7 @@ NAME = minishell
 all: $(LIBFT) $(NAME)
 
 # Other Prototypes
-RM = rm -f
+RM = rm -rf
 # Compile source files into object files
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	$(CC) $(CFLAGS) -c $< -o $@

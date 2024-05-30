@@ -6,20 +6,31 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/27 15:50:43 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/28 17:10:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int builtin_main(t_shell *store, t_node	*current)
+t_node	*builtin_main(t_shell *store, t_node *current)
 {
-	if (current->data == "echo")
-		echo_handler(current);
-	if (current->data == "pwd")
-		pwd_handler(current);
-	else if (current->data == "|")
-		pipe_handler(current);
+	t_node	*ret;
+	if (current->data == "cd")
+		ret = cd_handler(current);
+	else if (current->data == "echo")
+		ret = echo_handler(current);
+	// else if (current->data == "pwd")
+	// 	ret = pwd_handler(current);
+	// else if (current->data == "|")
+	// 	ret = pipe_handler(current);
+}
+
+// untested
+t_node	*cd_handler(t_node *current)
+{
+	if (chdir(current->next->data) < 0)
+		perror(current->data);
+	return (current);
 }
 
 // untested
@@ -35,33 +46,33 @@ t_node	*echo_handler(t_node *current)
 		current = current->next;
 	while (current)
 	{
-		printf("%c", current->data);
+		printf("%s", current->data);
 		printf(" ");
-		current = current->next;
+		current = current->next;  
 	}
 	if (option == 0)
 		printf("\n");
 	return (current);
 }
 
-void	pwd_handler(t_shell *store)
-{
-	char	*cwd;
-	size_t	cwd_buf;
+// void	pwd_handler(t_shell *store)
+// {
+// 	char	*cwd;
+// 	size_t	cwd_buf;
 
-	cwd = malloc (cwd_buf * sizeof(char));
-	if (cwd == NULL)
-		//handle error;
-	if (getcwd(cwd, size) != NULL)
-		ft_printf("%s\n", cwd);
-	else
-	{
-		//handle error
-		free (cwd);
-	}
-}
+// 	cwd = malloc (cwd_buf * sizeof(char));
+// 	if (cwd == NULL)
+// 		//handle error;
+// 	if (getcwd(cwd, size) != NULL)
+// 		ft_printf("%s\n", cwd);
+// 	else
+// 	{
+// 		//handle error
+// 		free (cwd);
+// 	}
+// }
 
-void	pipe_handler(t_shell *store)
-{
+// void	pipe_handler(t_shell *store)
+// {
 
-}
+// }

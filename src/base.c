@@ -6,13 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/27 15:20:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/30 20:02:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	base_shell_init(t_shell *store, char *input)
+void	base_shell_init(t_shell *store, char *input)
 {
 	int		i;
 	int		pid1;
@@ -20,93 +20,123 @@ int	base_shell_init(t_shell *store, char *input)
 	store->head = NULL;
 	ft_sscan(input, store, 0);
 	print_stack(&store->head, 'a');
-	pid1 = fork();
-	if (pid1 == 0)
-	{
-		interpreter(store);
-	}
-	else
-		free_nonessential(store);
-	waitpid(pid1, NULL, 0);
-	return (0);
+	// pid1 = fork();
+	// if (pid1 == 0)
+	// {
+	// puts("child process");
+	interpreter(store);
+	// }
+	// else
+	// 	free_nonessential(store);
+	// waitpid(pid1, NULL, 0);
+	// return (0);
 }
+
+// void	interpreter(t_shell *store)
+// {
+// 	int		i;
+// 	t_node	*loop;
+// 	i = 0;
+// 	store->input_fd = STDIN_FILENO;
+// 	store->output_fd = STDOUT_FILENO;
+
+// 	loop = store->head;
+// 	while (loop)
+// 	{	
+// 		if (loop->type == 5)
+// 		{
+// 			if (check_builtin(store, loop) == 1)
+// 				loop = (builtin_main(store, loop))->prev;
+// 			else
+// 			{
+// 				i = executor(store, loop);
+// 				loop = get_node(store->head, i - 1);
+// 			}
+// 		}
+// 		loop = loop->next;
+// 	}
+// }
 
 void	interpreter(t_shell *store)
 {
-	int		i;
 	t_node	*loop;
-	i = 0;
-	store->input_fd = STDIN_FILENO;
-	store->output_fd = STDOUT_FILENO;
-
-	loop = store->head;
-	while (loop)
-	{
-		if (loop->type == 5)
-		{
-			builtin_main(store, loop);
-		}
-		loop = loop->next;
-	}
-
 	
+	loop = store->head;
+	
+	// check if any pipes;
+	
+	// check if any redirection;
+	
+	// check if any $ to expand;
+
+	// normal executions;
+	executor(store, loop);
+	
+	// exec builtins if any;	
 	
 }
 
-int	executor(t_shell *store)
+int	check_builtin(t_shell *store, t_node *loop)
+{
+	if (ft_strcmp(loop->data, "echo") == 0)
+		return (1);
+	if (ft_strcmp(loop->data, "cd") == 0)
+		return (1);
+	if (ft_strcmp(loop->data, "pwd") == 0)
+		return (1);	
+	if (ft_strcmp(loop->data, "export") == 0)
+		return (1);	
+}
+
+int	executor(t_shell *store, t_node *current)
 {
 	int		execveresult;
 	char	*exepath;
+	char	**temp;
 	
+	puts("executing");
 	execveresult = 0;
-	// need to modify this function
-	exepath = findprocesspath(store, 1);
-	
+	temp = argv_creator(current);
+	puts("argv created");
+	exepath = findprocesspath(store, temp);
 	if (exepath == NULL)
 	{
 		perror("Path not found");
 		free(exepath);
 		return (1);
 	}
-	// need to modify this as well 
-	execveresult = execve(exepath, store->head, store->envp);
+	// need to modify this as well
+	execveresult = execve(exepath, temp, store->envp);
 	if (execveresult == -1)
 		perror("execve error");
 	if (exepath)
 		free(exepath);
+	free(temp);
 	return (0);
 }
-// need to break this down to call exec functions, not call from within itself
-// example: this should execute the pipex function
-// currently it doesnt 
-// int	single_execution(t_shell *store)
-// {
-// 	int 	execveresult;
-// 	char	*exepath;
 
-// 	execveresult = 0;
-// 	exepath = findprocesspath(store, 1);
-// 	if (exepath == NULL)
-// 	{
-// 		perror("Path not found");
-// 		free(exepath);
-// 		return (1);
-// 	}
-// 	execveresult = execve(exepath, ft_split(store->head->data), store->envp);
-// 	if (execveresult == -1)
-// 		perror("execve error");
-// 	if (exepath)
-// 		free(exepath);
-// 	return (0);
-// }
-
-
-// if (strcmp(store->head->data, "cd") == 0)
-// 		{
-// 			if (cd(store->head->next->data) < 0)
-// 				perror(input);
-// 		}
+// pls check this function, not sure if it works as intended
+// intention is to create an argv array for execve
+char	**argv_creator(t_node *current)
+{
+	int		i;
+	char	**ret;
 	
-int cd(char *path) {
-	return chdir(path);
+	i = 0;
+	while (current && current->type != 3)
+	{
+		current = current->next;
+		i++;
+	}
+	printf("i: %d\n", i);
+	ret = (char **)malloc(sizeof(char *) * (i + 1));
+	i = 0;
+	while (current && current->type != 3)
+	{
+		ret[i] = ft_strdup(current->data);
+		printf("ret[%d]: %s\n", i, ret[i]);
+		current = current->next;
+		i++;
+	}
+	return (ret);
 }
