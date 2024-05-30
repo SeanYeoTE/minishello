@@ -3,72 +3,76 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/21 16:02:48 by mchua            ###   ########.fr       */
+/*   Updated: 2024/05/28 17:10:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int builtin_main(t_shell *store)
+t_node	*builtin_main(t_shell *store, t_node *current)
 {
-	if (store->head == "echo")
-		echo_handler(store);
-	if (store->head == "pwd")
-		pwd_handler(store);
-	else if (store->head == "|")
-		pipe_handler(store);
+	t_node	*ret;
+	if (current->data == "cd")
+		ret = cd_handler(current);
+	else if (current->data == "echo")
+		ret = echo_handler(current);
+	// else if (current->data == "pwd")
+	// 	ret = pwd_handler(current);
+	// else if (current->data == "|")
+	// 	ret = pipe_handler(current);
 }
 
-//to handle when there is not input. 
-void echo_handler(t_shell *store)
+// untested
+t_node	*cd_handler(t_node *current)
 {
-	store = store->next;
-	if (store->argvs1[1] == n)
+	if (chdir(current->next->data) < 0)
+		perror(current->data);
+	return (current);
+}
+
+// untested
+t_node	*echo_handler(t_node *current)
+{
+	int	option;
+
+	option = 0;
+	current = current->next;
+	if (ft_strncmp(current->data, "-n", 2) == 0)
+		option = 1;
+	if (option == 1)
+		current = current->next;
+	while (current)
 	{
-		store = store->next;
-		while (store)
-		{
-			ft_printf("%c", store->next->*argvs1);
-			ft_printf(" ");
-			store = store->next;
-		}
+		printf("%s", current->data);
+		printf(" ");
+		current = current->next;  
 	}
-	else
-	{
-		if (store == NULL)
-			ft_printf("'\n");
-		store = store->next;
-		while (store)
-		{
-			ft_printf("%c", store->next->argvs1);
-			ft_printf(" ");
-			store = store->next;
-		}
-		ft_printf("\n");
-	}
+	if (option == 0)
+		printf("\n");
+	return (current);
 }
 
-void	pwd_handler(t_shell *store)
-{
-	char	*cwd;
-	size_t	cwd_buf;
+// void	pwd_handler(t_shell *store)
+// {
+// 	char	*cwd;
+// 	size_t	cwd_buf;
 
-	cwd = malloc (cwd_buf * sizeof(char));
-	if (cwd == NULL)
-		//handle error;
-	if (getcwd(cwd, size) != NULL)
-		ft_printf("%s\n", cwd);
-	else
-	{
-		//handle error
-		free (cwd);
-	}
-}
+// 	cwd = malloc (cwd_buf * sizeof(char));
+// 	if (cwd == NULL)
+// 		//handle error;
+// 	if (getcwd(cwd, size) != NULL)
+// 		ft_printf("%s\n", cwd);
+// 	else
+// 	{
+// 		//handle error
+// 		free (cwd);
+// 	}
+// }
 
-void	pipe_handler(t_shell *store)
-{
+// void	pipe_handler(t_shell *store)
+// {
 
-}
+// }
