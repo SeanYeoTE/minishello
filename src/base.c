@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/30 20:02:40 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/30 20:35:41 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ void	interpreter(t_shell *store)
 	// check if any $ to expand;
 
 	// normal executions;
-	executor(store, loop);
-	
+	// executor(store, loop);
+	builtin_main(store, loop);
 	// exec builtins if any;	
 	
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_detection.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/29 14:47:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/30 21:08:59 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int scanner_word(char *str, int start, t_shell *store)
 			break;
 		i++;
 	}
-	data = ft_strndup(str + start, i + 1);
+	data = ft_strndup(str + start, i);
 	init_node(data, &store->head);
 	get_last(store->head)->type = 5;
 	return (start + i);

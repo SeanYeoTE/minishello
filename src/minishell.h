@@ -72,7 +72,7 @@ void		free_nonessential(t_shell *store);
 t_node		*builtin_main(t_shell *store, t_node	*current);
 t_node		*cd_handler(t_node *current);
 t_node		*echo_handler(t_node *current);
-
+t_node		*pwd_handler(t_node *current);
 // parse_detection.c
 int			detect_operator(char *str);
 int			scanner_comment(char *str, int start, t_shell *store);
