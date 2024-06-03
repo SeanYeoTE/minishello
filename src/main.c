@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/30 21:53:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/03 12:52:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	main(int argc, char **argv, char **envp)
 	{	
 		getcwd(cwd, sizeof(cwd));
 		store.path = findpath(envp);
-		
+		store.paths = ft_split(store.path + 5, ':');
 		if (isatty(STDOUT_FILENO))
 		{
 			printf("%s@%s:~%s$ ",username, hostname, cwd);

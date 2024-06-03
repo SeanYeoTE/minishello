@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/30 20:35:41 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/03 13:06:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,43 +19,14 @@ void	base_shell_init(t_shell *store, char *input)
 
 	store->head = NULL;
 	ft_sscan(input, store, 0);
-	print_stack(&store->head, 'a');
-	// pid1 = fork();
-	// if (pid1 == 0)
-	// {
-	// puts("child process");
-	interpreter(store);
-	// }
-	// else
-	// 	free_nonessential(store);
-	// waitpid(pid1, NULL, 0);
-	// return (0);
+	// print_stack(&store->head, 'a');
+	pid1 = fork();
+	if (pid1 == 0)
+		interpreter(store);
+	else
+		free_nonessential(store);
+	waitpid(pid1, NULL, 0);
 }
-
-// void	interpreter(t_shell *store)
-// {
-// 	int		i;
-// 	t_node	*loop;
-// 	i = 0;
-// 	store->input_fd = STDIN_FILENO;
-// 	store->output_fd = STDOUT_FILENO;
-
-// 	loop = store->head;
-// 	while (loop)
-// 	{	
-// 		if (loop->type == 5)
-// 		{
-// 			if (check_builtin(store, loop) == 1)
-// 				loop = (builtin_main(store, loop))->prev;
-// 			else
-// 			{
-// 				i = executor(store, loop);
-// 				loop = get_node(store->head, i - 1);
-// 			}
-// 		}
-// 		loop = loop->next;
-// 	}
-// }
 
 void	interpreter(t_shell *store)
 {
@@ -70,9 +41,12 @@ void	interpreter(t_shell *store)
 	// check if any $ to expand;
 
 	// normal executions;
-	// executor(store, loop);
-	builtin_main(store, loop);
-	// exec builtins if any;	
+	if (check_builtin(store, loop) == 0)
+		executor(store, loop);
+	// exec builtins if any;
+	else
+		builtin_main(store, loop);
+		
 	
 }
 
@@ -85,7 +59,9 @@ int	check_builtin(t_shell *store, t_node *loop)
 	if (ft_strcmp(loop->data, "pwd") == 0)
 		return (1);	
 	if (ft_strcmp(loop->data, "export") == 0)
-		return (1);	
+		return (1);
+	else
+		return (0);
 }
 
 int	executor(t_shell *store, t_node *current)
@@ -94,10 +70,10 @@ int	executor(t_shell *store, t_node *current)
 	char	*exepath;
 	char	**temp;
 	
-	puts("executing");
+	// puts("executing");
 	execveresult = 0;
 	temp = argv_creator(current);
-	puts("argv created");
+	// print_argv(temp);
 	exepath = findprocesspath(store, temp);
 	if (exepath == NULL)
 	{
@@ -120,23 +96,25 @@ int	executor(t_shell *store, t_node *current)
 char	**argv_creator(t_node *current)
 {
 	int		i;
+	t_node	*temp;
 	char	**ret;
 	
 	i = 0;
-	while (current && current->type != 3)
+	temp = current;
+	while (temp && temp->type != 3)
 	{
-		current = current->next;
+		temp = temp->next;
 		i++;
 	}
-	printf("i: %d\n", i);
 	ret = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
 	while (current && current->type != 3)
 	{
 		ret[i] = ft_strdup(current->data);
-		printf("ret[%d]: %s\n", i, ret[i]);
+		// printf("ret[%d]: %s\n", i, ret[i]);
 		current = current->next;
 		i++;
 	}
+	ret[i] = '\0';
 	return (ret);
 }
