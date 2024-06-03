@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/28 17:10:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/30 21:43:28 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 t_node	*builtin_main(t_shell *store, t_node *current)
 {
 	t_node	*ret;
-	if (current->data == "cd")
+
+	if (ft_strcmp(current->data, "cd") == 0)
 		ret = cd_handler(current);
-	else if (current->data == "echo")
+	else if (!ft_strcmp(current->data, "echo"))
 		ret = echo_handler(current);
-	// else if (current->data == "pwd")
-	// 	ret = pwd_handler(current);
+	else if (!ft_strcmp(current->data, "pwd"))
+		ret = pwd_handler(current);
 	// else if (current->data == "|")
 	// 	ret = pipe_handler(current);
 }
@@ -28,7 +29,14 @@ t_node	*builtin_main(t_shell *store, t_node *current)
 // untested
 t_node	*cd_handler(t_node *current)
 {
-	if (chdir(current->next->data) < 0)
+	char	*home;
+	if (current->next == NULL || ft_strcmp(current->next->data, "~") == 0)
+	{
+		home = getenv("HOME");
+		if (home == NULL || chdir(home) < 0)
+			perror("no home");
+	}
+	else if (chdir(current->next->data) < 0)
 		perror(current->data);
 	return (current);
 }
@@ -36,7 +44,7 @@ t_node	*cd_handler(t_node *current)
 // untested
 t_node	*echo_handler(t_node *current)
 {
-	int	option;
+	int	option;	
 
 	option = 0;
 	current = current->next;
@@ -55,22 +63,24 @@ t_node	*echo_handler(t_node *current)
 	return (current);
 }
 
-// void	pwd_handler(t_shell *store)
-// {
-// 	char	*cwd;
-// 	size_t	cwd_buf;
+t_node	*pwd_handler(t_node *current)
+{
+	char	*cwd;
+	size_t	cwd_buf;
 
-// 	cwd = malloc (cwd_buf * sizeof(char));
-// 	if (cwd == NULL)
-// 		//handle error;
-// 	if (getcwd(cwd, size) != NULL)
-// 		ft_printf("%s\n", cwd);
-// 	else
-// 	{
-// 		//handle error
-// 		free (cwd);
-// 	}
-// }
+	cwd_buf = 1000;
+	cwd = malloc (cwd_buf * sizeof(char));
+	if (cwd == NULL)
+		perror("Invalid Memory Allocation\n");
+	if (getcwd(cwd, cwd_buf) != NULL)
+		printf("%s\n", cwd);
+	else
+	{
+		perror("PWD Error\n");
+		free (cwd);
+	}
+	return (current->next);
+}
 
 // void	pipe_handler(t_shell *store)
 // {

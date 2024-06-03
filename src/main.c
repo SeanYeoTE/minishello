@@ -6,12 +6,12 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/27 12:51:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/05/30 21:53:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+// helllo man
 // scrolling up for history works, but scrolling down after messes up the prompt
 int	main(int argc, char **argv, char **envp)
 {
