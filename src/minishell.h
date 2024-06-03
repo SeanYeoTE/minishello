@@ -62,6 +62,7 @@ char		*findprocesspath(t_shell *store, char **arr);
 
 // printer.c
 int 		print_stack(t_node **head, char c);
+int			print_argv(char **argv);
 
 // mem_utils.c
 void		freechararray(char **v);

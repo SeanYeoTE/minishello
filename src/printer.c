@@ -20,3 +20,12 @@ int print_stack(t_node **head, char c)
 	printf("Total Nodes: %d\n", count);
 	return (0);
 }
+
+int	print_argv(char **argv)
+{
+	while (*argv)
+	{
+		printf("%s\n", *argv);
+		argv++;
+	}
+}
