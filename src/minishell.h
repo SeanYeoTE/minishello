@@ -41,6 +41,7 @@ typedef struct s_shell
 char		*findpath(char *envp[]);
 char		*finduser(char *envp[]);
 char		*findhost(char *envp[]);
+char		*form_prompt(char **envp, char *cwd);
 
 // args_init.c
 int 		init_node(char *value, t_node **head);

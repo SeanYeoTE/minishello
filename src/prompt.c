@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/07 14:04:40 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/03 15:15:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,21 @@ char	*findhost(char *envp[])
 		i++;
 	}
 	return (NULL);
+}
+
+char	*form_prompt(char **envp, char *cwd)
+{
+	char	*username;
+	char	*host;
+	char	*temp;
+	char	*ret;
+
+	username = finduser(envp);
+	host = findhost(envp);
+	temp = ft_strjoin(username, "@");
+	ret = ft_strjoin(temp, host);
+	ret = ft_strjoin(ret, ":");
+	ret = ft_strjoin(ret, cwd);
+	ret = ft_strjoin(ret, "$ ");
+	return (ret);
 }
