@@ -9,6 +9,7 @@
 #include "../libft/libft.h"
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <signal.h>
 
 typedef struct s_node
 {	
@@ -96,4 +97,7 @@ void		handle_append_redirection(t_shell *store, char *filename);
 void		handle_input_redirection(t_shell *store, char *filename);
 void		handle_heredoc_redirection(t_shell *store, char *filename);
 
+//sig_handler.c
+// void		reg_ctrl_c(void);
+void		ctrl_c_handler(int signum);
 #endif
