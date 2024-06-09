@@ -20,6 +20,7 @@ SRC =	main.c \
 		parse_detection.c \
 		builtin_main.c \
 		base.c \
+		redir.c \
 	
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))

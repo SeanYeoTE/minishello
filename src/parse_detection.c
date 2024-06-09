@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_detection.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/30 21:43:29 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/04 17:30:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	scanner_operator(char *str, int start, t_shell *store)
 			break;
 		i++;
 	}
-	data = ft_strndup(str + start, i + 1);
+	data = ft_strndup(str + start, i);
 	init_node(data, &store->head);
 	get_last(store->head)->type = 3;
 	return (start + i);
