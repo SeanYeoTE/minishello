@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/11 16:24:23 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/11 18:17:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,11 @@ void    pre_interpreter(t_shell *store)
 	while (i < count)
 	{
 		if (pipe(pipefd) < 0)
-		{
 			printf("Pipe failed\n");
-		}
 		store->output_fd = pipefd[1];
 		pid1 = fork();
 		if (pid1 == 0)
-		{
-			executor(store, get_start(store->head, i), get_end(store->head, i));
-		}
+			interpreter(store, get_start(store->head, i), get_end(store->head, i));
 		else
 		{
 			waitpid(pid1, NULL, 0);

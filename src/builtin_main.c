@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/30 21:43:28 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/11 18:26:16 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*builtin_main(t_shell *store, t_node *current)
+t_node	*builtin_main(t_shell *store, t_node *current, t_node *end)
 {
 	t_node	*ret;
 
@@ -22,8 +22,6 @@ t_node	*builtin_main(t_shell *store, t_node *current)
 		ret = echo_handler(current);
 	else if (!ft_strcmp(current->data, "pwd"))
 		ret = pwd_handler(current);
-	// else if (current->data == "|")
-	// 	ret = pipe_handler(current);
 }
 
 // untested

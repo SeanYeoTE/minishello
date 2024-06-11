@@ -49,20 +49,17 @@ int 		init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
 
-// main.c
-
-
 // base.c
+char		*input_spacer(char *input);
 void		base_shell_init(t_shell *store, char *input);
-int			check_builtin(t_shell *store, t_node *loop);
-void		interpreter(t_shell *store);
-int			redir_checker(t_shell *store, t_node *loop);
-
+void		interpreter(t_shell *store, t_node *start, t_node *end);
+int			check_builtin(t_node *loop);
+int 		redir_checker(t_node *loop);
 
 // exec_utils.c
 char		*findprocesspath(t_shell *store, char **arr);
-t_node		*executor(t_shell *store, t_node *current);
-char		**argv_creator(t_node *current);
+t_node		*executor(t_shell *store, t_node *start, t_node *end);
+char		**argv_creator(t_node *start, t_node *end);
 
 // printer.c
 int 		print_stack(t_node **head, char c);
