@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/04 16:41:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/09 17:15:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,26 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{	
 		getcwd(cwd, sizeof(cwd));
-		store.path = findpath(envp);
-		store.paths = ft_split(store.path + 5, ':');
+		store.path = getenv("PATH");
+		store.paths = ft_split(store.path, ':');
+		store.head = NULL;
 		if (isatty(STDOUT_FILENO))
 		{
 			prompt = form_prompt(envp, cwd);
 			input = readline(prompt);
 			if (input)
 			{
+				if (ft_strcmp(input, "exit") == 0)
+				{
+					free(input);
+					free(prompt);
+					free_nonessential(&store);
+					return (0);
+				}
 				add_history(input);
 				base_shell_init(&store, input);
 			}
+			free(prompt);
 			free(input);
 		}
 	}
