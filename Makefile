@@ -21,6 +21,7 @@ SRC =	main.c \
 		builtin_main.c \
 		base.c \
 		redir.c \
+		pipe.c \
 	
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))

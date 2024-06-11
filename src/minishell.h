@@ -96,4 +96,11 @@ void		handle_append_redirection(t_shell *store, char *filename);
 void		handle_input_redirection(t_shell *store, char *filename);
 void		handle_heredoc_redirection(t_shell *store, char *filename);
 
+// pipe.c
+
+int 		pipe_counter(t_node *loop);
+void    	pre_interpreter(t_shell *store);
+t_node		*get_start(t_node *start, int i);
+t_node		*get_end(t_node *start, int i);
+
 #endif
