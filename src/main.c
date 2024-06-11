@@ -6,7 +6,7 @@
 /*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/09 17:47:50 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/11 21:46:00 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	}
 	store.envp = envp;
+	signal(SIGINT, ctrl_c_handler);
 	while (1)
 	{
 		getcwd(cwd, sizeof(cwd));
