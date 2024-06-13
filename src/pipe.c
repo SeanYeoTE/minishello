@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/11 18:17:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:58:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ void    pre_interpreter(t_shell *store)
 	
 	i = 0;
 	count = pipe_counter(store->head);
+	if (count == 0)
+	{
+		// puts("no pipe\n");
+		// printf("last: %s\n", get_last(store->head)->data);
+		interpreter(store, store->head, get_last(store->head)->next);
+		return ;
+	}
 	while (i < count)
 	{
 		if (pipe(pipefd) < 0)

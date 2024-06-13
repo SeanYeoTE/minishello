@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/11 18:24:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/13 12:21:10 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*input_spacer(char *input)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == "<" || input[i] == ">")
+		if (input[i] == '<' || input[i] == '>')
 		{
 			if (input[i - 1] != ' ')
 			{
@@ -49,9 +49,10 @@ void	base_shell_init(t_shell *store, char *input)
 
 	store->head = NULL;
 	ft_sscan(input, store, 0);
+	// print_stack(&store->head);
 	pid1 = fork();
 	if (pid1 == 0)
-		interpreter(store);
+		pre_interpreter(store);
 	else
 		free_nonessential(store);
 	waitpid(pid1, NULL, 0);
@@ -59,6 +60,7 @@ void	base_shell_init(t_shell *store, char *input)
 
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
+	// print_stack_se(loop, end);
 	while (loop != end)
 	{
 		// check if any pipes;

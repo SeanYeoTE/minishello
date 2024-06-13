@@ -6,22 +6,25 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/05 13:57:49 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/13 12:33:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*redir_handler(t_shell *store, t_node *loop)
+t_node	*redir_handler(t_shell *store, t_node *loop, t_node *end)
 {
-	while (loop)
+	t_node	*temp;
+
+	temp = loop;
+	while (loop != end)
 	{
 		if (ft_strcmp(loop->data, ">") == 0)
-			handle_output_redirection(store, loop->next->data);
+			handle_output_redirection(store, loop->next->data, temp, loop);
 		else if (ft_strcmp(loop->data, ">>") == 0)
-			handle_append_redirection(store, loop->next->data);
+			handle_append_redirection(store, loop->next->data, temp, loop);
 		else if (ft_strcmp(loop->data, "<") == 0)
-			handle_input_redirection(store, loop->next->data);
+			handle_input_redirection(store, loop->next->data, temp, loop);
 		else if (ft_strcmp(loop->data, "<<") == 0)
 			handle_heredoc_redirection(store, loop->next->data);
 		loop = loop->next;
@@ -29,30 +32,33 @@ t_node	*redir_handler(t_shell *store, t_node *loop)
 	return (loop);
 }
 
-void	handle_output_redirection(t_shell *store, char *filename)
+void	handle_output_redirection(t_shell *store, char *filename, t_node *start, t_node *end)
 {
 	int	outputfd;
 	
 	outputfd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	dup2(outputfd, store->output_fd);
+	executor(store, start, end);
 	close(outputfd);
 }
 
-void	handle_append_redirection(t_shell *store, char *filename)
+void	handle_append_redirection(t_shell *store, char *filename, t_node *start, t_node *end)
 {
 	int	outputfd;
 	
 	outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	dup2(outputfd, store->output_fd);
+	executor(store, start, end);
 	close(outputfd);
 }
 
-void	handle_input_redirection(t_shell *store, char *filename)
+void	handle_input_redirection(t_shell *store, char *filename, t_node *start, t_node *end)
 {
 	int	inputfd;
 	
 	inputfd = open(filename, O_RDONLY);
 	dup2(inputfd, store->input_fd);
+	executor(store, start, end);
 	close(inputfd);
 }
 
