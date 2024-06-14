@@ -98,6 +98,8 @@ void		handle_heredoc_redirection(t_shell *store, char *filename);
 
 int 		pipe_counter(t_node *loop);
 void    	pre_interpreter(t_shell *store);
+t_node		*pipe_replacer(t_node *start, int i);
+t_node		*pipe_back(t_node *start, t_node *temp);
 t_node		*get_start(t_node *start, int i);
 t_node		*get_end(t_node *start, int i);
 

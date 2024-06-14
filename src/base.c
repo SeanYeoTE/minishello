@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/14 13:57:58 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 16:45:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,18 @@ void	base_shell_init(t_shell *store, char *input)
 	store->head = NULL;
 	ft_sscan(input, store, 0);
 	// print_stack(&store->head);
-	pid1 = fork();
-	if (pid1 == 0)
-		pre_interpreter(store);
-	else
-		free_nonessential(store);
-	waitpid(pid1, NULL, 0);
+	// pid1 = fork();
+	// if (pid1 == 0)
+	pre_interpreter(store);
+	// else
+	free_nonessential(store);
+	// waitpid(pid1, NULL, 0);
 }
 
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
 	end = end->next;
-	// print_stack_se(loop, end);
+	print_stack_se(loop, end);
 	while (loop != end)
 	{
 		// check if any pipes;
