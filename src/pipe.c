@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/14 16:47:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 16:50:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void    pre_interpreter(t_shell *store)
 			printf("Pipe failed\n");
 		store->output_fd = pipefd[1];
 		pid1 = fork();
-		pid2 = fork();
 		if (pid1 == 0)
 		{
 			puts("child1\n");
@@ -63,9 +62,9 @@ void    pre_interpreter(t_shell *store)
 			puts("child\n");
 			pipe_back(store->head, temp);
 		}
-		if (pid2 == 0)
+		pid2 = fork();
+		if (pid2 == 0 && pid1 != 0)
 		{
-			waitpid(pid1, NULL, 0);
 			puts("child2\n");
 			temp = pipe_replacer(store->head, i + 1);
 			interpreter(store, get_start(store->head, i + 1), get_end(store->head, i + 1));
