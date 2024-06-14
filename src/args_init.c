@@ -6,19 +6,20 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/27 13:20:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 21:40:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int init_node(char *value, t_node **head)
+int	init_node(char *value, t_node **head)
 {
 	t_node	*new_node;
 	t_node	*prev_node;
 
 	new_node = malloc(sizeof(t_node));
 	if (!new_node)
+
 		return (-1);
 	new_node->next = NULL;
 	new_node->data = value;

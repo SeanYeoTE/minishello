@@ -35,6 +35,7 @@ typedef struct s_shell
 	char	*path;
 	char	**paths;
 	t_node	*head;
+	t_node	*tail;
 
 }	t_shell;
 
@@ -45,7 +46,7 @@ char		*findhost(char *envp[]);
 char		*form_prompt(char **envp, char *cwd);
 
 // args_init.c
-int 		init_node(char *value, t_node **head);
+int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
 
@@ -97,8 +98,9 @@ void		handle_heredoc_redirection(t_shell *store, char *filename);
 // pipe.c
 
 int 		pipe_counter(t_node *loop);
-void    	pre_interpreter(t_shell *store);
-t_node		*pipe_replacer(t_node *start, int i);
+void    	pre_interpreter(t_shell *store, t_node *temp);
+void		call_interpreter(t_shell *store, t_node *start, t_node *end);
+t_node		*pipe_slicer(t_node *tail);
 t_node		*pipe_back(t_node *start, t_node *temp);
 t_node		*get_start(t_node *start, int i);
 t_node		*get_end(t_node *start, int i);

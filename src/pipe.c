@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/14 16:50:55 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 22:47:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,80 +26,63 @@ int  pipe_counter(t_node *loop)
 	return (count);
 }
 
-void    pre_interpreter(t_shell *store)
+void    pre_interpreter(t_shell *store, t_node *temp)
 {
-	int	count;
 	int	pipefd[2];
-	int	i;
 	int	pid1;
-	int pid2;
-	t_node	*temp;
+	t_node	*start;
 	
-	i = 0;
-	count = pipe_counter(store->head);
-	if (count == 0)
+	start = temp;
+	if (pipe(pipefd) < 0)
+		printf("Pipe failed\n");
+	store->output_fd = pipefd[1];
+	temp = pipe_slicer(temp);
+	pid1 = fork();
+	if (pid1 == 0)
 	{
-		pid1 = fork();
-		if (pid1 == 0)
-			interpreter(store, store->head, get_last(store->head));
-		else
-			waitpid(pid1, NULL, 0);
-		// printf("last: %s\n", get_last(store->head)->data);	
-		return ;
-	}
-	while (i < count)
+		puts("childex\n");
+		// print_stack(&temp);
+		printf("temp: %s\n", temp->data);
+		call_interpreter(store, start, get_end(start->next, 0));
+		puts("end of child\n");
+		// pipe_back(store->head, temp);
+	}		
+	else
 	{
-		printf("i: %d\n", i);
-		if (pipe(pipefd) < 0)
-			printf("Pipe failed\n");
-		store->output_fd = pipefd[1];
-		pid1 = fork();
-		if (pid1 == 0)
-		{
-			puts("child1\n");
-			temp = pipe_replacer(store->head, i);
-			interpreter(store, get_start(store->head, i), get_end(store->head, i));
-			puts("child\n");
-			pipe_back(store->head, temp);
-		}
-		pid2 = fork();
-		if (pid2 == 0 && pid1 != 0)
-		{
-			puts("child2\n");
-			temp = pipe_replacer(store->head, i + 1);
-			interpreter(store, get_start(store->head, i + 1), get_end(store->head, i + 1));
-			pipe_back(store->head, temp);
-		}
-		else
-		{
-			
-			close(store->output_fd);
-			if (store->input_fd != 0)
-				close(store->input_fd);
-			store->input_fd = pipefd[0];
-			
-		}
-		waitpid(pid1, NULL, 0);
-		waitpid(pid2, NULL, 0);
-		i++;
+		wait();
+		// waitpid(pid1, NULL, 0);
+		if (temp->next)
+			pre_interpreter(store, temp->next);
+		close(store->output_fd);
+		if (store->input_fd != 0)
+			close(store->input_fd);
+		store->input_fd = pipefd[0];
 	}
+	
 }
 
-t_node	*pipe_replacer(t_node *start, int i)
+void	call_interpreter(t_shell *store, t_node *start, t_node *end)
 {
-	while (start)
+	int	pid1;
+	
+	pid1 = fork();
+	if (pid1 == 0)
+		interpreter(store, start, end);
+	waitpid(pid1, NULL, 0);
+}
+
+t_node	*pipe_slicer(t_node *head)
+{
+	while (head)
 	{
-		if (ft_strcmp(start->data, "|") == 0)
+		if (ft_strcmp(head->data, "|") == 0)
 		{
-			if (i == 0)
-			{
-				start->prev->next = NULL;
-				return (start);
-			}
-			i--;
+			head->prev->next = NULL;
+			return (head);
 		}
-		start = start->next;
+		head = head->next;
 	}
+	return (head);
 }
 
 t_node *pipe_back(t_node *start, t_node *temp)
