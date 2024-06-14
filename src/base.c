@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/13 12:21:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 13:57:58 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	base_shell_init(t_shell *store, char *input)
 
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
+	end = end->next;
 	// print_stack_se(loop, end);
 	while (loop != end)
 	{

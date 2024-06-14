@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/13 12:28:07 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 14:00:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_node	*executor(t_shell *store, t_node *start, t_node *end)
 	char	*exepath;
 	char	**temp;
 	
-	// puts("executing");
+	puts("executing");
 	execveresult = 0;
 	temp = argv_creator(start, end);
 	while (start && start->type != 3)
@@ -77,14 +77,14 @@ char	**argv_creator(t_node *start, t_node *end)
 	
 	i = 0;
 	temp = start;
-	while (temp && temp->type != 3 && temp != end)
+	while (temp && temp != end)
 	{
 		temp = temp->next;
 		i++;
 	}
 	ret = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
-	while (start && start->type != 3 && start != end)
+	while (start && start != end)
 	{
 		ret[i] = ft_strdup(start->data);
 		start = start->next;
