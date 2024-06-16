@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/04 17:30:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 21:41:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int	scanner_comment(char *str, int start, t_shell *store)
 	}
 	data = ft_strndup(str + start, i + 1);
 	init_node(data, &store->head);
+	store->tail = get_last(store->head);
 	get_last(store->head)->type = 1;
 	return (start + i);
 }
@@ -65,6 +66,7 @@ int	scanner_quote(char *str, int start, t_shell *store)
 	}
 	data = ft_strndup(str + start + 1, i - 1);
 	init_node(data, &store->head);
+	store->tail = get_last(store->head);
 	get_last(store->head)->type = 2;
 	return (start + i + 1);
 }
@@ -83,6 +85,7 @@ int	scanner_operator(char *str, int start, t_shell *store)
 	}
 	data = ft_strndup(str + start, i);
 	init_node(data, &store->head);
+	store->tail = get_last(store->head);
 	get_last(store->head)->type = 3;
 	return (start + i);
 }
@@ -116,6 +119,7 @@ int scanner_word(char *str, int start, t_shell *store)
 	}
 	data = ft_strndup(str + start, i);
 	init_node(data, &store->head);
+	store->tail = get_last(store->head);
 	get_last(store->head)->type = 5;
 	return (start + i);
 }
@@ -136,6 +140,5 @@ int ft_sscan(char *str, t_shell *store, int index)
 		else
 			return ft_sscan(str, store, scanner_word(str, index, store));
 	}
-	
 	return (0);
 }

@@ -30,8 +30,9 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		getcwd(cwd, sizeof(cwd));
-		store.path = findpath(envp);
-		store.paths = ft_split(store.path + 5, ':');
+		store.path = getenv("PATH");
+		store.paths = ft_split(store.path, ':');
+		store.head = NULL;
 		if (isatty(STDOUT_FILENO))
 		{
 			prompt = form_prompt(envp, cwd);
@@ -43,6 +44,7 @@ int	main(int argc, char **argv, char **envp)
 				add_history(input);
 				base_shell_init(&store, input);
 			}
+			free(prompt);
 			free(input);
 		}
 		// signal(SIGINT, ctrl_c_handler);
