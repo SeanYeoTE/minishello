@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/14 22:47:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/16 16:41:09 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void    pre_interpreter(t_shell *store, t_node *temp)
 	}		
 	else
 	{
-		wait();
-		// waitpid(pid1, NULL, 0);
+		//wait();
+		waitpid(pid1, NULL, 0);
 		if (temp->next)
 			pre_interpreter(store, temp->next);
 		close(store->output_fd);
@@ -64,12 +64,20 @@ void    pre_interpreter(t_shell *store, t_node *temp)
 void	call_interpreter(t_shell *store, t_node *start, t_node *end)
 {
 	int	pid1;
-	
-	pid1 = fork();
-	if (pid1 == 0)
-		interpreter(store, start, end);
-	waitpid(pid1, NULL, 0);
-}
+
+	if (check_builtin(start) == 0)
+	{
+		pid1 = fork();
+		if (pid1 == 0)
+		{
+			if (check_builtin(start) == 0)
+				interpreter(store, start, end);
+		}
+		waitpid(pid1, NULL, 0);
+	}
+	else
+		builtin_main(store, start, end);
+}	
 
 t_node	*pipe_slicer(t_node *head)
 {

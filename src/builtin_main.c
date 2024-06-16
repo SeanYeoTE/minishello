@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/12 12:55:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/16 15:37:04 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,14 @@ t_node	*builtin_main(t_shell *store, t_node *current, t_node *end)
 t_node	*cd_handler(t_node *current)
 {
 	char	*home;
+
 	if (current->next == NULL || ft_strcmp(current->next->data, "~") == 0)
 	{
 		home = getenv("HOME");
-		if (home == NULL || chdir(home) < 0)
+		if (home == NULL || chdir(home) != 0)
 			perror("no home");
 	}
-	else if (chdir(current->next->data) < 0)
+	else if (chdir(current->next->data) != 0)
 		perror(current->data);
 	return (current);
 }
