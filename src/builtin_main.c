@@ -79,7 +79,6 @@ t_node	*pwd_handler(t_node *current)
 	}
 	return (current->next);
 }
-
 // void	pipe_handler(t_shell *store)
 // {
 

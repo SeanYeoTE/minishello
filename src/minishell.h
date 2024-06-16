@@ -9,6 +9,7 @@
 #include "../libft/libft.h"
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <signal.h>
 
 typedef struct s_node
 {	
@@ -104,5 +105,9 @@ t_node		*pipe_slicer(t_node *tail);
 t_node		*pipe_back(t_node *start, t_node *temp);
 t_node		*get_start(t_node *start, int i);
 t_node		*get_end(t_node *start, int i);
+
+//sig_handler.c
+// void		reg_ctrl_c(void);
+void		ctrl_c_handler(int signum);
 
 #endif
