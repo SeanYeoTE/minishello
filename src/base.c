@@ -6,11 +6,41 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/05 13:31:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/14 22:39:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// introduces spaces between operators and strings
+char	*input_spacer(char *input)
+{
+	int 	i;
+	char	*front;
+	char	*back;
+
+	i = 0;
+	while (input[i])
+	{
+		if (input[i] == '<' || input[i] == '>')
+		{
+			if (input[i - 1] != ' ')
+			{
+				front = ft_substr(input, 0, i);
+				back = ft_substr(input, i, ft_strlen(input) - i);
+				input = ft_strjoin(ft_strjoin(front, " "), back);
+				i = 0;
+			}
+			if (input[i + 1] != ' ')
+			{
+				front = ft_substr(input, 0, i + 1);
+				back = ft_substr(input, i + 1, ft_strlen(input) - i - 1);
+				input = ft_strjoin(ft_strjoin(front, " "), back);
+				i = 0;
+			}
+		}
+	}
+}
 
 void	base_shell_init(t_shell *store, char *input)
 {
@@ -19,40 +49,41 @@ void	base_shell_init(t_shell *store, char *input)
 
 	store->head = NULL;
 	ft_sscan(input, store, 0);
-	// print_stack(&store->head, 'a');
-	pid1 = fork();
-	if (pid1 == 0)
-		interpreter(store);
+	// print_stack(&store->head);
+	// pid1 = fork();
+	// if (pid1 == 0)
+	if (pipe_counter(store->head) == 0)
+		call_interpreter(store, store->head, store->tail);
 	else
-		free_nonessential(store);
-	waitpid(pid1, NULL, 0);
+		pre_interpreter(store, store->head);
+	// else
+	free_nonessential(store);
+	// waitpid(pid1, NULL, 0);
 }
 
-void	interpreter(t_shell *store)
+void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
-	t_node	*loop;
-	
-	loop = store->head;
-	
-	while (loop)
+	end = end->next;
+	print_stack_se(loop, end);
+	while (loop != end)
 	{
 		// check if any pipes;
 
 		// check if any redirection;
-		if (redir_checker(store, loop) == 1)
-			loop = redir_handler(store, loop);
+		if (redir_checker(loop) == 1)
+			loop = redir_handler(store, loop, end);
 		// check if any $ to expand;
 
 		// normal executions;
-		if (check_builtin(store, loop) == 0)
-			loop = executor(store, loop);
+		if (check_builtin(loop) == 0)
+			loop = executor(store, loop, end);
 		// exec builtins if any;
 		else
-			loop = builtin_main(store, loop);
+			loop = builtin_main(store, loop, end);
 	}
 }
 
-int	check_builtin(t_shell *store, t_node *loop)
+int	check_builtin(t_node *loop)
 {
 	if (ft_strcmp(loop->data, "echo") == 0)
 		return (1);
@@ -66,7 +97,7 @@ int	check_builtin(t_shell *store, t_node *loop)
 		return (0);
 }
 
-int redir_checker(t_shell *store, t_node *loop)
+int redir_checker(t_node *loop)
 {
 	while (loop)
 	{

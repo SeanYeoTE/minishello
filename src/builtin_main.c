@@ -3,27 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/09 16:36:47 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/12 12:55:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*builtin_main(t_shell *store, t_node *current)
+t_node	*builtin_main(t_shell *store, t_node *current, t_node *end)
 {
 	t_node	*ret;
 
 	if (ft_strcmp(current->data, "cd") == 0)
 		ret = cd_handler(current);
 	else if (!ft_strcmp(current->data, "echo"))
-		ret = echo_handler(current);
+		ret = echo_handler(current, end);
 	else if (!ft_strcmp(current->data, "pwd"))
 		ret = pwd_handler(current);
-	// else if (current->data == "|")
-	// 	ret = pipe_handler(current);
 }
 
 // untested
@@ -42,7 +40,7 @@ t_node	*cd_handler(t_node *current)
 }
 
 // untested
-t_node	*echo_handler(t_node *current)
+t_node	*echo_handler(t_node *current, t_node *end)
 {
 	int	option;	
 
@@ -52,7 +50,7 @@ t_node	*echo_handler(t_node *current)
 		option = 1;
 	if (option == 1)
 		current = current->next;
-	while (current)
+	while (current != end)
 	{
 		printf("%s", current->data);
 		printf(" ");
