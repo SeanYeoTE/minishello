@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/14 22:39:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/16 16:47:08 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,17 @@ void	base_shell_init(t_shell *store, char *input)
 
 	store->head = NULL;
 	ft_sscan(input, store, 0);
-	// print_stack(&store->head);
-	// pid1 = fork();
-	// if (pid1 == 0)
-	if (pipe_counter(store->head) == 0)
-		call_interpreter(store, store->head, store->tail);
-	else
-		pre_interpreter(store, store->head);
-	// else
-	free_nonessential(store);
-	// waitpid(pid1, NULL, 0);
-}
+	print_stack(&store->head);
+
+	if (store->head)
+	{
+		if (pipe_counter(store->head) == 0)
+			call_interpreter(store, store->head, store->tail);
+		else if (pipe_counter(store->head) > 0)
+			pre_interpreter(store, store->head);
+		free_nonessential(store);
+	}
+	}
 
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
@@ -78,8 +78,8 @@ void	interpreter(t_shell *store, t_node *loop, t_node *end)
 		if (check_builtin(loop) == 0)
 			loop = executor(store, loop, end);
 		// exec builtins if any;
-		else
-			loop = builtin_main(store, loop, end);
+		// else
+		// 	loop = builtin_main(store, loop, end);
 	}
 }
 

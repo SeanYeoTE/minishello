@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/11 21:46:00 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/16 16:22:18 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ int	main(int argc, char **argv, char **envp)
 		{
 			prompt = form_prompt(envp, cwd);
 			input = readline(prompt);
-			if (input)
+			if (input == NULL)
+				break ;
+			else if (input)
 			{
 				if (ft_strcmp(input, "exit") == 0)
 					break ;
