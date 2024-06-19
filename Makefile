@@ -22,7 +22,8 @@ SRC =	main.c \
 		base.c \
 		redir.c \
 		sig_handler.c \
-    pipe.c \
+		pipe.c \
+		expansions.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 

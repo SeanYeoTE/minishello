@@ -110,4 +110,7 @@ t_node		*get_end(t_node *start, int i);
 // void		reg_ctrl_c(void);
 void		ctrl_c_handler(int signum);
 
+// expansions.c
+char		*expansions(char *input);
+
 #endif

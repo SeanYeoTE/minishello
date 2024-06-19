@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/19 12:37:40 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/19 15:57:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,10 @@ void	base_shell_init(t_shell *store, char *input)
 
 	store->head = NULL;
 	input = input_spacer(input);
+	if (ft_strchr(input, '$') != NULL)
+		input = expansions(input);
 	ft_sscan(input, store, 0);
 	// print_stack(&store->head);
-
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -62,7 +63,7 @@ void	base_shell_init(t_shell *store, char *input)
 			pre_interpreter(store, store->head);
 		free_nonessential(store);
 	}
-	}
+}
 
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
