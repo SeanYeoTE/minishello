@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/19 15:57:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/20 13:53:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,6 @@ char	*input_spacer(char *input)
 
 void	base_shell_init(t_shell *store, char *input)
 {
-	int		i;
-	int		pid1;
-
 	store->head = NULL;
 	input = input_spacer(input);
 	if (ft_strchr(input, '$') != NULL)

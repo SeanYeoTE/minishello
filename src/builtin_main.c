@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/16 15:37:04 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/20 13:53:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,15 @@ t_node	*builtin_main(t_shell *store, t_node *current, t_node *end)
 {
 	t_node	*ret;
 
+	(void)store;
+	
 	if (ft_strcmp(current->data, "cd") == 0)
 		ret = cd_handler(current);
 	else if (!ft_strcmp(current->data, "echo"))
 		ret = echo_handler(current, end);
 	else if (!ft_strcmp(current->data, "pwd"))
 		ret = pwd_handler(current);
+	return (ret);
 }
 
 // untested

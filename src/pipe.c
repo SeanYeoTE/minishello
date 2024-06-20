@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/19 15:56:58 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/20 16:41:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,13 +101,6 @@ t_node	*pipe_slicer(t_node *head)
 	return (head);
 }
 
-t_node *pipe_back(t_node *start, t_node *temp)
-{
-	while (start->next)
-		start = start->next;
-	start->next = temp;
-}
-
 t_node	*get_start(t_node *start, int i)
 {
 	if (i == 0)
@@ -122,6 +115,7 @@ t_node	*get_start(t_node *start, int i)
 		}
 		start = start->next;
 	}
+	return (start);
 }
 
 t_node	*get_end(t_node *end, int i)

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/19 15:57:03 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/20 13:51:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,10 +90,9 @@ int	scanner_operator(char *str, int start, t_shell *store)
 	return (start + i);
 }
 
-int	scanner_space(char *str, int start, t_shell *store)
+int	scanner_space(char *str, int start)
 {
 	int		i;
-	char	*data;
 
 	i = 0;
 	while (str[start + i])
@@ -136,7 +135,7 @@ int ft_sscan(char *str, t_shell *store, int index)
 		else if (detect_operator(&str[index]) == 1)
 			return ft_sscan(str, store, scanner_operator(str, index, store));
 		else if (str[index] == ' ')
-			return ft_sscan(str, store, scanner_space(str, index, store));
+			return ft_sscan(str, store, scanner_space(str, index));
 		else
 			return ft_sscan(str, store, scanner_word(str, index, store));
 	}
