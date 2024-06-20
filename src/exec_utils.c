@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/14 14:00:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/18 15:46:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,10 @@ t_node	*executor(t_shell *store, t_node *start, t_node *end)
 	char	*exepath;
 	char	**temp;
 	
-	puts("executing");
 	execveresult = 0;
 	temp = argv_creator(start, end);
 	while (start && start->type != 3)
 		start = start->next;
-	print_argv(temp);
 	exepath = findprocesspath(store, temp);
 	if (exepath == NULL)
 	{

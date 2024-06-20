@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/16 16:47:08 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/20 13:53:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,39 +18,40 @@ char	*input_spacer(char *input)
 	int 	i;
 	char	*front;
 	char	*back;
+	int		detected;
 
 	i = 0;
+	detected = 0;
 	while (input[i])
 	{
 		if (input[i] == '<' || input[i] == '>')
+			detected = 1;
+		else
 		{
-			if (input[i - 1] != ' ')
+			if (detected == 1)
 			{
 				front = ft_substr(input, 0, i);
 				back = ft_substr(input, i, ft_strlen(input) - i);
 				input = ft_strjoin(ft_strjoin(front, " "), back);
-				i = 0;
+				free(front);
+				free(back);
+				i++;
 			}
-			if (input[i + 1] != ' ')
-			{
-				front = ft_substr(input, 0, i + 1);
-				back = ft_substr(input, i + 1, ft_strlen(input) - i - 1);
-				input = ft_strjoin(ft_strjoin(front, " "), back);
-				i = 0;
-			}
+			detected = 0;
 		}
+		i++;
 	}
+	return (input);
 }
 
 void	base_shell_init(t_shell *store, char *input)
 {
-	int		i;
-	int		pid1;
-
 	store->head = NULL;
+	input = input_spacer(input);
+	if (ft_strchr(input, '$') != NULL)
+		input = expansions(input);
 	ft_sscan(input, store, 0);
-	print_stack(&store->head);
-
+	// print_stack(&store->head);
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -59,12 +60,12 @@ void	base_shell_init(t_shell *store, char *input)
 			pre_interpreter(store, store->head);
 		free_nonessential(store);
 	}
-	}
+}
 
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
 	end = end->next;
-	print_stack_se(loop, end);
+	// print_stack_se(loop, end);
 	while (loop != end)
 	{
 		// check if any pipes;

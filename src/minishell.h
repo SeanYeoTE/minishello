@@ -44,7 +44,7 @@ typedef struct s_shell
 char		*findpath(char *envp[]);
 char		*finduser(char *envp[]);
 char		*findhost(char *envp[]);
-char		*form_prompt(char **envp, char *cwd);
+char		*form_prompt(char *cwd);
 
 // args_init.c
 int			init_node(char *value, t_node **head);
@@ -84,7 +84,7 @@ int			detect_operator(char *str);
 int			scanner_comment(char *str, int start, t_shell *store);
 int			scanner_quote(char *str, int start, t_shell *store);
 int			scanner_operator(char *str, int start, t_shell *store);
-int			scanner_space(char *str, int start, t_shell *store);
+int			scanner_space(char *str, int start);
 int 		scanner_word(char *str, int start, t_shell *store);
 int 		ft_sscan(char *str, t_shell *store, int index);
 
@@ -102,12 +102,14 @@ int 		pipe_counter(t_node *loop);
 void    	pre_interpreter(t_shell *store, t_node *temp);
 void		call_interpreter(t_shell *store, t_node *start, t_node *end);
 t_node		*pipe_slicer(t_node *tail);
-t_node		*pipe_back(t_node *start, t_node *temp);
 t_node		*get_start(t_node *start, int i);
 t_node		*get_end(t_node *start, int i);
 
 //sig_handler.c
 // void		reg_ctrl_c(void);
 void		ctrl_c_handler(int signum);
+
+// expansions.c
+char		*expansions(char *input);
 
 #endif

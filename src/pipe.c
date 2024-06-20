@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/16 16:41:09 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/20 16:41:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,19 +64,27 @@ void    pre_interpreter(t_shell *store, t_node *temp)
 void	call_interpreter(t_shell *store, t_node *start, t_node *end)
 {
 	int	pid1;
-
-	if (check_builtin(start) == 0)
+	
+	if (start->data[0] == '/')
 	{
-		pid1 = fork();
-		if (pid1 == 0)
-		{
-			if (check_builtin(start) == 0)
-				interpreter(store, start, end);
-		}
-		waitpid(pid1, NULL, 0);
+		store->input_fd = 0;
+		store->output_fd = 1;
 	}
 	else
-		builtin_main(store, start, end);
+	{
+		if (check_builtin(start) == 0)
+		{
+			pid1 = fork();
+			if (pid1 == 0)
+			{
+				if (check_builtin(start) == 0)
+					interpreter(store, start, end);
+			}
+			waitpid(pid1, NULL, 0);
+		}
+		else
+			builtin_main(store, start, end);
+	}
 }	
 
 t_node	*pipe_slicer(t_node *head)
@@ -93,13 +101,6 @@ t_node	*pipe_slicer(t_node *head)
 	return (head);
 }
 
-t_node *pipe_back(t_node *start, t_node *temp)
-{
-	while (start->next)
-		start = start->next;
-	start->next = temp;
-}
-
 t_node	*get_start(t_node *start, int i)
 {
 	if (i == 0)
@@ -114,6 +115,7 @@ t_node	*get_start(t_node *start, int i)
 		}
 		start = start->next;
 	}
+	return (start);
 }
 
 t_node	*get_end(t_node *end, int i)

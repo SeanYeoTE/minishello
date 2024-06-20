@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/09 17:27:07 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/20 16:56:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,15 @@ char	*findhost(char *envp[])
 	return (NULL);
 }
 
-char	*form_prompt(char **envp, char *cwd)
+char	*form_prompt(char *cwd)
 {
 	char	*username;
-	char	*host;
+	// char	*host;
 	char	*temp;
 	char	*ret;
 
-	username = finduser(envp);
+	// username = finduser(envp);
+	username = getenv("USER");
 	// host = getenv("session_manager");
 	// temp = ft_strjoin(username, "@");
 	// ret = ft_strjoin(temp, host);
@@ -78,8 +79,6 @@ char	*form_prompt(char **envp, char *cwd)
 	temp = ft_strjoin(ret, "$ ");
 	
 	free(ret);
-	free(username);
-	// free(host);
 	
 	return (temp);
 }

@@ -2,7 +2,7 @@
 CC = cc
 
 # Compiler flags
-CFLAGS = -g
+CFLAGS = -g -Wall -Wextra -Werror -I includes/ -I libft/includes/
 
 #Libft
 LIBFT_PATH	= libft/
@@ -22,7 +22,8 @@ SRC =	main.c \
 		base.c \
 		redir.c \
 		sig_handler.c \
-    pipe.c \
+		pipe.c \
+		expansions.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 
