@@ -6,43 +6,42 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/05/30 21:43:28 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/16 15:37:04 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_node	*builtin_main(t_shell *store, t_node *current)
+t_node	*builtin_main(t_shell *store, t_node *current, t_node *end)
 {
 	t_node	*ret;
 
 	if (ft_strcmp(current->data, "cd") == 0)
 		ret = cd_handler(current);
 	else if (!ft_strcmp(current->data, "echo"))
-		ret = echo_handler(current);
+		ret = echo_handler(current, end);
 	else if (!ft_strcmp(current->data, "pwd"))
 		ret = pwd_handler(current);
-	// else if (current->data == "|")
-	// 	ret = pipe_handler(current);
 }
 
 // untested
 t_node	*cd_handler(t_node *current)
 {
 	char	*home;
+
 	if (current->next == NULL || ft_strcmp(current->next->data, "~") == 0)
 	{
 		home = getenv("HOME");
-		if (home == NULL || chdir(home) < 0)
+		if (home == NULL || chdir(home) != 0)
 			perror("no home");
 	}
-	else if (chdir(current->next->data) < 0)
+	else if (chdir(current->next->data) != 0)
 		perror(current->data);
 	return (current);
 }
 
 // untested
-t_node	*echo_handler(t_node *current)
+t_node	*echo_handler(t_node *current, t_node *end)
 {
 	int	option;	
 
@@ -52,7 +51,7 @@ t_node	*echo_handler(t_node *current)
 		option = 1;
 	if (option == 1)
 		current = current->next;
-	while (current)
+	while (current != end)
 	{
 		printf("%s", current->data);
 		printf(" ");
@@ -81,7 +80,6 @@ t_node	*pwd_handler(t_node *current)
 	}
 	return (current->next);
 }
-
 // void	pipe_handler(t_shell *store)
 // {
 
