@@ -27,6 +27,12 @@ typedef struct s_node
 
 } t_node;
 
+typedef struct s_env
+{
+	char	*var;
+	struct s_env	*next;
+}	t_env;
+
 typedef struct s_shell
 {
 	char	**envp;
@@ -37,8 +43,9 @@ typedef struct s_shell
 	char	**paths;
 	t_node	*head;
 	t_node	*tail;
-
+	t_env	*env;
 }	t_shell;
+
 
 // prompt.c
 char		*findpath(char *envp[]);
@@ -78,6 +85,9 @@ t_node		*builtin_main(t_shell *store, t_node *current, t_node *end);
 t_node		*cd_handler(t_node *current);
 t_node		*echo_handler(t_node *current, t_node *end);
 t_node		*pwd_handler(t_node *current);
+t_env		*create_env_node(char *env_var);
+void		env_init(t_shell *store, char **envp);
+void		env_handler(t_shell *store);
 
 // parse_detection.c
 int			detect_operator(char *str);
