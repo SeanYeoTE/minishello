@@ -6,12 +6,29 @@
 /*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/22 01:30:40 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/22 02:09:48 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	free_env(t_env **env)
+{
+	t_env	*tmp;
+	t_env	*current;
+
+	if (NULL == env)
+		return ;
+	current = *env;
+	while (current)
+	{
+		tmp = current->next;
+		free(current->var);
+		free(current);
+		current = tmp;
+	}
+	*env = NULL;
+}
 // scrolling up for history works, but scrolling down after messes up the prompt
 int	main(int argc, char **argv, char **envp)
 {
@@ -54,5 +71,6 @@ int	main(int argc, char **argv, char **envp)
 		}
 	}
 	free (input);
+	free_env(&store.env);
 	return (0);
 }
