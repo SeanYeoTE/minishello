@@ -3,29 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/20 17:07:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/22 02:09:48 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	free_env(t_env **env)
+{
+	t_env	*tmp;
+	t_env	*current;
+
+	if (NULL == env)
+		return ;
+	current = *env;
+	while (current)
+	{
+		tmp = current->next;
+		free(current->var);
+		free(current);
+		current = tmp;
+	}
+	*env = NULL;
+}
 // scrolling up for history works, but scrolling down after messes up the prompt
-int	main(void)
+int	main(int argc, char **argv, char **envp)
 {
 	t_shell	store;
 	char	*prompt;
 	char	*input;
 	char 	cwd[1024];
 	
-	// if (argc != 1 && argv[1] != "\0")
-	// {
-	// 	perror("run without args");
-	// 	return (0);
-	// }
+	if (argc != 1 || argv[1])
+	{
+		perror("run without args");
+		return (0);
+	}
 	signal(SIGINT, ctrl_c_handler);
+	env_init(&store, envp);
 	while (1)
 	{
 		getcwd(cwd, sizeof(cwd));
@@ -43,14 +61,16 @@ int	main(void)
 			{
 				if (ft_strcmp(input, "exit") == 0)
 					break ;
+				else if (ft_strcmp(input, "env") == 0)
+					env_handler(&store);
 				add_history(input);
 				base_shell_init(&store, input);
 			}
 			free(prompt);
 			free(input);
 		}
-		// signal(SIGINT, ctrl_c_handler);
 	}
 	free (input);
+	free_env(&store.env);
 	return (0);
 }

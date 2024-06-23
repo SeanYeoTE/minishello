@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/20 13:53:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/22 01:52:40 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+//builtin main
 t_node	*builtin_main(t_shell *store, t_node *current, t_node *end)
 {
 	t_node	*ret;
@@ -27,7 +28,7 @@ t_node	*builtin_main(t_shell *store, t_node *current, t_node *end)
 	return (ret);
 }
 
-// untested
+// cd handler
 t_node	*cd_handler(t_node *current)
 {
 	char	*home;
@@ -43,7 +44,7 @@ t_node	*cd_handler(t_node *current)
 	return (current);
 }
 
-// untested
+// echo handler
 t_node	*echo_handler(t_node *current, t_node *end)
 {
 	int	option;	
@@ -65,6 +66,7 @@ t_node	*echo_handler(t_node *current, t_node *end)
 	return (current);
 }
 
+//pwd handler
 t_node	*pwd_handler(t_node *current)
 {
 	char	*cwd;
@@ -83,7 +85,48 @@ t_node	*pwd_handler(t_node *current)
 	}
 	return (current->next);
 }
-// void	pipe_handler(t_shell *store)
-// {
+//env handler
+t_env	*create_env_node(char *env_var)
+{
+		t_env	*new_node;
 
-// }
+		new_node = ft_calloc(1, sizeof(t_env));
+		if (!new_node)
+			perror("Failed to allocate memory");
+		new_node->var = ft_strdup(env_var);
+		new_node->next = NULL;
+		return (new_node);
+}
+
+void	env_init(t_shell *store, char **envp)
+{
+	t_env	*current;
+	int	i;
+
+	current = NULL;
+	i = 0;
+	while (envp[i])
+	{
+		t_env	*new_node;
+
+		new_node = create_env_node(envp[i]);
+		if (!store->env)
+			store->env = new_node;
+		else
+			current->next = new_node;
+		current = new_node;
+		i++;
+	}
+}
+
+void	env_handler(t_shell *store)
+{
+	t_env	*current;
+
+	current = store->env;
+	while (current)
+	{
+		printf("%s\n", current->var);
+		current = current->next;
+	}
+}
