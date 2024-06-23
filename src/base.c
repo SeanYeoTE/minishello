@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/20 13:53:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/23 14:50:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,33 +84,4 @@ void	interpreter(t_shell *store, t_node *loop, t_node *end)
 	}
 }
 
-int	check_builtin(t_node *loop)
-{
-	if (ft_strcmp(loop->data, "echo") == 0)
-		return (1);
-	if (ft_strcmp(loop->data, "cd") == 0)
-		return (1);
-	if (ft_strcmp(loop->data, "pwd") == 0)
-		return (1);	
-	if (ft_strcmp(loop->data, "export") == 0)
-		return (1);
-	else
-		return (0);
-}
 
-int redir_checker(t_node *loop)
-{
-	while (loop)
-	{
-		if (ft_strcmp(loop->data, ">") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, ">>") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, "<") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, "<<") == 0)
-			return (1);
-		loop = loop->next;
-	}
-	return (0);
-}

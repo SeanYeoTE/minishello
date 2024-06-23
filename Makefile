@@ -13,11 +13,12 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 SRC_PATH = src/
 SRC =	main.c \
 		prompt.c \
+		parse_detection.c \
+		scanner.c \
 		exec_utils.c \
 		args_init.c \
 		printer.c \
 		mem_utils.c \
-		parse_detection.c \
 		builtin_main.c \
 		base.c \
 		redir.c \

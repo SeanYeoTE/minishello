@@ -46,6 +46,8 @@ typedef struct s_shell
 	t_env	*env;
 }	t_shell;
 
+// global variable
+int 		exit_status;
 
 // prompt.c
 char		*findpath(char *envp[]);
@@ -53,17 +55,28 @@ char		*finduser(char *envp[]);
 char		*findhost(char *envp[]);
 char		*form_prompt(char *cwd);
 
-// args_init.c
-int			init_node(char *value, t_node **head);
-t_node		*get_last(t_node *last);
-t_node		*get_node(t_node *ret, int num);
+// parse_detection.c
+int			detect_operator(char *str);
+int			check_builtin(t_node *loop);
+int 		redir_checker(t_node *loop);
+int 		ft_sscan(char *str, t_shell *store, int index);
+
+// scanner.c
+int			scanner_comment(char *str, int start, t_shell *store);
+int			scanner_quote(char *str, int start, t_shell *store);
+int			scanner_operator(char *str, int start, t_shell *store);
+int			scanner_space(char *str, int start);
+int 		scanner_word(char *str, int start, t_shell *store);
 
 // base.c
 char		*input_spacer(char *input);
 void		base_shell_init(t_shell *store, char *input);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
-int			check_builtin(t_node *loop);
-int 		redir_checker(t_node *loop);
+
+// args_init.c
+int			init_node(char *value, t_node **head);
+t_node		*get_last(t_node *last);
+t_node		*get_node(t_node *ret, int num);
 
 // exec_utils.c
 char		*findprocesspath(t_shell *store, char **arr);
@@ -88,15 +101,6 @@ t_node		*pwd_handler(t_node *current);
 t_env		*create_env_node(char *env_var);
 void		env_init(t_shell *store, char **envp);
 void		env_handler(t_shell *store);
-
-// parse_detection.c
-int			detect_operator(char *str);
-int			scanner_comment(char *str, int start, t_shell *store);
-int			scanner_quote(char *str, int start, t_shell *store);
-int			scanner_operator(char *str, int start, t_shell *store);
-int			scanner_space(char *str, int start);
-int 		scanner_word(char *str, int start, t_shell *store);
-int 		ft_sscan(char *str, t_shell *store, int index);
 
 // redir.c
 

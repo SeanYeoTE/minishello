@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/22 02:09:48 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/23 13:09:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,19 @@ void	free_env(t_env **env)
 	}
 	*env = NULL;
 }
+
+// init var
+void	init_var(t_shell *store)
+{		
+	store->input_fd = dup(0);
+	store->output_fd = dup(1);
+	store->head = NULL;
+	store->tail = NULL;
+	store->path = getenv("PATH");
+	store->envp = ft_split(store->path, ':');
+	store->paths = ft_split(store->path, ':');
+}
+
 // scrolling up for history works, but scrolling down after messes up the prompt
 int	main(int argc, char **argv, char **envp)
 {
@@ -47,10 +60,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		getcwd(cwd, sizeof(cwd));
-		store.path = getenv("PATH");
-		store.envp = ft_split(store.path, ':');
-		store.paths = ft_split(store.path, ':');
-		store.head = NULL;
+		init_var(&store);
 		if (isatty(STDOUT_FILENO))
 		{
 			prompt = form_prompt(cwd);
