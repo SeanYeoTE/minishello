@@ -11,6 +11,9 @@
 #include <fcntl.h>
 #include <signal.h>
 
+// global variable
+extern	int		t_exit_status;
+
 typedef struct s_node
 {	
 	int 	type;
@@ -46,8 +49,7 @@ typedef struct s_shell
 	t_env	*env;
 }	t_shell;
 
-// global variable
-int 		exit_status;
+
 
 // prompt.c
 char		*findpath(char *envp[]);

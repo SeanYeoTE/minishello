@@ -6,11 +6,15 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/23 13:09:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/24 12:04:38 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int		t_exit_status;
+
+// t_exit_status = 0;
 
 void	free_env(t_env **env)
 {

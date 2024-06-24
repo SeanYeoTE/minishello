@@ -2,7 +2,7 @@
 CC = cc
 
 # Compiler flags
-CFLAGS = -g -Wall -Wextra -Werror -I includes/ -I libft/includes/
+CFLAGS = -g -Wall -Wextra -Werror
 
 #Libft
 LIBFT_PATH	= libft/
@@ -55,7 +55,7 @@ $(LIBFT):
 
 # Link object files into target executable
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) -lreadline
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) -lreadline 
 # Clean up object files and target executable
 clean:
 	rm -rf $(OBJS) $(NAME)
