@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/25 17:53:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 19:17:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int		parser(t_shell* store)
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
-			call_interpreter(store, store->head, store->tail);
+			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
 			pre_interpreter(store, store->head);
 		free_nonessential(store);
@@ -61,37 +61,58 @@ int		parser(t_shell* store)
 	return (EXIT_SUCCESS);
 }
 
-void	call_interpreter(t_shell *store, t_node *start, t_node *end)
+int	multiple_function(t_shell *store)
 {
-	int	pid1;
+	t_node	*temp;
 	
-	if (start->data[0] == '/')
+	temp = store->head;
+	while (temp)
 	{
-		store->input_fd = 0;
-		store->output_fd = 1;
-	}
-	else
-	{
-		if (check_builtin(start) == 0)
+		if (ft_strcmp(temp->data, "|") == 0)
 		{
-			pid1 = fork();
-			if (pid1 == 0)
-			{
-				if (check_builtin(start) == 0)
-				{
-					interpreter(store, start, end);
-					exit(t_exit_status);
-				}
-			}
-			else
-				waitpid(pid1, &t_exit_status, WUNTRACED);
-			if (WIFEXITED(t_exit_status))
-				t_exit_status = WEXITSTATUS(t_exit_status);
+			create_cmd(store, store->head, temp);
 		}
-		else
-			builtin_main(store, start, end);
+		temp = temp->next;
 	}
-}	
+}
+
+void	create_cmd(t_shell *store, t_node *start, t_node *end)
+{
+	t_cmd	*new;
+	t_node	*temp;
+	
+	new = (t_cmd *)malloc(sizeof(t_cmd));
+	new->command = start;
+	new->prev = get_last_cmd(store->cmd_head);
+	new->next = NULL;
+	store->cmd_tail = new;
+	
+	detach_redir(new);
+	
+	store->head = end;
+}
+
+void	detach_redir(t_cmd *new)
+{
+	t_node	*temp;
+	
+	temp = new->command;
+	while (temp)
+	{
+		if (redir_checker(temp) == 1)
+		{
+			new->redir = temp;
+			temp->prev->next = new->redir->next->next;
+			temp->next->next->prev = temp->prev;
+			
+			new->redir->next->next = NULL;
+			new->redir->prev = NULL;
+		}
+		temp = temp->next;
+	}
+}
+
+
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
 	end = end->next;

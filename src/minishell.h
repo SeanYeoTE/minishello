@@ -30,6 +30,20 @@ typedef struct s_node
 
 } t_node;
 
+// struct points to command and redirection, each is a linked list
+// struct points to next command as itself is a linked list
+typedef struct s_cmd
+{
+
+	char	*data;
+	
+	t_node 	*command;
+	t_node	*redir;
+	struct s_cmd	*next;
+	struct s_cmd	*prev;
+
+}	t_cmd;
+
 typedef struct s_env
 {
 	char	*var;
@@ -46,11 +60,17 @@ typedef struct s_shell
 
 	char	*path;
 	char	**paths;
+
+	t_cmd	*cmd_head;
+	t_cmd	*cmd_tail;
+
 	t_node	*head;
 	t_node	*tail;
 	t_env	*env;
 }	t_shell;
 
+///////////////////////////////////////////
+// the ui portion //
 // main.c
 void		free_env(t_env **env);
 void		init_var(t_shell *store);
@@ -60,17 +80,15 @@ int			looper(t_shell *store);
 // input_utils.c
 char		*input_spacer(char *input);
 int			check_quotes(char *line);
+int 		redir_checker(t_node *loop);
 
 // prompt.c
-char		*findpath(char *envp[]);
-char		*finduser(char *envp[]);
-char		*findhost(char *envp[]);
 char		*form_prompt(char *cwd);
-
+///////////////////////////////////////////
+// lexer //
 // parse_detection.c
 int			detect_operator(char *str);
 int			check_builtin(t_node *loop);
-int 		redir_checker(t_node *loop);
 int 		full_lexer(char *str, t_shell *store, int index);
 
 // scanner.c
@@ -80,16 +98,25 @@ int			scanner_operator(char *str, int start, t_shell *store);
 int			scanner_space(char *str, int start);
 int 		scanner_word(char *str, int start, t_shell *store);
 
+// args_init.c
+int			init_node(char *value, t_node **head);
+t_node		*get_last(t_node *last);
+t_node		*get_node(t_node *ret, int num);
+///////////////////////////////////////////
+// parser //
 // base.c
 int			prompter(t_shell *store);
 int			pre_execution(t_shell *store, char *input);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
+int			multiple_function(t_shell *store);
+void		create_cmd(t_shell *store, t_node *start, t_node *end);
 
-// args_init.c
-int			init_node(char *value, t_node **head);
-t_node		*get_last(t_node *last);
-t_node		*get_node(t_node *ret, int num);
+
+
+
+
+
 
 // exec_utils.c
 char		*findprocesspath(t_shell *store, char **arr);
@@ -128,7 +155,7 @@ void		handle_heredoc_redirection(t_shell *store, char *filename);
 
 int 		pipe_counter(t_node *loop);
 void    	pre_interpreter(t_shell *store, t_node *temp);
-void		call_interpreter(t_shell *store, t_node *start, t_node *end);
+void		single_function(t_shell *store, t_node *start, t_node *end);
 t_node		*pipe_slicer(t_node *tail);
 t_node		*get_start(t_node *start, int i);
 t_node		*get_end(t_node *start, int i);

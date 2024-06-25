@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/25 17:54:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 18:49:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,23 +38,6 @@ int	check_builtin(t_node *loop)
 		return (1);
 	else
 		return (0);
-}
-
-int redir_checker(t_node *loop)
-{
-	while (loop)
-	{
-		if (ft_strcmp(loop->data, ">") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, ">>") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, "<") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, "<<") == 0)
-			return (1);
-		loop = loop->next;
-	}
-	return (0);
 }
 
 int	full_lexer(char *str, t_shell *store, int index)

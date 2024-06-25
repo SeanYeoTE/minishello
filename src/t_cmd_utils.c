@@ -1,32 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt.c                                           :+:      :+:    :+:   */
+/*   t_cmd_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/25 18:53:38 by seayeo           ###   ########.fr       */
+/*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
+/*   Updated: 2024/06/25 18:41:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*form_prompt(char *cwd)
+t_cmd   *get_last_cmd(t_cmd *cmd)
 {
-	char	*username;
-	char	*temp;
-	char	*ret;
-
-	username = getenv("USER");
-	ret = ft_strjoin(username, " ");
-	temp = ft_strjoin(ret, ":");
-	free(ret);
-	ret = ft_strjoin(temp, cwd);
-	free(temp);
-	temp = ft_strjoin(ret, "$ ");
-	
-	free(ret);
-	
-	return (temp);
+    while (cmd->next)
+        cmd = cmd->next;
+    return (cmd);
 }
