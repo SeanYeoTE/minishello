@@ -6,52 +6,48 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/23 14:50:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 17:53:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// introduces spaces between operators and strings
-char	*input_spacer(char *input)
+int	prompter(t_shell *store)
 {
-	int 	i;
-	char	*front;
-	char	*back;
-	int		detected;
-
-	i = 0;
-	detected = 0;
-	while (input[i])
-	{
-		if (input[i] == '<' || input[i] == '>')
-			detected = 1;
-		else
-		{
-			if (detected == 1)
-			{
-				front = ft_substr(input, 0, i);
-				back = ft_substr(input, i, ft_strlen(input) - i);
-				input = ft_strjoin(ft_strjoin(front, " "), back);
-				free(front);
-				free(back);
-				i++;
-			}
-			detected = 0;
-		}
-		i++;
-	}
-	return (input);
+	char 	cwd[1024];
+	char	*prompt;
+	
+	init_var(store);
+	getcwd(cwd, sizeof(cwd));
+	prompt = form_prompt(cwd);
+	store->input = readline(prompt);
+	if (!store->input)
+		exit(EXIT_SUCCESS);
+	if (store->input[0] == '\0')
+		free_nonessential(store);
+	add_history(store->input);
+	if (!check_quotes(store->input))
+		return (print_error("minishell: syntax error\n"));
+	pre_execution(store, store->input);
+	return (EXIT_SUCCESS);
 }
 
-void	base_shell_init(t_shell *store, char *input)
+int	pre_execution(t_shell *store, char *input)
 {
-	store->head = NULL;
-	input = input_spacer(input);
-	if (ft_strchr(input, '$') != NULL)
-		input = expansions(input);
-	ft_sscan(input, store, 0);
+	store->input = input_spacer(store->input);
+	// printf("input: %s\n", input);
+	if (ft_strchr(store->input, '$') != NULL)
+		store->input = expansions(store->input);
+	full_lexer(store->input, store, 0);
+	parser(store);
+	
 	// print_stack(&store->head);
+	
+	return (EXIT_SUCCESS);
+}
+
+int		parser(t_shell* store)
+{
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -60,8 +56,42 @@ void	base_shell_init(t_shell *store, char *input)
 			pre_interpreter(store, store->head);
 		free_nonessential(store);
 	}
+	prompter(store);
+
+	return (EXIT_SUCCESS);
 }
 
+void	call_interpreter(t_shell *store, t_node *start, t_node *end)
+{
+	int	pid1;
+	
+	if (start->data[0] == '/')
+	{
+		store->input_fd = 0;
+		store->output_fd = 1;
+	}
+	else
+	{
+		if (check_builtin(start) == 0)
+		{
+			pid1 = fork();
+			if (pid1 == 0)
+			{
+				if (check_builtin(start) == 0)
+				{
+					interpreter(store, start, end);
+					exit(t_exit_status);
+				}
+			}
+			else
+				waitpid(pid1, &t_exit_status, WUNTRACED);
+			if (WIFEXITED(t_exit_status))
+				t_exit_status = WEXITSTATUS(t_exit_status);
+		}
+		else
+			builtin_main(store, start, end);
+	}
+}	
 void	interpreter(t_shell *store, t_node *loop, t_node *end)
 {
 	end = end->next;

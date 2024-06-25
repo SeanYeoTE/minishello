@@ -42,6 +42,8 @@ typedef struct s_shell
 	int		input_fd;
 	int		output_fd;
 
+	char	*input;
+
 	char	*path;
 	char	**paths;
 	t_node	*head;
@@ -49,7 +51,15 @@ typedef struct s_shell
 	t_env	*env;
 }	t_shell;
 
+// main.c
+void		free_env(t_env **env);
+void		init_var(t_shell *store);
+int			main(int argc, char **argv, char **envp);
+int			looper(t_shell *store);
 
+// input_utils.c
+char		*input_spacer(char *input);
+int			check_quotes(char *line);
 
 // prompt.c
 char		*findpath(char *envp[]);
@@ -61,7 +71,7 @@ char		*form_prompt(char *cwd);
 int			detect_operator(char *str);
 int			check_builtin(t_node *loop);
 int 		redir_checker(t_node *loop);
-int 		ft_sscan(char *str, t_shell *store, int index);
+int 		full_lexer(char *str, t_shell *store, int index);
 
 // scanner.c
 int			scanner_comment(char *str, int start, t_shell *store);
@@ -71,8 +81,9 @@ int			scanner_space(char *str, int start);
 int 		scanner_word(char *str, int start, t_shell *store);
 
 // base.c
-char		*input_spacer(char *input);
-void		base_shell_init(t_shell *store, char *input);
+int			prompter(t_shell *store);
+int			pre_execution(t_shell *store, char *input);
+int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
 
 // args_init.c
@@ -89,6 +100,7 @@ char		**argv_creator(t_node *start, t_node *end);
 int 		print_stack(t_node **head);
 int 		print_stack_se(t_node *start, t_node *end);
 int			print_argv(char **argv);
+int			print_error(char *str);
 
 // mem_utils.c
 void		freechararray(char **v);

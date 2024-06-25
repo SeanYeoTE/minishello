@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/23 16:02:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 16:34:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,37 +61,7 @@ void    pre_interpreter(t_shell *store, t_node *temp)
 	
 }
 
-void	call_interpreter(t_shell *store, t_node *start, t_node *end)
-{
-	int	pid1;
-	
-	if (start->data[0] == '/')
-	{
-		store->input_fd = 0;
-		store->output_fd = 1;
-	}
-	else
-	{
-		if (check_builtin(start) == 0)
-		{
-			pid1 = fork();
-			if (pid1 == 0)
-			{
-				if (check_builtin(start) == 0)
-				{
-					interpreter(store, start, end);
-					exit(t_exit_status);
-				}
-			}
-			else
-				waitpid(pid1, &t_exit_status, WUNTRACED);
-			if (WIFEXITED(t_exit_status))
-				t_exit_status = WEXITSTATUS(t_exit_status);
-		}
-		else
-			builtin_main(store, start, end);
-	}
-}	
+
 
 t_node	*pipe_slicer(t_node *head)
 {

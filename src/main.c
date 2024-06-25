@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/24 12:04:38 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 15:48:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	main(int argc, char **argv, char **envp)
 	t_shell	store;
 	char	*prompt;
 	char	*input;
-	char 	cwd[1024];
+	
 	
 	if (argc != 1 || argv[1])
 	{
@@ -60,31 +60,6 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	}
 	signal(SIGINT, ctrl_c_handler);
-	env_init(&store, envp);
-	while (1)
-	{
-		getcwd(cwd, sizeof(cwd));
-		init_var(&store);
-		if (isatty(STDOUT_FILENO))
-		{
-			prompt = form_prompt(cwd);
-			input = readline(prompt);
-			if (input == NULL)
-				break ;
-			else if (input)
-			{
-				if (ft_strcmp(input, "exit") == 0)
-					break ;
-				else if (ft_strcmp(input, "env") == 0)
-					env_handler(&store);
-				add_history(input);
-				base_shell_init(&store, input);
-			}
-			free(prompt);
-			free(input);
-		}
-	}
-	free (input);
-	free_env(&store.env);
-	return (0);
+	// env_init(&store, envp);
+	prompter(&store);
 }

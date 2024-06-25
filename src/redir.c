@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/13 12:33:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 17:56:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ void	handle_heredoc_redirection(t_shell *store, char *filename)
 	close(fd4);
 	pid1 = fork();
 	if (pid1 == 0)
-		base_shell_init(store, ft_strjoin("cat ", filename));
+		pre_execution(store, ft_strjoin("cat ", filename));
 	else
 		waitpid(pid1, NULL, 0);
-	base_shell_init(store, ft_strjoin("rm ", filename));
+	pre_execution(store, ft_strjoin("rm ", filename));
 }

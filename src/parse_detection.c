@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/23 14:50:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 17:54:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,20 +57,20 @@ int redir_checker(t_node *loop)
 	return (0);
 }
 
-int	ft_sscan(char *str, t_shell *store, int index)
+int	full_lexer(char *str, t_shell *store, int index)
 {
 	if (str[index] != '\0')
 	{
 		if (str[index] == '#')
-			return (ft_sscan(str, store, scanner_comment(str, index, store)));
+			return (full_lexer(str, store, scanner_comment(str, index, store)));
 		else if (str[index] == '"')
-			return (ft_sscan(str, store, scanner_quote(str, index, store)));
+			return (full_lexer(str, store, scanner_quote(str, index, store)));
 		else if (detect_operator(&str[index]) == 1)
-			return (ft_sscan(str, store, scanner_operator(str, index, store)));
+			return (full_lexer(str, store, scanner_operator(str, index, store)));
 		else if (str[index] == ' ')
-			return (ft_sscan(str, store, scanner_space(str, index)));
+			return (full_lexer(str, store, scanner_space(str, index)));
 		else
-			return (ft_sscan(str, store, scanner_word(str, index, store)));
+			return (full_lexer(str, store, scanner_word(str, index, store)));
 	}
 	return (0);
 }

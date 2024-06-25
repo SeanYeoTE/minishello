@@ -2,7 +2,7 @@
 CC = cc
 
 # Compiler flags
-CFLAGS = -g -Wall -Wextra -Werror
+CFLAGS = -g
 
 #Libft
 LIBFT_PATH	= libft/
@@ -12,6 +12,7 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 # Source files
 SRC_PATH = src/
 SRC =	main.c \
+		input_utils.c \
 		prompt.c \
 		parse_detection.c \
 		scanner.c \

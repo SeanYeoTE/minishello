@@ -48,3 +48,11 @@ int	print_argv(char **argv)
 	}
 	return (0);
 }
+
+int	print_error(char *str)
+{
+	ft_putstr_fd("syntax error: unable to locate closing quotation\n",
+			STDERR_FILENO);
+	// perror(str);
+	return (EXIT_FAILURE);
+}

@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/19 16:13:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 12:51:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 char	*expansions(char *input)
 {
@@ -48,6 +47,7 @@ char	*expansions(char *input)
 		}
 		i++;
 	}
+	printf("input: %s\n", input);
 	if (changed == 1)
 		printf("%s: is a directory\n", input);
 	return (input);
