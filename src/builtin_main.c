@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 14:12:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 20:46:03 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ void	env_init(t_shell *store, char **envp)
 	int	i;
 
 	current = NULL;
+	store->env = NULL;
 	i = 0;
 	while (envp[i])
 	{
