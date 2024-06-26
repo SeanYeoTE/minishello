@@ -2,7 +2,7 @@
 CC = cc
 
 # Compiler flags
-CFLAGS = -g -Wall -Wextra -Werror -I includes/ -I libft/includes/
+CFLAGS = -g
 
 #Libft
 LIBFT_PATH	= libft/
@@ -12,14 +12,17 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 # Source files
 SRC_PATH = src/
 SRC =	main.c \
+		input_utils.c \
 		prompt.c \
+		parse_detection.c \
+		scanner.c \
 		exec_utils.c \
 		args_init.c \
+		base.c \
+		t_cmd_utils.c \
 		printer.c \
 		mem_utils.c \
-		parse_detection.c \
 		builtin_main.c \
-		base.c \
 		redir.c \
 		sig_handler.c \
 		pipe.c \
@@ -54,7 +57,7 @@ $(LIBFT):
 
 # Link object files into target executable
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) -lreadline
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) -lreadline 
 # Clean up object files and target executable
 clean:
 	rm -rf $(OBJS) $(NAME)

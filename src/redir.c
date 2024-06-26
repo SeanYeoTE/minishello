@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/13 12:33:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 13:55:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ void	handle_output_redirection(t_shell *store, char *filename, t_node *start, t_
 	
 	outputfd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	dup2(outputfd, store->output_fd);
-	executor(store, start, end);
-	close(outputfd);
 }
 
 void	handle_append_redirection(t_shell *store, char *filename, t_node *start, t_node *end)
@@ -48,8 +46,6 @@ void	handle_append_redirection(t_shell *store, char *filename, t_node *start, t_
 	
 	outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	dup2(outputfd, store->output_fd);
-	executor(store, start, end);
-	close(outputfd);
 }
 
 void	handle_input_redirection(t_shell *store, char *filename, t_node *start, t_node *end)
@@ -58,8 +54,6 @@ void	handle_input_redirection(t_shell *store, char *filename, t_node *start, t_n
 	
 	inputfd = open(filename, O_RDONLY);
 	dup2(inputfd, store->input_fd);
-	executor(store, start, end);
-	close(inputfd);
 }
 
 void	handle_heredoc_redirection(t_shell *store, char *filename)
@@ -81,8 +75,8 @@ void	handle_heredoc_redirection(t_shell *store, char *filename)
 	close(fd4);
 	pid1 = fork();
 	if (pid1 == 0)
-		base_shell_init(store, ft_strjoin("cat ", filename));
+		pre_execution(store, ft_strjoin("cat ", filename));
 	else
 		waitpid(pid1, NULL, 0);
-	base_shell_init(store, ft_strjoin("rm ", filename));
+	pre_execution(store, ft_strjoin("rm ", filename));
 }

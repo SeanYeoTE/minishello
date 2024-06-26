@@ -6,7 +6,7 @@
 /*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/24 11:50:05 by mchua            ###   ########.fr       */
+/*   Updated: 2024/06/26 11:47:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int  pipe_counter(t_node *loop)
 	return (count);
 }
 
-void    pre_interpreter(t_shell *store, t_node *temp)
+/* void	pre_interpreter(t_shell *store, t_node *temp)
 {
 	int	pipefd[2];
 	int	pid1;
@@ -59,83 +59,81 @@ void    pre_interpreter(t_shell *store, t_node *temp)
 		store->input_fd = pipefd[0];
 	}
 	
-}
+} */
 
-void	call_interpreter(t_shell *store, t_node *start, t_node *end)
-{
-	int	pid1;
+// void	single_function(t_shell *store, t_node *start, t_node *end)
+// {
+// 	int	pid1;
 	
-	if (start->data[0] == '/')
-	{
-		store->input_fd = 0;
-		store->output_fd = 1;
-	}
-	else
-	{
-		if (check_builtin(start) == 0)
-		{
-			pid1 = fork();
-			if (pid1 == 0)
-			{
-				if (check_builtin(start) == 0)
-					interpreter(store, start, end);
-			}
-			waitpid(pid1, NULL, 0);
-		}
-		else
-			builtin_main(store, start, end);
-	}
-}	
+// 	if (check_builtin(start) == 0)
+// 	{
+// 		pid1 = fork();
+// 		if (pid1 == 0)
+// 		{
+// 			if (check_builtin(start) == 0)
+// 			{
+// 				interpreter(store, start, end);
+// 				exit(t_exit_status);
+// 			}
+// 		}
+// 		else
+// 			waitpid(pid1, &t_exit_status, WUNTRACED);
+// 		if (WIFEXITED(t_exit_status))
+// 			t_exit_status = WEXITSTATUS(t_exit_status);
+// 	}
+// 	else
+// 		builtin_main(store, start, end);
+// }
 
-t_node	*pipe_slicer(t_node *head)
-{
-	while (head)
-	{
-		if (ft_strcmp(head->data, "|") == 0)
-		{
-			head->prev->next = NULL;
-			return (head);
-		}
-		head = head->next;
-	}
-	return (head);
-}
+// t_node	*pipe_slicer(t_node *head)
+// {
+// 	while (head)
+// 	{
+// 		if (ft_strcmp(head->data, "|") == 0)
+// 		{
+// 			head->prev->next = NULL;
+// 			return (head);
+// 		}
+// 		head = head->next;
+// 	}
+// 	return (head);
+// }
 
-t_node	*get_start(t_node *start, int i)
-{
-	if (i == 0)
-		return (start);
-	while (start)
-	{
-		if (ft_strcmp(start->data, "|") == 0)
-		{
-			if (i == 0)
-				return (start->next);
-			i--;
-		}
-		start = start->next;
-	}
-	return (start);
-}
+// t_node	*get_start(t_node *start, int i)
+// {
+// 	if (i == 0)
+// 		return (start);
+// 	while (start)
+// 	{
+// 		if (ft_strcmp(start->data, "|") == 0)
+// 		{
+// 			if (i == 0)
+// 				return (start->next);
+// 			i--;
+// 		}
+// 		start = start->next;
+// 	}
+// 	return (start);
+// }
 
-t_node	*get_end(t_node *end, int i)
-{
-	// puts("get_end\n");
-	while (end->next != NULL)
-	{
-		// printf("end: %s\n", end->data);
-		if (ft_strcmp(end->data, "|") == 0)
-		{
-			if (i == 0)
-			{
-				// printf("end: %s\n", end->data);
-				return (end);
-			}
-			i--;
-		}
-		end = end->next;
-	}
-	// puts("exit loop\n");
-	// printf("end: %s\n", end->data);
-	return (end);
-}
+// t_node	*get_end(t_node *end, int i)
+// {
+// 	// puts("get_end\n");
+// 	while (end->next != NULL)
+// 	{
+// 		// printf("end: %s\n", end->data);
+// 		if (ft_strcmp(end->data, "|") == 0)
+// 		{
+// 			if (i == 0)
+// 			{
+// 				// printf("end: %s\n", end->data);
+// 				return (end);
+// 			}
+// 			i--;
+// 		}
+// 		end = end->next;
+// 	}
+// 	// puts("exit loop\n");
+// 	// printf("end: %s\n", end->data);
+// 	return (end);
+// }
