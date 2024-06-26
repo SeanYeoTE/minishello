@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 11:20:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 16:13:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	main(int argc, char **argv, char **envp)
 		perror("run without args");
 		return (0);
 	}
-	signal(SIGINT, ctrl_c_handler);
+	
 	// env_init(&store, envp);
 	prompter(&store);
 }

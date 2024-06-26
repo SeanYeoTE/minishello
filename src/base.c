@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 14:13:54 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 17:15:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	prompter(t_shell *store)
 	char 	cwd[1024];
 	char	*prompt;
 	
+	signal(SIGINT, ctrl_c_handler);
 	init_var(store);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
@@ -54,7 +55,7 @@ int		parser(t_shell* store)
 		else if (pipe_counter(store->head) > 0)
 			multiple_function(store);
 	}
-	// free_nonessential(store);
+	free_nonessential(store);
 	prompter(store);
 
 	return (EXIT_SUCCESS);
@@ -63,28 +64,34 @@ int		parser(t_shell* store)
 int	multiple_function(t_shell *store)
 {
 	t_node	*temp;
+	int		create;
 	puts("multiple_function");
 	temp = store->head;
+	create = 0;
 	while (temp)
 	{
 		if (ft_strcmp(temp->data, "|") == 0)
 		{
 			create_cmd(store, store->head, temp);
+			temp = remove_node(store, store->head);
 		}
-		temp = temp->next;
+		else
+			temp = temp->next;
 	}
+	print_cmd_stack(&store->cmd_head);
 }
 
-void	create_cmd(t_shell *store, t_node *start, t_node *end)
+int	create_cmd(t_shell *store, t_node *start, t_node *end)
 {
 	t_cmd	*new;
 	t_node	*temp;
 	
 	if (start == NULL)
-		return ;
+		return (1);
 	else
 	{
 		init_cmd(store, start, end);
+		return (0);
 	}
 }
 
@@ -112,6 +119,7 @@ void	detach_redir(t_cmd *new)
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	int	pid1;
+	
 	create_cmd(store, head, tail);
 	// puts("command\n");
 	// print_stack(&store->cmd_head->command);
@@ -135,5 +143,6 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	{
 		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
 	}
+	return (0);
 }
 		

@@ -102,6 +102,7 @@ int 		scanner_word(char *str, int start, t_shell *store);
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
+t_node		*remove_node(t_shell *store, t_node *node);
 ///////////////////////////////////////////
 // parser //
 // base.c
@@ -110,7 +111,7 @@ int			pre_execution(t_shell *store, char *input);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
 int			multiple_function(t_shell *store);
-void		create_cmd(t_shell *store, t_node *start, t_node *end);
+int			create_cmd(t_shell *store, t_node *start, t_node *end);
 void		detach_redir(t_cmd *new);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
@@ -130,6 +131,7 @@ char		**argv_creator(t_node *start, t_node *end);
 int 		print_stack(t_node **head);
 int 		print_stack_se(t_node *start, t_node *end);
 int			print_argv(char **argv);
+int			print_cmd_stack(t_cmd **head);
 int			print_error(char *str);
 
 // mem_utils.c
