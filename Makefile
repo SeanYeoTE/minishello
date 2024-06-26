@@ -18,10 +18,11 @@ SRC =	main.c \
 		scanner.c \
 		exec_utils.c \
 		args_init.c \
+		base.c \
+		t_cmd_utils.c \
 		printer.c \
 		mem_utils.c \
 		builtin_main.c \
-		base.c \
 		redir.c \
 		sig_handler.c \
 		pipe.c \

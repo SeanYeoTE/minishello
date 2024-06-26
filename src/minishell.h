@@ -80,7 +80,7 @@ int			looper(t_shell *store);
 // input_utils.c
 char		*input_spacer(char *input);
 int			check_quotes(char *line);
-int 		redir_checker(t_node *loop);
+int 		redir_checker(t_node *cmd);
 
 // prompt.c
 char		*form_prompt(char *cwd);
@@ -111,16 +111,19 @@ int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
 int			multiple_function(t_shell *store);
 void		create_cmd(t_shell *store, t_node *start, t_node *end);
+void		detach_redir(t_cmd *new);
+int			single_function(t_shell *store, t_node *start, t_node *end);
 
-
-
+// t_cmd_utils.c
+t_cmd		*get_last_cmd(t_cmd *cmd);
+t_cmd		*init_cmd(t_shell *store, t_node *start, t_node *end);
 
 
 
 
 // exec_utils.c
 char		*findprocesspath(t_shell *store, char **arr);
-t_node		*executor(t_shell *store, t_node *start, t_node *end);
+int			executor(t_shell *store, t_node *start, t_node *end);
 char		**argv_creator(t_node *start, t_node *end);
 
 // printer.c
@@ -135,10 +138,10 @@ void		free_stack(t_node **stack);
 void		free_nonessential(t_shell *store);
 
 // builtin_main.c
-t_node		*builtin_main(t_shell *store, t_node *current, t_node *end);
-t_node		*cd_handler(t_node *current);
-t_node		*echo_handler(t_node *current, t_node *end);
-t_node		*pwd_handler(t_node *current);
+int			builtin_main(t_shell *store, t_node *current, t_node *end);
+int			cd_handler(t_node *current);
+int			echo_handler(t_node *current, t_node *end);
+int			pwd_handler(t_node *current);
 t_env		*create_env_node(char *env_var);
 void		env_init(t_shell *store, char **envp);
 void		env_handler(t_shell *store);
@@ -154,11 +157,11 @@ void		handle_heredoc_redirection(t_shell *store, char *filename);
 // pipe.c
 
 int 		pipe_counter(t_node *loop);
-void    	pre_interpreter(t_shell *store, t_node *temp);
-void		single_function(t_shell *store, t_node *start, t_node *end);
-t_node		*pipe_slicer(t_node *tail);
-t_node		*get_start(t_node *start, int i);
-t_node		*get_end(t_node *start, int i);
+// void		pre_interpreter(t_shell *store, t_node *temp);
+// void		single_function(t_shell *store, t_node *start, t_node *end);
+// t_node		*pipe_slicer(t_node *tail);
+// t_node		*get_start(t_node *start, int i);
+// t_node		*get_end(t_node *start, int i);
 
 //sig_handler.c
 // void		reg_ctrl_c(void);

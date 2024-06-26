@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/18 15:46:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 14:06:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,12 @@ char	*findprocesspath(t_shell *store, char **arr)
 }
 
 // fd issues, output not redirecting properly
-t_node	*executor(t_shell *store, t_node *start, t_node *end)
+int	executor(t_shell *store, t_node *start, t_node *end)
 {
 	int		execveresult;
 	char	*exepath;
 	char	**temp;
+	int		exit_status;
 	
 	execveresult = 0;
 	temp = argv_creator(start, end);
@@ -52,18 +53,18 @@ t_node	*executor(t_shell *store, t_node *start, t_node *end)
 	{
 		perror("Path not found");
 		free(exepath);
-		return (start);
+		exit_status = 127;
+		return (exit_status);
 	}
 	dup2(store->output_fd, 1);
 	dup2(store->input_fd, 0);
-	// need to modify this as well
 	execveresult = execve(exepath, temp, store->envp);
 	if (execveresult == -1)
-		perror("execve error");
+		exit_status = 127;
 	if (exepath)
 		free(exepath);
 	free(temp);
-	return (start);
+	return (exit_status);
 }
 
 // intention is to create an argv array for execve

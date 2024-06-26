@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/25 18:48:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 11:28:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,19 +67,15 @@ int	check_quotes(char *line)
 	return (!(sml || dbl));
 }
 
-int redir_checker(t_node *loop)
+int redir_checker(t_node *cmd)
 {
-	while (loop)
-	{
-		if (ft_strcmp(loop->data, ">") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, ">>") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, "<") == 0)
-			return (1);
-		if (ft_strcmp(loop->data, "<<") == 0)
-			return (1);
-		loop = loop->next;
-	}
+	if (ft_strcmp(cmd->data, ">") == 0)
+		return (1);
+	if (ft_strcmp(cmd->data, ">>") == 0)
+		return (1);
+	if (ft_strcmp(cmd->data, "<") == 0)
+		return (1);
+	if (ft_strcmp(cmd->data, "<<") == 0)
+		return (1);
 	return (0);
 }

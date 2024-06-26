@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/25 18:30:07 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 11:20:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void	init_var(t_shell *store)
 	store->head = NULL;
 	store->tail = NULL;
 
-	store->first = NULL;
-	store->last = NULL;
+	store->cmd_head = NULL;
+	store->cmd_tail = NULL;
 	
 	store->path = getenv("PATH");
 	store->envp = ft_split(store->path, ':');

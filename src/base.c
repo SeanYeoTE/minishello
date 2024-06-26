@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/25 19:17:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/26 14:13:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,8 @@ int	pre_execution(t_shell *store, char *input)
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
-	parser(store);
-	
 	// print_stack(&store->head);
+	parser(store);
 	
 	return (EXIT_SUCCESS);
 }
@@ -53,9 +52,9 @@ int		parser(t_shell* store)
 		if (pipe_counter(store->head) == 0)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
-			pre_interpreter(store, store->head);
-		free_nonessential(store);
+			multiple_function(store);
 	}
+	// free_nonessential(store);
 	prompter(store);
 
 	return (EXIT_SUCCESS);
@@ -64,7 +63,7 @@ int		parser(t_shell* store)
 int	multiple_function(t_shell *store)
 {
 	t_node	*temp;
-	
+	puts("multiple_function");
 	temp = store->head;
 	while (temp)
 	{
@@ -81,21 +80,18 @@ void	create_cmd(t_shell *store, t_node *start, t_node *end)
 	t_cmd	*new;
 	t_node	*temp;
 	
-	new = (t_cmd *)malloc(sizeof(t_cmd));
-	new->command = start;
-	new->prev = get_last_cmd(store->cmd_head);
-	new->next = NULL;
-	store->cmd_tail = new;
-	
-	detach_redir(new);
-	
-	store->head = end;
+	if (start == NULL)
+		return ;
+	else
+	{
+		init_cmd(store, start, end);
+	}
 }
 
 void	detach_redir(t_cmd *new)
 {
 	t_node	*temp;
-	
+	puts("detach_redir");
 	temp = new->command;
 	while (temp)
 	{
@@ -103,7 +99,8 @@ void	detach_redir(t_cmd *new)
 		{
 			new->redir = temp;
 			temp->prev->next = new->redir->next->next;
-			temp->next->next->prev = temp->prev;
+			if (temp->next->next)
+				temp->next->next->prev = temp->prev;
 			
 			new->redir->next->next = NULL;
 			new->redir->prev = NULL;
@@ -112,27 +109,31 @@ void	detach_redir(t_cmd *new)
 	}
 }
 
-
-void	interpreter(t_shell *store, t_node *loop, t_node *end)
+int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
-	end = end->next;
-	// print_stack_se(loop, end);
-	while (loop != end)
+	int	pid1;
+	create_cmd(store, head, tail);
+	// puts("command\n");
+	// print_stack(&store->cmd_head->command);
+	// puts("redir\n");
+	// print_stack(&store->cmd_head->redir);
+	if (check_builtin(store->cmd_head->command) == 0)
 	{
-		// check if any pipes;
-
-		// check if any redirection;
-		if (redir_checker(loop) == 1)
-			loop = redir_handler(store, loop, end);
-		// check if any $ to expand;
-
-		// normal executions;
-		if (check_builtin(loop) == 0)
-			loop = executor(store, loop, end);
-		// exec builtins if any;
-		// else
-		// 	loop = builtin_main(store, loop, end);
+		pid1 = fork();
+		if (pid1 == 0)
+		{
+			redir_handler(store, store->cmd_head->redir, NULL);
+			t_exit_status = executor(store, store->cmd_head->command, NULL);
+			exit(t_exit_status);
+		}
+		else
+			waitpid(pid1, &t_exit_status, WUNTRACED);
+		if (WIFEXITED(t_exit_status))
+			t_exit_status = WEXITSTATUS(t_exit_status);
+	}
+	else
+	{
+		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
 	}
 }
-
-
+		
