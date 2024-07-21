@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 17:15:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/21 16:31:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ int	prompter(t_shell *store)
 
 int	pre_execution(t_shell *store, char *input)
 {
-	store->input = input_spacer(store->input);
-	// printf("input: %s\n", input);
+	// store->input = input_spacer(store->input);
+	printf("input: %s\n", input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
@@ -67,54 +67,26 @@ int	multiple_function(t_shell *store)
 	int		create;
 	puts("multiple_function");
 	temp = store->head;
+	// print_stack(&temp);
 	create = 0;
 	while (temp)
 	{
 		if (ft_strcmp(temp->data, "|") == 0)
 		{
+			print_stack_se(store->head, temp);
 			create_cmd(store, store->head, temp);
-			temp = remove_node(store, store->head);
+			while (ft_strcmp(store->head->data, "|") != 0)
+				store->head = remove_node(store, store->head);
+				
 		}
 		else
 			temp = temp->next;
 	}
 	print_cmd_stack(&store->cmd_head);
+	return (0);
 }
 
-int	create_cmd(t_shell *store, t_node *start, t_node *end)
-{
-	t_cmd	*new;
-	t_node	*temp;
-	
-	if (start == NULL)
-		return (1);
-	else
-	{
-		init_cmd(store, start, end);
-		return (0);
-	}
-}
 
-void	detach_redir(t_cmd *new)
-{
-	t_node	*temp;
-	puts("detach_redir");
-	temp = new->command;
-	while (temp)
-	{
-		if (redir_checker(temp) == 1)
-		{
-			new->redir = temp;
-			temp->prev->next = new->redir->next->next;
-			if (temp->next->next)
-				temp->next->next->prev = temp->prev;
-			
-			new->redir->next->next = NULL;
-			new->redir->prev = NULL;
-		}
-		temp = temp->next;
-	}
-}
 
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {

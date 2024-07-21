@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 11:28:34 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/21 16:23:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	*input_spacer(char *input)
 // returns 1 if all quotes are closed, 0 if not
 int	check_quotes(char *line)
 {
-	puts("check_quotes");
+	// puts("check_quotes");
 	int	i;
 	int	sml;
 	int	dbl;

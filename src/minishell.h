@@ -111,15 +111,13 @@ int			pre_execution(t_shell *store, char *input);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
 int			multiple_function(t_shell *store);
-int			create_cmd(t_shell *store, t_node *start, t_node *end);
-void		detach_redir(t_cmd *new);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // t_cmd_utils.c
 t_cmd		*get_last_cmd(t_cmd *cmd);
 t_cmd		*init_cmd(t_shell *store, t_node *start, t_node *end);
-
-
+int			create_cmd(t_shell *store, t_node *start, t_node *end);
+void		detach_redir(t_cmd *new);
 
 
 // exec_utils.c
