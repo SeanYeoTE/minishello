@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 20:46:03 by mchua            ###   ########.fr       */
+/*   Updated: 2024/07/21 16:50:38 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 		exit_status = echo_handler(current, end);
 	else if (!ft_strcmp(current->data, "pwd"))
 		exit_status = pwd_handler(current);
+	else if (!ft_strcmp(current->data, "env"))
+		env_handler(store);
+	else
+		exit_status = var_handler(current->data, store->env);
 	return (exit_status);
 }
 
@@ -94,16 +98,26 @@ int	pwd_handler(t_node *current)
 }
 
 //env handler
-t_env	*create_env_node(char *env_var)
+t_env	*create_env_node(char *var, char *data, bool flag)
 {
 		t_env	*new_node;
 
 		new_node = ft_calloc(1, sizeof(t_env));
 		if (!new_node)
 			perror("Failed to allocate memory");
-		new_node->var = ft_strdup(env_var);
-		new_node->next = NULL;
-		return (new_node);
+		if (!flag)
+		{
+			new_node->var = ft_strdup(var);
+			new_node->next = NULL;
+			return (new_node);
+		}
+		else
+		{
+			new_node->var = NULL;
+			new_node->name = ft_strdup(var);
+			new_node->data = ft_strdup(data);
+			return (new_node);
+		}
 }
 
 void	env_init(t_shell *store, char **envp)
@@ -118,7 +132,7 @@ void	env_init(t_shell *store, char **envp)
 	{
 		t_env	*new_node;
 
-		new_node = create_env_node(envp[i]);
+		new_node = create_env_node(envp[i], NULL, false);
 		if (!store->env)
 			store->env = new_node;
 		else
@@ -139,3 +153,48 @@ void	env_handler(t_shell *store)
 		current = current->next;
 	}
 }
+
+//export handler
+int	var_handler(char *src, t_env *env)
+{
+	int	i;
+	char	*name;
+	char	*data;
+	t_env	*current;
+	t_env	*tail;
+
+	i = 0;
+	current = env;
+	//find the = operator
+	//check if name is in the system, if yes, replace value
+	//label the first portion as variable name
+	//label the second portion as data
+	//link the linked list
+	while ((src[i] == '=') && src[i])
+	{
+		name[i] = src[i];
+		i++;
+	}
+	name[i] = '\0';
+	while (src[i])
+	{
+		data[i] = src[i];
+		i++;
+	}
+	while (current && current->next)
+	{
+		if (ft_strcmp(name, current->name) == 0)
+		{
+			free(current->data);
+			current->data = NULL;
+			current->data = ft_strdup(data);
+		}
+		else
+			current = current->next;
+	}
+	current->next = create_env_node(name, data, true);
+	current->next->next = NULL;
+	return (0);
+}
+
+//during export search the entire 

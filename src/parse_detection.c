@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_detection.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/25 18:49:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/21 16:47:56 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@ int	check_builtin(t_node *loop)
 	if (ft_strcmp(loop->data, "pwd") == 0)
 		return (1);	
 	if (ft_strcmp(loop->data, "export") == 0)
+		return (1);
+	if (ft_strcmp(loop->data, "env") == 0)
+		return (1);
+	if (ft_strchr(loop->data,  '=') != NULL)
 		return (1);
 	else
 		return (0);

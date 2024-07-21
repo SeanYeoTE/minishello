@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 16:13:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/21 16:44:42 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	main(int argc, char **argv, char **envp)
 		perror("run without args");
 		return (0);
 	}
-	
-	// env_init(&store, envp);
+//might need to put this init into the handler so everytime it is called, it is the most updated.
+	env_init(&store, envp);
 	prompter(&store);
 }

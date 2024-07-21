@@ -2,6 +2,7 @@
 #define MINISHELL_H
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <readline/readline.h>
@@ -47,6 +48,8 @@ typedef struct s_cmd
 typedef struct s_env
 {
 	char	*var;
+	char	*name;
+	char	*data;
 	struct s_env	*next;
 }	t_env;
 
@@ -144,9 +147,10 @@ int			builtin_main(t_shell *store, t_node *current, t_node *end);
 int			cd_handler(t_node *current);
 int			echo_handler(t_node *current, t_node *end);
 int			pwd_handler(t_node *current);
-t_env		*create_env_node(char *env_var);
+t_env		*create_env_node(char *var, char *data, bool flag);
 void		env_init(t_shell *store, char **envp);
 void		env_handler(t_shell *store);
+int			var_handler(char *src, t_env *env);
 
 // redir.c
 
