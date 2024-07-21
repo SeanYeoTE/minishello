@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/21 16:50:38 by mchua            ###   ########.fr       */
+/*   Updated: 2024/07/21 17:35:45 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,9 @@ int	pwd_handler(t_node *current)
 t_env	*create_env_node(char *var, char *data, bool flag)
 {
 		t_env	*new_node;
+		char	*vari;//to fix this, env->name cannot be NULL
 
+		vari = "abc";
 		new_node = ft_calloc(1, sizeof(t_env));
 		if (!new_node)
 			perror("Failed to allocate memory");
@@ -109,6 +111,8 @@ t_env	*create_env_node(char *var, char *data, bool flag)
 		{
 			new_node->var = ft_strdup(var);
 			new_node->next = NULL;
+			new_node->name = vari;
+			new_node->data = NULL;
 			return (new_node);
 		}
 		else
@@ -158,19 +162,20 @@ void	env_handler(t_shell *store)
 int	var_handler(char *src, t_env *env)
 {
 	int	i;
-	char	*name;
-	char	*data;
+	int	j;
+	char	name[1024];
+	char	value[1024];
 	t_env	*current;
-	t_env	*tail;
 
 	i = 0;
+	j = 0;
 	current = env;
 	//find the = operator
 	//check if name is in the system, if yes, replace value
 	//label the first portion as variable name
 	//label the second portion as data
 	//link the linked list
-	while ((src[i] == '=') && src[i])
+	while ((src[i] != '=') && src[i])
 	{
 		name[i] = src[i];
 		i++;
@@ -178,8 +183,9 @@ int	var_handler(char *src, t_env *env)
 	name[i] = '\0';
 	while (src[i])
 	{
-		data[i] = src[i];
 		i++;
+		value[j] = src[i];
+		j++;
 	}
 	while (current && current->next)
 	{
@@ -187,12 +193,12 @@ int	var_handler(char *src, t_env *env)
 		{
 			free(current->data);
 			current->data = NULL;
-			current->data = ft_strdup(data);
+			current->data = ft_strdup(value);
 		}
 		else
 			current = current->next;
 	}
-	current->next = create_env_node(name, data, true);
+	current->next = create_env_node(name, value, true);
 	current->next->next = NULL;
 	return (0);
 }
