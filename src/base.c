@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/21 16:31:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/23 14:00:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	prompter(t_shell *store)
 int	pre_execution(t_shell *store, char *input)
 {
 	// store->input = input_spacer(store->input);
-	printf("input: %s\n", input);
+	printf("input:.%s.\n", input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
@@ -63,25 +63,29 @@ int		parser(t_shell* store)
 
 int	multiple_function(t_shell *store)
 {
+	t_node	*front;
+	t_node 	*back;
 	t_node	*temp;
-	int		create;
+	bool	create;
+	
 	puts("multiple_function");
-	temp = store->head;
-	// print_stack(&temp);
-	create = 0;
-	while (temp)
+	front = store->head;
+	back = store->head;
+	create = true;
+	while (back->next)
 	{
-		if (ft_strcmp(temp->data, "|") == 0)
+		if (ft_strcmp(back->data, "|") == 0)
 		{
-			print_stack_se(store->head, temp);
-			create_cmd(store, store->head, temp);
-			while (ft_strcmp(store->head->data, "|") != 0)
-				store->head = remove_node(store, store->head);
-				
+			temp = back->next;
+			create_cmd(store, front, back, create);
+			create = false;
+			front = temp;
+			back = temp;
 		}
 		else
-			temp = temp->next;
+			back = back->next;
 	}
+	create_cmd(store, front, back->prev, create);
 	print_cmd_stack(&store->cmd_head);
 	return (0);
 }
@@ -92,7 +96,7 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	int	pid1;
 	
-	create_cmd(store, head, tail);
+	create_cmd(store, head, tail, true);
 	// puts("command\n");
 	// print_stack(&store->cmd_head->command);
 	// puts("redir\n");

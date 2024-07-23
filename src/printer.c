@@ -13,6 +13,8 @@ int print_stack(t_node **head)
 		// ft_printf("Node Counter: %d\n", count);
 		printf("Node Value: %s\n", start->data);
 		printf("Token Type: %d\n", start->type);
+		// if (start->prev != NULL)
+		// 	printf("Prev Node: %s\n", start->prev->data);
 		printf("***************\n");
 		start = start->next;
 		count++;

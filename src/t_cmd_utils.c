@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/21 16:29:52 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/23 13:55:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,21 @@
 
 t_cmd	*get_last_cmd(t_cmd *cmd)
 {
-	while (cmd)
+	while (cmd->next)
 		cmd = cmd->next;
 	return (cmd);
 }
 
-t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end)
+t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 {
 	t_cmd	*cmd;
 	// puts("init_cmd\n");
 	t_cmd	*last;
-	last = get_last_cmd(store->cmd_head);
+	
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	if (last == NULL)
+	if (create)
 	{
-		puts("1");
+		// puts("1");
 		// initialising for single command
 		cmd->prev = NULL;
 		cmd->next = NULL;
@@ -36,24 +36,25 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end)
 	}
 	else
 	{
-		puts("2");
+		// puts("2");
+		last = get_last_cmd(store->cmd_head);
 		// second executable commands onwards
 		cmd->prev = last;
 		cmd->next = NULL;
+		last->next = cmd;
 	}
 
 	// doesnt seem to be required
 	// store->cmd_tail = cmd;
 
 	cmd->command = start;
-	if (end->next)
-		end->next = NULL;
+	end->prev->next = NULL;
 	// print_stack(&cmd->command);
 	detach_redir(cmd);
 	return (cmd);
 }
 
-int	create_cmd(t_shell *store, t_node *start, t_node *end)
+int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 {
 	t_cmd	*new;
 	t_node	*temp;
@@ -62,7 +63,7 @@ int	create_cmd(t_shell *store, t_node *start, t_node *end)
 		return (1);
 	else
 	{
-		init_cmd(store, start, end);
+		init_cmd(store, start, end, create);
 		return (0);
 	}
 }
