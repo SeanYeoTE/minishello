@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 14:06:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/23 14:58:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	int		execveresult;
 	char	*exepath;
 	char	**temp;
-	int		exit_status;
 	
 	execveresult = 0;
 	temp = argv_creator(start, end);
@@ -53,18 +52,35 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	{
 		perror("Path not found");
 		free(exepath);
-		exit_status = 127;
-		return (exit_status);
+		t_exit_status = 127;
+		return (t_exit_status);
 	}
 	dup2(store->output_fd, 1);
 	dup2(store->input_fd, 0);
 	execveresult = execve(exepath, temp, store->envp);
 	if (execveresult == -1)
-		exit_status = 127;
+		t_exit_status = 127;
 	if (exepath)
 		free(exepath);
 	free(temp);
-	return (exit_status);
+	return (t_exit_status);
+}
+
+int	multi_executor(t_shell *store)
+{
+	t_cmd	*temp;
+	
+	t_exit_status = 0;
+	temp = store->cmd_head;
+	while (temp)
+	{
+		t_exit_status = executor(store, temp->command, temp->redir);
+		if (t_exit_status == 127)
+			break ;
+		temp = temp->next;
+	}
+	return (t_exit_status);
+
 }
 
 // intention is to create an argv array for execve

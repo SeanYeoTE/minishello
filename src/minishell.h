@@ -98,7 +98,7 @@ int 		scanner_word(char *str, int start, t_shell *store);
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
-t_node		*remove_node(t_shell *store, t_node *node);
+void		revert_nodes(t_shell *store);
 ///////////////////////////////////////////
 // parser //
 // base.c

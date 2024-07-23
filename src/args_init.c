@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 17:12:54 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/23 15:25:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,21 +59,15 @@ t_node	*get_node(t_node *ret, int num)
 	return (ret);
 }
 
-t_node	*remove_node(t_shell *store, t_node *node)
+void	revert_nodes(t_shell *store)
 {
-	t_node	*prev;
-	t_node	*next;
-
-	prev = node->prev;
-	next = node->next;
-	if (prev)
-		prev->next = next;
-	if (next)
-		next->prev = prev;
-	if (node == store->head)
-		store->head = next;
-	if (node == store->tail)
-		store->tail = prev;
-	free(node);
-	return (next);
+	t_node *iter;
+	
+	iter = store->tail;
+	while (iter->prev != NULL)
+	{
+		// printf("Node Value: %s\n", iter->data);
+		iter->prev->next = iter;
+		iter = iter->prev;
+	}
 }
