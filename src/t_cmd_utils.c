@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/23 13:55:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/23 14:47:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	// store->cmd_tail = cmd;
 
 	cmd->command = start;
-	end->prev->next = NULL;
+	if (end->prev)
+		end->prev->next = NULL;
 	// print_stack(&cmd->command);
 	detach_redir(cmd);
 	return (cmd);
