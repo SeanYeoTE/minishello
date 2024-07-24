@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/23 14:47:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/24 16:15:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,21 @@ t_cmd	*get_last_cmd(t_cmd *cmd)
 	while (cmd->next)
 		cmd = cmd->next;
 	return (cmd);
+}
+
+int	count_cmds(t_shell *store)
+{
+	t_cmd	*iter;
+	int		count;
+	
+	count = 0;
+	iter = store->cmd_head;
+	while (iter)
+	{
+		count++;
+		iter = iter->next;
+	}
+	return (count);
 }
 
 t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)

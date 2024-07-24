@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/23 14:58:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/24 16:33:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,42 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	return (t_exit_status);
 }
 
-int	multi_executor(t_shell *store)
+int	multi_executor(t_shell *store, int	num_pipes)
 {
 	t_cmd	*temp;
-	
+	int		pipefd[num_pipes][2];
+	int		count;
+	int		pids[num_pipes];
+	count = 0;
 	t_exit_status = 0;
 	temp = store->cmd_head;
 	while (temp)
 	{
-		t_exit_status = executor(store, temp->command, temp->redir);
-		if (t_exit_status == 127)
-			break ;
-		temp = temp->next;
-	}
+		pipe(pipefd[count][2]);
+		if (count > 0)
+			store->input_fd = pipefd[count - 1][0];
+		store->output_fd = pipefd[count][1];
+		if (check_builtin(temp->command) == 0)
+		{
+			pids[count] = fork();
+			if (pids[count] == 0)
+			{
+				redir_handler(store, temp->redir, NULL);
+				t_exit_status = executor(store, temp->command, NULL);
+				exit(t_exit_status);
+			}
+			else
+			{
+				waitpid(pids[count], &t_exit_status, WUNTRACED);
+				temp = temp->next;
+			}
+		}
+		else
+		{
+			t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
+		}
+	}		
 	return (t_exit_status);
-
 }
 
 // intention is to create an argv array for execve

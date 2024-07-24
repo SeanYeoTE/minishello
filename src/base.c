@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/23 15:21:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/24 16:44:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	multiple_function(t_shell *store)
 	}
 	create_cmd(store, front, back->prev, create);
 	// print_cmd_stack(&store->cmd_head);
-	// multi_executor(store);
+	multi_executor(store, count_cmds(store) - 1);
 	revert_nodes(store);
 	return (0);
 }
@@ -119,6 +119,8 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	}
 	else
 	{
+		// need to change builtiin main; currently still functioning on the old method of
+		// linked lists, would not function as expected when redirections are required
 		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
 	}
 	return (0);
