@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/24 16:15:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/27 18:19:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,12 @@ int	count_cmds(t_shell *store)
 t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 {
 	t_cmd	*cmd;
-	// puts("init_cmd\n");
 	t_cmd	*last;
 	
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	cmd->redir = NULL;
 	if (create)
 	{
-		// puts("1");
 		// initialising for single command
 		cmd->prev = NULL;
 		cmd->next = NULL;
@@ -51,22 +50,20 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	}
 	else
 	{
-		// puts("2");
 		last = get_last_cmd(store->cmd_head);
 		// second executable commands onwards
 		cmd->prev = last;
 		cmd->next = NULL;
 		last->next = cmd;
 	}
-
-	// doesnt seem to be required
-	// store->cmd_tail = cmd;
-
 	cmd->command = start;
-	if (end->prev)
-		end->prev->next = NULL;
-	// print_stack(&cmd->command);
+	
+	if (end->next)
+		end->next = NULL;
 	detach_redir(cmd);
+	// print_stack_se(store->head, NULL);
+	// print_cmd_stack(&cmd);
+	
 	return (cmd);
 }
 
@@ -95,12 +92,14 @@ void	detach_redir(t_cmd *new)
 		{
 			puts("detach_redir");
 			new->redir = temp;
-			temp->prev->next = new->redir->next->next;
-			if (temp->next->next)
-				temp->next->next->prev = temp->prev;
+
+			temp->prev->next = NULL;			
+			// temp->prev->next = new->redir->next->next;	
+			// if (temp->next->next)
+			// 	temp->next->next->prev = temp->prev;
 			
-			new->redir->next->next = NULL;
-			new->redir->prev = NULL;
+			// new->redir->next->next = NULL;
+			// new->redir->prev = NULL;
 		}
 		temp = temp->next;
 	}

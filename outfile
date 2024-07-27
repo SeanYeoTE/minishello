@@ -1,0 +1,9 @@
+total 124
+-rw-r--r-- 1 seayeo 2023_singapore 35149 May  6 10:15 LICENSE
+-rw-r--r-- 1 seayeo 2023_singapore  1186 Jul 21 14:14 Makefile
+drwxr-xr-x 8 seayeo 2023_singapore   279 Jul 27 18:19 libft
+-rwxr-xr-x 1 seayeo 2023_singapore 79120 Jul 27 18:19 minishell
+drwxr-xr-x 2 seayeo 2023_singapore   301 Jul 27 18:19 obj
+-rw-r--r-- 1 seayeo 2023_singapore     0 Jul 27 18:19 outfile
+drwxr-xr-x 2 seayeo 2023_singapore  4096 Jul 21 14:14 src
+drwxr-xr-x 2 seayeo 2023_singapore    61 May 30 21:52 test
