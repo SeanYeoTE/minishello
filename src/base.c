@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/27 15:32:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/27 16:07:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,15 @@ int	prompter(t_shell *store)
 	add_history(store->input);
 	if (!check_quotes(store->input))
 		return (print_error("minishell: syntax error\n"));
-	pre_execution(store, store->input);
+	pre_execution(store, NULL);
 	return (EXIT_SUCCESS);
 }
 
 int	pre_execution(t_shell *store, char *input)
 {
-	// store->input = input_spacer(store->input);
-	printf("input:.%s.\n", input);
+	if (input == NULL)
+		store->input = input_spacer(store->input);
+	printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
