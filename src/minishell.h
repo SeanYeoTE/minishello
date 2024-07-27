@@ -48,10 +48,16 @@ typedef struct s_cmd
 typedef struct s_env
 {
 	char	*var;
-	char	*name;
-	char	*data;
 	struct s_env	*next;
 }	t_env;
+
+typedef struct s_var
+{
+	char	*name;
+	char	*data;
+	char	*hidden;
+	struct s_var	*next;
+}	t_var;
 
 typedef struct s_shell
 {
@@ -70,6 +76,7 @@ typedef struct s_shell
 	t_node	*head;
 	t_node	*tail;
 	t_env	*env;
+	t_var	*var;
 }	t_shell;
 
 ///////////////////////////////////////////
@@ -147,10 +154,12 @@ int			builtin_main(t_shell *store, t_node *current, t_node *end);
 int			cd_handler(t_node *current);
 int			echo_handler(t_node *current, t_node *end);
 int			pwd_handler(t_node *current);
-t_env		*create_env_node(char *var, char *data, bool flag);
+t_env		*create_env_node(char *var);
+t_var		*create_var_node(char *var, char *data);
 void		env_init(t_shell *store, char **envp);
 void		env_handler(t_shell *store);
-int			var_handler(char *src, t_env *env);
+int			var_handler(char *src, t_var *var);
+int			export_handler(t_env *env, t_var *var);
 
 // redir.c
 

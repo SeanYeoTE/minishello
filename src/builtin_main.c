@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/21 17:35:45 by mchua            ###   ########.fr       */
+/*   Updated: 2024/07/27 18:23:59 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 		exit_status = pwd_handler(current);
 	else if (!ft_strcmp(current->data, "env"))
 		env_handler(store);
+	else if (!ft_strcmp(current->data, "export"))
+		exit_status = export_handler(store->env, store->var);
 	else
-		exit_status = var_handler(current->data, store->env);
+		exit_status = var_handler(current->data, store->var);
 	return (exit_status);
 }
 
@@ -98,32 +100,30 @@ int	pwd_handler(t_node *current)
 }
 
 //env handler
-t_env	*create_env_node(char *var, char *data, bool flag)
+t_env	*create_env_node(char *var)
 {
-		t_env	*new_node;
-		char	*vari;//to fix this, env->name cannot be NULL
+	t_env	*new_env;
 
-		vari = "abc";
-		new_node = ft_calloc(1, sizeof(t_env));
-		if (!new_node)
-			perror("Failed to allocate memory");
-		if (!flag)
-		{
-			new_node->var = ft_strdup(var);
-			new_node->next = NULL;
-			new_node->name = vari;
-			new_node->data = NULL;
-			return (new_node);
-		}
-		else
-		{
-			new_node->var = NULL;
-			new_node->name = ft_strdup(var);
-			new_node->data = ft_strdup(data);
-			return (new_node);
-		}
+	new_env = ft_calloc(1, sizeof(t_env));
+	if (!new_env)
+		perror("Failed to allocate memory");
+	new_env->var = ft_strdup(var);
+	new_env->next = NULL;
+	return (new_env);
 }
 
+t_var	*create_var_node(char *var, char *data)
+{
+	t_var	*new_var;
+
+	new_var = ft_calloc(1, sizeof(t_var));
+	if (!new_var)
+		perror("Failed to allocate memory");
+	new_var->name = ft_strdup(var);
+	new_var->data = ft_strdup(data);
+	new_var->next = NULL;
+	return (new_var);
+}
 void	env_init(t_shell *store, char **envp)
 {
 	t_env	*current;
@@ -136,7 +136,7 @@ void	env_init(t_shell *store, char **envp)
 	{
 		t_env	*new_node;
 
-		new_node = create_env_node(envp[i], NULL, false);
+		new_node = create_env_node(envp[i]);
 		if (!store->env)
 			store->env = new_node;
 		else
@@ -159,17 +159,19 @@ void	env_handler(t_shell *store)
 }
 
 //export handler
-int	var_handler(char *src, t_env *env)
+int	var_handler(char *src, t_var *var)
 {
 	int	i;
 	int	j;
 	char	name[1024];
 	char	value[1024];
-	t_env	*current;
+	t_var	*current;
+	t_var	*new_var;
 
 	i = 0;
 	j = 0;
-	current = env;
+	current = var;
+	new_var = NULL;
 	//find the = operator
 	//check if name is in the system, if yes, replace value
 	//label the first portion as variable name
@@ -189,18 +191,54 @@ int	var_handler(char *src, t_env *env)
 	}
 	while (current && current->next)
 	{
-		if (ft_strcmp(name, current->name) == 0)
+		if (ft_strcmp(name, current->name) == 0 && current->name != NULL)
 		{
 			free(current->data);
 			current->data = NULL;
 			current->data = ft_strdup(value);
+			return (0);
 		}
 		else
 			current = current->next;
 	}
-	current->next = create_env_node(name, value, true);
+	new_var = create_var_node(name, value);
+	current->hidden = ft_strdup(src);
+	if (current == NULL)
+		var = new_var;
+	else
+	{
+		while (current->next)
+			current = current->next;
+		current->next = new_var;
+	}
 	current->next->next = NULL;
 	return (0);
 }
 
-//during export search the entire 
+// during export search the entire 
+int	export_handler(t_env *env, t_var *var)
+{
+	t_env	*current;
+	t_var	*var_head;
+	t_env	*new_env;
+
+	var_head = var;
+	while (var_head)
+	{
+		current = env;
+		while (current)
+		{
+			if (ft_strcmp(current->var, var->hidden) == 0)
+				return (0);
+			current = current->next;
+		}
+		new_env = create_env_node(var->hidden);
+		current = env;
+		while (current->next)
+			current = current->next;
+		current->next = new_env;
+		new_env->next = NULL;
+		var_head = var_head->next;
+	}
+	return (0);
+}
