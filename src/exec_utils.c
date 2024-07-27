@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/24 16:33:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/27 15:38:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	multi_executor(t_shell *store, int	num_pipes)
 	temp = store->cmd_head;
 	while (temp)
 	{
-		pipe(pipefd[count][2]);
+		pipe(pipefd[count]);
 		if (count > 0)
 			store->input_fd = pipefd[count - 1][0];
 		store->output_fd = pipefd[count][1];
@@ -95,6 +95,7 @@ int	multi_executor(t_shell *store, int	num_pipes)
 				waitpid(pids[count], &t_exit_status, WUNTRACED);
 				temp = temp->next;
 			}
+			count++;
 		}
 		else
 		{
