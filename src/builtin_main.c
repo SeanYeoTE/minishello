@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/27 18:23:59 by mchua            ###   ########.fr       */
+/*   Updated: 2024/08/04 18:22:50 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 	else if (!ft_strcmp(current->data, "export"))
 		exit_status = export_handler(store->env, store->var);
 	else
-		exit_status = var_handler(current->data, store->var);
+		exit_status = var_handler(current->data, &store->var);
 	return (exit_status);
 }
 
@@ -112,38 +112,30 @@ t_env	*create_env_node(char *var)
 	return (new_env);
 }
 
-t_var	*create_var_node(char *var, char *data)
-{
-	t_var	*new_var;
-
-	new_var = ft_calloc(1, sizeof(t_var));
-	if (!new_var)
-		perror("Failed to allocate memory");
-	new_var->name = ft_strdup(var);
-	new_var->data = ft_strdup(data);
-	new_var->next = NULL;
-	return (new_var);
-}
-void	env_init(t_shell *store, char **envp)
+t_env	*env_init(t_shell *store, char **envp)
 {
 	t_env	*current;
+	t_env	*head;
+	t_env	*new_node;
 	int	i;
 
-	current = NULL;
-	store->env = NULL;
+	head = NULL;
 	i = 0;
 	while (envp[i])
 	{
-		t_env	*new_node;
-
 		new_node = create_env_node(envp[i]);
-		if (!store->env)
-			store->env = new_node;
+
+		if (head == NULL)
+		{
+			head = new_node;
+			current = head;
+		}
 		else
-			current->next = new_node;
-		current = new_node;
+			current = current->next;
+		current->next = new_node;
 		i++;
 	}
+	return (head);
 }
 
 void	env_handler(t_shell *store)
@@ -159,24 +151,31 @@ void	env_handler(t_shell *store)
 }
 
 //export handler
-int	var_handler(char *src, t_var *var)
+t_var	*create_var_node(char *var, char *data)
+{
+	t_var	*new_var;
+
+	new_var = ft_calloc(1, sizeof(t_var));
+	if (!new_var)
+		perror("Failed to allocate memory");
+	new_var->name = ft_strdup(var);
+	new_var->data = ft_strdup(data);
+	new_var->hidden = NULL;
+	new_var->next = NULL;
+	return (new_var);
+}
+
+t_var	*split_var(char *src, t_var *var)
 {
 	int	i;
 	int	j;
+	t_var	*new_var;
 	char	name[1024];
 	char	value[1024];
-	t_var	*current;
-	t_var	*new_var;
+
 
 	i = 0;
 	j = 0;
-	current = var;
-	new_var = NULL;
-	//find the = operator
-	//check if name is in the system, if yes, replace value
-	//label the first portion as variable name
-	//label the second portion as data
-	//link the linked list
 	while ((src[i] != '=') && src[i])
 	{
 		name[i] = src[i];
@@ -189,29 +188,48 @@ int	var_handler(char *src, t_var *var)
 		value[j] = src[i];
 		j++;
 	}
-	while (current && current->next)
+	new_var = var_init(src, name, value, var);
+	return (new_var);
+}
+
+t_var	*var_init(char *src, char *name, char *value, t_var *var)
+{
+	t_var	*new_var;
+
+	while (var)
 	{
-		if (ft_strcmp(name, current->name) == 0 && current->name != NULL)
+		if (var->name != NULL)
 		{
-			free(current->data);
-			current->data = NULL;
-			current->data = ft_strdup(value);
-			return (0);
+			if (ft_strcmp(name, var->name) == 0)
+			{
+				free(var->data);
+				var->data = NULL;
+				var->data = ft_strdup(value);
+				return (0);
+			}
 		}
-		else
-			current = current->next;
+		var = var->next;
 	}
 	new_var = create_var_node(name, value);
-	current->hidden = ft_strdup(src);
+	new_var->hidden = ft_strdup(src);
+	return (new_var);
+}
+
+int	var_handler(char *src, t_var **var)
+{
+	t_var	*new_var;
+	t_var	*current;
+
+	current = *var;
+	new_var = split_var(src, current);
 	if (current == NULL)
-		var = new_var;
+		current = new_var;
 	else
 	{
 		while (current->next)
 			current = current->next;
 		current->next = new_var;
 	}
-	current->next->next = NULL;
 	return (0);
 }
 
@@ -223,6 +241,8 @@ int	export_handler(t_env *env, t_var *var)
 	t_env	*new_env;
 
 	var_head = var;
+	puts (var->name);
+	puts (var->data);
 	while (var_head)
 	{
 		current = env;

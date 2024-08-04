@@ -83,7 +83,7 @@ typedef struct s_shell
 // the ui portion //
 // main.c
 void		free_env(t_env **env);
-void		init_var(t_shell *store);
+void		init_var(t_shell *store, t_env *env_head, t_var *var_head);
 int			main(int argc, char **argv, char **envp);
 int			looper(t_shell *store);
 
@@ -116,7 +116,7 @@ t_node		*remove_node(t_shell *store, t_node *node);
 ///////////////////////////////////////////
 // parser //
 // base.c
-int			prompter(t_shell *store);
+int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
 int			pre_execution(t_shell *store, char *input);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
@@ -155,10 +155,12 @@ int			cd_handler(t_node *current);
 int			echo_handler(t_node *current, t_node *end);
 int			pwd_handler(t_node *current);
 t_env		*create_env_node(char *var);
-t_var		*create_var_node(char *var, char *data);
-void		env_init(t_shell *store, char **envp);
+t_env		*env_init(t_shell *store, char **envp);
 void		env_handler(t_shell *store);
-int			var_handler(char *src, t_var *var);
+t_var		*create_var_node(char *var, char *data);
+t_var		*split_var(char *src, t_var *var);
+t_var		*var_init(char *src, char *name, char *value, t_var *var);
+int			var_handler(char *src, t_var **var);
 int			export_handler(t_env *env, t_var *var);
 
 // redir.c
