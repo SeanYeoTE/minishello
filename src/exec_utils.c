@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/18 15:46:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/27 15:38:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*findprocesspath(t_shell *store, char **arr)
 }
 
 // fd issues, output not redirecting properly
-t_node	*executor(t_shell *store, t_node *start, t_node *end)
+int	executor(t_shell *store, t_node *start, t_node *end)
 {
 	int		execveresult;
 	char	*exepath;
@@ -52,18 +52,57 @@ t_node	*executor(t_shell *store, t_node *start, t_node *end)
 	{
 		perror("Path not found");
 		free(exepath);
-		return (start);
+		t_exit_status = 127;
+		return (t_exit_status);
 	}
 	dup2(store->output_fd, 1);
 	dup2(store->input_fd, 0);
-	// need to modify this as well
 	execveresult = execve(exepath, temp, store->envp);
 	if (execveresult == -1)
-		perror("execve error");
+		t_exit_status = 127;
 	if (exepath)
 		free(exepath);
 	free(temp);
-	return (start);
+	return (t_exit_status);
+}
+
+int	multi_executor(t_shell *store, int	num_pipes)
+{
+	t_cmd	*temp;
+	int		pipefd[num_pipes][2];
+	int		count;
+	int		pids[num_pipes];
+	count = 0;
+	t_exit_status = 0;
+	temp = store->cmd_head;
+	while (temp)
+	{
+		pipe(pipefd[count]);
+		if (count > 0)
+			store->input_fd = pipefd[count - 1][0];
+		store->output_fd = pipefd[count][1];
+		if (check_builtin(temp->command) == 0)
+		{
+			pids[count] = fork();
+			if (pids[count] == 0)
+			{
+				redir_handler(store, temp->redir, NULL);
+				t_exit_status = executor(store, temp->command, NULL);
+				exit(t_exit_status);
+			}
+			else
+			{
+				waitpid(pids[count], &t_exit_status, WUNTRACED);
+				temp = temp->next;
+			}
+			count++;
+		}
+		else
+		{
+			t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
+		}
+	}		
+	return (t_exit_status);
 }
 
 // intention is to create an argv array for execve

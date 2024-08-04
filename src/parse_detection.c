@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/20 13:51:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/06/25 18:49:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 // not checking for >> redirection to file
 int	detect_operator(char *str)
@@ -27,117 +26,34 @@ int	detect_operator(char *str)
 	return (0);
 }
 
-int	scanner_comment(char *str, int start, t_shell *store)
+int	check_builtin(t_node *loop)
 {
-	int		i;
-	char	*data;
-	
-	i = 0;
-	while (str[start + i])
-	{
-		if (str[start + i] == '\n')
-			return (start + i);
-		i++;
-	}
-	data = ft_strndup(str + start, i + 1);
-	init_node(data, &store->head);
-	store->tail = get_last(store->head);
-	get_last(store->head)->type = 1;
-	return (start + i);
+	if (ft_strcmp(loop->data, "echo") == 0)
+		return (1);
+	if (ft_strcmp(loop->data, "cd") == 0)
+		return (1);
+	if (ft_strcmp(loop->data, "pwd") == 0)
+		return (1);	
+	if (ft_strcmp(loop->data, "export") == 0)
+		return (1);
+	else
+		return (0);
 }
 
-int	scanner_quote(char *str, int start, t_shell *store)
-{
-	int		i;
-	int		count;
-	char	*data;
-	
-	i = 0;
-	count = 0;
-	while (str[start + i])
-	{
-		if (str[start + i] == '"')
-		{
-			count++;
-			if (count == 2)
-				break;
-		}
-		i++;
-	}
-	data = ft_strndup(str + start + 1, i - 1);
-	init_node(data, &store->head);
-	store->tail = get_last(store->head);
-	get_last(store->head)->type = 2;
-	return (start + i + 1);
-}
-
-int	scanner_operator(char *str, int start, t_shell *store)
-{
-	int		i;
-	char	*data;
-
-	i = 0;
-	while (str[start + i])
-	{
-		if (str[start + i] == ' ') // to confirm which other operator we should add in
-			break;
-		i++;
-	}
-	data = ft_strndup(str + start, i);
-	init_node(data, &store->head);
-	store->tail = get_last(store->head);
-	get_last(store->head)->type = 3;
-	return (start + i);
-}
-
-int	scanner_space(char *str, int start)
-{
-	int		i;
-
-	i = 0;
-	while (str[start + i])
-	{
-		if (str[start + i] != ' ') //do we need to include whitespaces?
-			break;
-		i++;
-	}
-	return (start + i);
-}
-
-int scanner_word(char *str, int start, t_shell *store)
-{
-	int		i;
-	char	*data;
-
-	i = 0;
-	while (str[start + i])
-	{
-		if (str[start + i] == ' ')
-			break;
-		i++;
-	}
-	data = ft_strndup(str + start, i);
-	init_node(data, &store->head);
-	store->tail = get_last(store->head);
-	get_last(store->head)->type = 5;
-	return (start + i);
-}
-
-
-int ft_sscan(char *str, t_shell *store, int index)
+int	full_lexer(char *str, t_shell *store, int index)
 {
 	if (str[index] != '\0')
-	{	
+	{
 		if (str[index] == '#')
-			return ft_sscan(str, store, scanner_comment(str, index, store));
+			return (full_lexer(str, store, scanner_comment(str, index, store)));
 		else if (str[index] == '"')
-			return ft_sscan(str, store, scanner_quote(str, index, store));
+			return (full_lexer(str, store, scanner_quote(str, index, store)));
 		else if (detect_operator(&str[index]) == 1)
-			return ft_sscan(str, store, scanner_operator(str, index, store));
+			return (full_lexer(str, store, scanner_operator(str, index, store)));
 		else if (str[index] == ' ')
-			return ft_sscan(str, store, scanner_space(str, index));
+			return (full_lexer(str, store, scanner_space(str, index)));
 		else
-			return ft_sscan(str, store, scanner_word(str, index, store));
+			return (full_lexer(str, store, scanner_word(str, index, store)));
 	}
 	return (0);
 }
