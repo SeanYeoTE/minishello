@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/24 16:33:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/25 15:59:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,18 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	return (t_exit_status);
 }
 
-int	multi_executor(t_shell *store, int	num_pipes)
+int multi_executor(t_shell *store, int num_pipes)
 {
-	t_cmd	*temp;
-	int		pipefd[num_pipes][2];
-	int		count;
-	int		pids[num_pipes];
+	t_cmd   *temp;
+	int     pipefd[num_pipes][2];
+	int     count;
+	int     pids[num_pipes];
 	count = 0;
 	t_exit_status = 0;
 	temp = store->cmd_head;
 	while (temp)
 	{
-		pipe(pipefd[count][2]);
+		pipe(pipefd[count]);
 		if (count > 0)
 			store->input_fd = pipefd[count - 1][0];
 		store->output_fd = pipefd[count][1];
@@ -92,7 +92,6 @@ int	multi_executor(t_shell *store, int	num_pipes)
 			}
 			else
 			{
-				waitpid(pids[count], &t_exit_status, WUNTRACED);
 				temp = temp->next;
 			}
 		}
@@ -100,7 +99,21 @@ int	multi_executor(t_shell *store, int	num_pipes)
 		{
 			t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
 		}
-	}		
+		count++;
+	}
+	int i = 0;
+	while (i < num_pipes)
+	{
+		close(pipefd[i][0]);
+		close(pipefd[i][1]);
+		i++;
+	}
+	i = 0;
+	while (i < num_pipes)
+	{
+		waitpid(pids[i], &t_exit_status, WUNTRACED);
+		i++;
+	}
 	return (t_exit_status);
 }
 
