@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/04 18:11:26 by mchua            ###   ########.fr       */
+/*   Updated: 2024/08/05 16:39:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		prompter(store);
+		prompter(store, env_head, var_head);
 	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
@@ -108,10 +108,6 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	int	pid1;
 	
 	create_cmd(store, head, tail, true);
-	// puts("command\n");
-	// print_stack(&store->cmd_head->command);
-	// puts("redir\n");
-	// print_stack(&store->cmd_head->redir);
 	if (check_builtin(store->cmd_head->command) == 0)
 	{
 		pid1 = fork();
@@ -131,7 +127,8 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 		// need to change builtiin main; currently still functioning on the old method of
 		// linked lists, would not function as expected when redirections are required
 		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
+		exit(t_exit_status);
 	}
-	return (0);
+	return (t_exit_status);
 }
 		

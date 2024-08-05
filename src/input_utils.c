@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/27 17:39:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/05 16:38:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,10 +92,10 @@ int	check_quotes(char *line)
 	i = 0;
 	while (line[i])
 	{
-		if (line[i] == 34 && !sml)
+		if (line[i] == 34 && sml != 1)
 			dbl = !dbl;
-		if (line[i] == 39 && !dbl)
-			sml = !dbl;
+		if (line[i] == 39 && dbl != 1)
+			sml = !sml;
 		i++;
 	}
 	return (!(sml || dbl));

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/04 18:22:50 by mchua            ###   ########.fr       */
+/*   Updated: 2024/08/05 16:27:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 		exit_status = export_handler(store->env, store->var);
 	else
 		exit_status = var_handler(current->data, &store->var);
+	exit(exit_status);
 	return (exit_status);
 }
 
@@ -56,7 +57,8 @@ int	cd_handler(t_node *current)
 // echo handler
 int	echo_handler(t_node *current, t_node *end)
 {
-	int	option;	
+	int		option;
+	bool	printed;
 
 	option = 0;
 	current = current->next;
@@ -66,11 +68,13 @@ int	echo_handler(t_node *current, t_node *end)
 		current = current->next;
 	while (current != end)
 	{
+		printed = true;
 		printf("%s", current->data);
-		printf(" ");
+		if (current->next)
+			printf(" ");
 		current = current->next;  
 	}
-	if (option == 0)
+	if (option == 0 || printed == false)
 		printf("\n");
 	return (0);
 }
