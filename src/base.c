@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/04 15:28:28 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/04 18:11:26 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	prompter(t_shell *store)
+int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 {
 	char 	cwd[1024];
 	char	*prompt;
 	
 	signal(SIGINT, ctrl_c_handler);
-	init_var(store);
+	init_var(store, env_head, var_head);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
@@ -52,6 +52,11 @@ int	pre_execution(t_shell *store, char *input)
 
 int		parser(t_shell* store)
 {
+	t_env	*env_head;
+	t_var	*var_head;
+
+	env_head = store->env;
+	var_head = store->var;
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -60,7 +65,7 @@ int		parser(t_shell* store)
 			multiple_function(store);
 	}
 	free_nonessential(store);
-	prompter(store);
+	prompter(store, env_head, var_head);
 
 	return (EXIT_SUCCESS);
 }

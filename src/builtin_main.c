@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/23 16:04:16 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/04 18:22:50 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,12 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 		exit_status = echo_handler(current, end);
 	else if (!ft_strcmp(current->data, "pwd"))
 		exit_status = pwd_handler(current);
+	else if (!ft_strcmp(current->data, "env"))
+		env_handler(store);
+	else if (!ft_strcmp(current->data, "export"))
+		exit_status = export_handler(store->env, store->var);
+	else
+		exit_status = var_handler(current->data, &store->var);
 	return (exit_status);
 }
 
@@ -94,37 +100,42 @@ int	pwd_handler(t_node *current)
 }
 
 //env handler
-t_env	*create_env_node(char *env_var)
+t_env	*create_env_node(char *var)
 {
-		t_env	*new_node;
+	t_env	*new_env;
 
-		new_node = ft_calloc(1, sizeof(t_env));
-		if (!new_node)
-			perror("Failed to allocate memory");
-		new_node->var = ft_strdup(env_var);
-		new_node->next = NULL;
-		return (new_node);
+	new_env = ft_calloc(1, sizeof(t_env));
+	if (!new_env)
+		perror("Failed to allocate memory");
+	new_env->var = ft_strdup(var);
+	new_env->next = NULL;
+	return (new_env);
 }
 
-void	env_init(t_shell *store, char **envp)
+t_env	*env_init(t_shell *store, char **envp)
 {
 	t_env	*current;
+	t_env	*head;
+	t_env	*new_node;
 	int	i;
 
-	current = NULL;
+	head = NULL;
 	i = 0;
 	while (envp[i])
 	{
-		t_env	*new_node;
-
 		new_node = create_env_node(envp[i]);
-		if (!store->env)
-			store->env = new_node;
+
+		if (head == NULL)
+		{
+			head = new_node;
+			current = head;
+		}
 		else
-			current->next = new_node;
-		current = new_node;
+			current = current->next;
+		current->next = new_node;
 		i++;
 	}
+	return (head);
 }
 
 void	env_handler(t_shell *store)
@@ -137,4 +148,117 @@ void	env_handler(t_shell *store)
 		printf("%s\n", current->var);
 		current = current->next;
 	}
+}
+
+//export handler
+t_var	*create_var_node(char *var, char *data)
+{
+	t_var	*new_var;
+
+	new_var = ft_calloc(1, sizeof(t_var));
+	if (!new_var)
+		perror("Failed to allocate memory");
+	new_var->name = ft_strdup(var);
+	new_var->data = ft_strdup(data);
+	new_var->hidden = NULL;
+	new_var->next = NULL;
+	return (new_var);
+}
+
+t_var	*split_var(char *src, t_var *var)
+{
+	int	i;
+	int	j;
+	t_var	*new_var;
+	char	name[1024];
+	char	value[1024];
+
+
+	i = 0;
+	j = 0;
+	while ((src[i] != '=') && src[i])
+	{
+		name[i] = src[i];
+		i++;
+	}
+	name[i] = '\0';
+	while (src[i])
+	{
+		i++;
+		value[j] = src[i];
+		j++;
+	}
+	new_var = var_init(src, name, value, var);
+	return (new_var);
+}
+
+t_var	*var_init(char *src, char *name, char *value, t_var *var)
+{
+	t_var	*new_var;
+
+	while (var)
+	{
+		if (var->name != NULL)
+		{
+			if (ft_strcmp(name, var->name) == 0)
+			{
+				free(var->data);
+				var->data = NULL;
+				var->data = ft_strdup(value);
+				return (0);
+			}
+		}
+		var = var->next;
+	}
+	new_var = create_var_node(name, value);
+	new_var->hidden = ft_strdup(src);
+	return (new_var);
+}
+
+int	var_handler(char *src, t_var **var)
+{
+	t_var	*new_var;
+	t_var	*current;
+
+	current = *var;
+	new_var = split_var(src, current);
+	if (current == NULL)
+		current = new_var;
+	else
+	{
+		while (current->next)
+			current = current->next;
+		current->next = new_var;
+	}
+	return (0);
+}
+
+// during export search the entire 
+int	export_handler(t_env *env, t_var *var)
+{
+	t_env	*current;
+	t_var	*var_head;
+	t_env	*new_env;
+
+	var_head = var;
+	puts (var->name);
+	puts (var->data);
+	while (var_head)
+	{
+		current = env;
+		while (current)
+		{
+			if (ft_strcmp(current->var, var->hidden) == 0)
+				return (0);
+			current = current->next;
+		}
+		new_env = create_env_node(var->hidden);
+		current = env;
+		while (current->next)
+			current = current->next;
+		current->next = new_env;
+		new_env->next = NULL;
+		var_head = var_head->next;
+	}
+	return (0);
 }
