@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "../libft/libft.h"
@@ -24,11 +25,6 @@ typedef struct s_node
 
 	struct s_node	*next;
 	struct s_node	*prev;
-
-	struct s_node 	*leftchild;
-	struct s_node 	*rightchild;
-	struct s_node	*parent;
-
 } t_node;
 
 // struct points to command and redirection, each is a linked list
@@ -112,7 +108,7 @@ int 		scanner_word(char *str, int start, t_shell *store);
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
-t_node		*remove_node(t_shell *store, t_node *node);
+void		revert_nodes(t_shell *store);
 ///////////////////////////////////////////
 // parser //
 // base.c
@@ -121,21 +117,20 @@ int			pre_execution(t_shell *store, char *input);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
 int			multiple_function(t_shell *store);
-int			create_cmd(t_shell *store, t_node *start, t_node *end);
-void		detach_redir(t_cmd *new);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // t_cmd_utils.c
 t_cmd		*get_last_cmd(t_cmd *cmd);
-t_cmd		*init_cmd(t_shell *store, t_node *start, t_node *end);
-
-
-
+t_cmd		*init_cmd(t_shell *store, t_node *start, t_node *end, bool create);
+int			create_cmd(t_shell *store, t_node *start, t_node *end, bool create);
+void		detach_redir(t_cmd *new);
+int			count_cmds(t_shell *store);
 
 // exec_utils.c
 char		*findprocesspath(t_shell *store, char **arr);
 int			executor(t_shell *store, t_node *start, t_node *end);
 char		**argv_creator(t_node *start, t_node *end);
+int			multi_executor(t_shell *store, int	num_pipes);
 
 // printer.c
 int 		print_stack(t_node **head);

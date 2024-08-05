@@ -22,21 +22,25 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
-	if (!store->input)
+	if (store->input == NULL)
 		exit(EXIT_SUCCESS);
 	if (store->input[0] == '\0')
+	{
 		free_nonessential(store);
+		prompter(store);
+	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
 		return (print_error("minishell: syntax error\n"));
-	pre_execution(store, store->input);
+	pre_execution(store, NULL);
 	return (EXIT_SUCCESS);
 }
 
 int	pre_execution(t_shell *store, char *input)
 {
-	store->input = input_spacer(store->input);
-	// printf("input: %s\n", input);
+	if (input == NULL)
+		store->input = input_spacer(store->input);
+	// printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
@@ -68,64 +72,42 @@ int		parser(t_shell* store)
 
 int	multiple_function(t_shell *store)
 {
+	t_node	*front;
+	t_node 	*back;
 	t_node	*temp;
-	int		create;
+	bool	create;
+	
 	puts("multiple_function");
-	temp = store->head;
-	create = 0;
-	while (temp)
+	front = store->head;
+	back = store->head;
+	create = true;
+	while (back->next)
 	{
-		if (ft_strcmp(temp->data, "|") == 0)
+		if (ft_strcmp(back->data, "|") == 0)
 		{
-			create_cmd(store, store->head, temp);
-			temp = remove_node(store, store->head);
+			temp = back->next;
+			create_cmd(store, front, back, create);
+			create = false;
+			front = temp;
+			back = temp;
 		}
 		else
-			temp = temp->next;
+			back = back->next;
 	}
-	print_cmd_stack(&store->cmd_head);
+	create_cmd(store, front, back->prev, create);
+	// print_cmd_stack(&store->cmd_head);
+	multi_executor(store, count_cmds(store) - 1);
+	revert_nodes(store);
+	return (0);
 }
 
-int	create_cmd(t_shell *store, t_node *start, t_node *end)
-{
-	t_cmd	*new;
-	t_node	*temp;
-	
-	if (start == NULL)
-		return (1);
-	else
-	{
-		init_cmd(store, start, end);
-		return (0);
-	}
-}
 
-void	detach_redir(t_cmd *new)
-{
-	t_node	*temp;
-	puts("detach_redir");
-	temp = new->command;
-	while (temp)
-	{
-		if (redir_checker(temp) == 1)
-		{
-			new->redir = temp;
-			temp->prev->next = new->redir->next->next;
-			if (temp->next->next)
-				temp->next->next->prev = temp->prev;
-			
-			new->redir->next->next = NULL;
-			new->redir->prev = NULL;
-		}
-		temp = temp->next;
-	}
-}
 
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	int	pid1;
 	
-	create_cmd(store, head, tail);
+	create_cmd(store, head, tail, true);
 	// puts("command\n");
 	// print_stack(&store->cmd_head->command);
 	// puts("redir\n");
@@ -146,6 +128,8 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	}
 	else
 	{
+		// need to change builtiin main; currently still functioning on the old method of
+		// linked lists, would not function as expected when redirections are required
 		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
 	}
 	return (0);

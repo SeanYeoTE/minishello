@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 16:07:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/07/23 15:33:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,29 @@ void	free_stack(t_node **stack)
 	*stack = NULL;
 }
 
+void	free_cmd(t_cmd **cmd)
+{
+	t_cmd	*tmp;
+	t_cmd	*current;
+
+	if (NULL == cmd)
+		return ;
+	current = *cmd;
+	while (current)
+	{
+		tmp = current->next;
+		free(current);
+		current = tmp;
+	}
+	*cmd = NULL;
+}
+
 void	free_nonessential(t_shell *store)
 {
 	freechararray(store->paths);		
 	if (store->head != NULL)
 		free_stack(&(store->head));
+	// if (store->cmd_head != NULL)
+	// 	free_cmd(&(store->cmd_head));
 	// free(store);
 }
