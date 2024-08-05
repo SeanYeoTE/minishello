@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/25 15:59:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/05 13:02:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int multi_executor(t_shell *store, int num_pipes)
 			{
 				temp = temp->next;
 			}
+			count++;
 		}
 		else
 		{
