@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/06 14:13:22 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/06 16:21:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 	size_t	result_len;
 	char	*result;
 
-	*front = ft_strndup(input, start);
-	*back = ft_strdup(input + end);
+	front = ft_strndup(input, start);
+	back = ft_strdup(input + end);
 	result_len = ft_strlen(front) + ft_strlen(value) + ft_strlen(back) + 1;
 	result = malloc(result_len);
 	if (result)
