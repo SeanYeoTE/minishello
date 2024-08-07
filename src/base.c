@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/06 13:28:29 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/07 15:54:49 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	pre_execution(t_shell *store, char *input)
 {
 	// if (input == NULL)
 	// 	store->input = input_spacer(store->input);
-	printf("input: %s\n", store->input);
+	// printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
@@ -62,7 +62,7 @@ int		parser(t_shell* store)
 		if (pipe_counter(store->head) == 0)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
-			multiple_function(store);
+			multiple_function(store, pipe_counter(store->head));
 	}
 	free_nonessential(store);
 	prompter(store, env_head, var_head);
@@ -70,17 +70,18 @@ int		parser(t_shell* store)
 	return (EXIT_SUCCESS);
 }
 
-int	multiple_function(t_shell *store)
+int	multiple_function(t_shell *store, int count)
 {
 	t_node	*front;
 	t_node 	*back;
 	t_node	*temp;
 	bool	create;
 	
-	puts("multiple_function");
+	// puts("multiple_function");
 	front = store->head;
 	back = store->head;
 	create = true;
+	store->pid = ft_calloc(sizeof(int), count + 2);
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)
