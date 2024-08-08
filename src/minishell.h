@@ -13,6 +13,8 @@
 #include <fcntl.h>
 #include <signal.h>
 
+#include <errno.h>
+
 // global variable
 extern	int		t_exit_status;
 
