@@ -13,6 +13,7 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 SRC_PATH = src/
 SRC =	main.c \
 		input_utils.c \
+		checks.c \
 		prompt.c \
 		parse_detection.c \
 		scanner.c \

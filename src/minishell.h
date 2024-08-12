@@ -89,16 +89,20 @@ int			looper(t_shell *store);
 
 // input_utils.c
 char		*input_spacer(char *input);
-int			check_quotes(char *line);
-int 		redir_checker(t_node *cmd);
 
 // prompt.c
 char		*form_prompt(char *cwd);
 ///////////////////////////////////////////
 // lexer //
+// checks.c
+int			check_quotes(char *line);
+int 		redir_checker(t_node *cmd);
+int			check_builtin(t_node *loop);
+int			is_operator(char c);
+int			is_double_operator(const char *input, int i);
+
 // parse_detection.c
 int			detect_operator(char *str);
-int			check_builtin(t_node *loop);
 int 		full_lexer(char *str, t_shell *store, int index);
 
 // scanner.c
