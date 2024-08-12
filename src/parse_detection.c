@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/09 12:56:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/12 15:53:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ int	detect_operator(char *str)
 
 int	full_lexer(char *str, t_shell *store, int index)
 {
+	printf("str[index] :%c\n", str[index]);
 	if (str[index] != '\0')
 	{
 		if (str[index] == '#')
 			return (full_lexer(str, store, scanner_comment(str, index, store)));
-		else if (str[index] == '"')
+		else if (store->quotes == true || (str[index] == '"' || str[index] == '\''))
 			return (full_lexer(str, store, scanner_quote(str, index, store)));
 		else if (detect_operator(&str[index]) == 1)
 			return (full_lexer(str, store, scanner_operator(str, index, store)));

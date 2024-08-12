@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/07 13:34:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/12 15:37:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->output_fd = dup(1);
 	store->head = NULL;
 	store->tail = NULL;
+
+	store->quotes = false;
 
 	store->cmd_head = NULL;
 	store->cmd_tail = NULL;
