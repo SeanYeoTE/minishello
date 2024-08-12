@@ -61,7 +61,7 @@ int		parser(t_shell* store)
 		if (pipe_counter(store->head) == 0)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
-			multiple_function(store);
+			multiple_function(store, pipe_counter(store->head));
 	}
 	free_nonessential(store);
 	prompter(store, env_head, var_head);
@@ -69,17 +69,18 @@ int		parser(t_shell* store)
 	return (EXIT_SUCCESS);
 }
 
-int	multiple_function(t_shell *store)
+int	multiple_function(t_shell *store, int count)
 {
 	t_node	*front;
 	t_node 	*back;
 	t_node	*temp;
 	bool	create;
 	
-	puts("multiple_function");
+	// puts("multiple_function");
 	front = store->head;
 	back = store->head;
 	create = true;
+	store->pid = ft_calloc(sizeof(int), count + 2);
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)

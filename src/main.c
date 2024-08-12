@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/04 18:09:12 by mchua            ###   ########.fr       */
+/*   Updated: 2024/08/07 13:34:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->path = getenv("PATH");
 	store->envp = ft_split(store->path, ':');
 	store->paths = ft_split(store->path, ':');
+	store->pid = NULL;
 
 	store->env = env_head;
 	store->var = var_head;
