@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/08 15:16:33 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/12 13:47:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,11 @@ char	*findprocesspath(t_shell *store, char **arr)
 // fd issues, output not redirecting properly
 int	executor(t_shell *store, t_node *start, t_node *end)
 {
+	int		execveresult;
 	char	*exepath;
 	char	**temp;
 	
+	execveresult = 0;
 	temp = argv_creator(start, end);
 	while (start && start->type != 3)
 		start = start->next;
@@ -49,13 +51,14 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	
 	if (exepath == NULL)
 	{
-		// perror("Path not found");
-		fprintf(stderr, "Command not found: %s\n", temp[0]);
+		perror("Path not found");
 		free(temp);
 		t_exit_status = 127;
 		return (t_exit_status);
 	}
-	t_exit_status = execve(exepath, temp, store->envp);
+	dup2(store->output_fd, 1);
+	dup2(store->input_fd, 0);
+	execveresult = execve(exepath, temp, store->envp);
 	if (exepath)
 		free(exepath);
 	free(temp);
