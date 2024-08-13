@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/09 12:58:23 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/13 14:55:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,32 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 	size_t	result_len;
 	char	*result;
 
+	result_len = 0;
+	printf("input: %s\n", input);
+	printf("start: %d\n", start);
+	printf("%c\n", input[start]);
 	front = ft_strndup(input, start);
+	printf("front: %s\n", front);
 	back = ft_strdup(input + end);
-	result_len = ft_strlen(front) + ft_strlen(value) + ft_strlen(back) + 1;
+	printf("back: %s\n", back);
+	result_len = ft_strlen(value) + 1;
+	if (front)
+		result_len += ft_strlen(front);
+	if (back)
+		result_len += ft_strlen(back);
+	// result_len = ft_strlen(front) + ft_strlen(value) + ft_strlen(back) + 1;
+	printf("result_len: %zu\n", result_len);
 	result = malloc(result_len);
 	if (result)
 	{
-		ft_strlcpy(result, front, ft_strlen(front) + 1);
+		if (front != NULL)
+			ft_strlcpy(result, front, ft_strlen(front) + 1);
+		printf("result: %s\n", result);
 		ft_strlcat(result, value, ft_strlen(value) + 1);
-		ft_strlcat(result, back, ft_strlen(back) + 1);
+		printf("result: %s\n", result);
+		if (back != NULL)
+			ft_strlcat(result, back, ft_strlen(back) + 1);
+		printf("result: %s\n", result);
 	}
 	free(front);
 	free(back);

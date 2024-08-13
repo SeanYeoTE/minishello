@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 14:48:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/12 17:29:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/13 14:27:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,36 +36,28 @@ int	scanner_quote(char *str, int start, t_shell *store)
 	int		i;
 	bool	count;
 	char	*data;
-	int		offset;
+	int		type;
 
 	store->quotes = false;
 	i = 0;
 	count = true;
-	offset = 0;
+	type = 9;
 	while (str[start + i])
 	{
-		// printf("str[start + i]: %c\n", str[start + i]);
-		// fflush(stdout);
 		if (str[start + i] == '"' || str[start + i] == '\'')
 		{
-			if (count == true)
-				offset = i;
+			if (str[start + i] == '"')
+				type = 8;
 			count = !count;
 			if (count == true)
 				break ;
 		}
 		i++;
 	}
-	if ((str[start] == '"' || str[start] == '\''))
-	{
-		printf("hi\n");
-		data = ft_strndup(str + start + 1, i - 1);
-	}
-	else
-		data = ft_strndup(str + start, i);
+	data = ft_strndup(str + start, i + 1);
 	init_node(data, &store->head);
 	store->tail = get_last(store->head);
-	get_last(store->head)->type = 2;
+	get_last(store->head)->type = type;
 	return (start + i + 1);
 }
 
