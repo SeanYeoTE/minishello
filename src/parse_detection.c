@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/12 15:53:47 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/14 16:43:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	detect_operator(char *str)
 
 int	full_lexer(char *str, t_shell *store, int index)
 {
-	printf("str[index] :%c\n", str[index]);
 	if (str[index] != '\0')
 	{
 		if (str[index] == '#')
