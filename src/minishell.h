@@ -63,6 +63,8 @@ typedef struct s_shell
 	int		input_fd;
 	int		output_fd;
 
+	bool	quotes;
+
 	char	*input;
 
 	char	*path;
