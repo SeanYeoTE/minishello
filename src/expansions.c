@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/13 22:50:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/14 12:15:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static char	*extract_var_name(const char *input, int start, int *end)
 }
 
 // Helper function to replace variable with its value
-static char	*replace_var(char *input, int start, int end, char *value)
+static char	*replace_var(char *input, int start, int end, const char *value)
 {
 	char	*front;
 	char	*back;
@@ -54,6 +54,7 @@ static char	*replace_var(char *input, int start, int end, char *value)
 		if (front != NULL)
 			ft_strlcpy(result, front, ft_strlen(front) + 1);
 		printf("result: %s\n", result);
+		printf("value: %s\n", value);
 		ft_strlcat(result, value, ft_strlen(value) + 1);
 		printf("result: %s\n", result);
 		if (back != NULL)
