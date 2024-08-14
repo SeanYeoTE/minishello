@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/12 15:16:54 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/14 16:42:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 int	pre_execution(t_shell *store, char *input)
 {
 	store->input = input_spacer(store->input);
-	printf("input: %s\n", store->input);
+	// printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
-	print_stack(&store->head);
+	// print_stack(&store->head);
 	parser(store);
 	
 	return (EXIT_SUCCESS);

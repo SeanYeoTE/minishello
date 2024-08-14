@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/14 12:15:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/14 16:36:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,21 @@ static char	*extract_var_name(const char *input, int start, int *end)
 	return (ft_strndup(input + start + 1, j - start - 1));
 }
 
+static bool	single_quotes(const char *input, int index)
+{
+	bool	in_single_quotes;
+	
+	in_single_quotes = false;
+	int i = 0;
+	while (i < index)
+	{
+		if (input[i] == '\'')
+			in_single_quotes = !in_single_quotes;
+		i++;
+	}
+	return in_single_quotes;
+}
+
 // Helper function to replace variable with its value
 static char	*replace_var(char *input, int start, int end, const char *value)
 {
@@ -32,34 +47,22 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 	char	*result;
 
 	result_len = 0;
-	printf("input: %s\n", input);
-	printf("start: %d\n", start);
-	printf("%c\n", input[start]);
 	front = ft_strndup(input, start);
-	printf("front: %s\n", front);
 	back = ft_strdup(input + end);
-	printf("back: %s\n", back);
 	result_len = ft_strlen(value) + 1;
 	if (front)
 		result_len += ft_strlen(front);
 	if (back)
 		result_len += ft_strlen(back);
-	// result_len = ft_strlen(front) + ft_strlen(value) + ft_strlen(back) + 1;
-	printf("result_len: %zu\n", result_len);
 	result = (char *)malloc(result_len);
 	result[0] = '\0';
-	printf("result 1: %s\n", result);
 	if (result)
 	{
 		if (front != NULL)
 			ft_strlcpy(result, front, ft_strlen(front) + 1);
-		printf("result: %s\n", result);
-		printf("value: %s\n", value);
-		ft_strlcat(result, value, ft_strlen(value) + 1);
-		printf("result: %s\n", result);
+		ft_strlcat(result, value, result_len);
 		if (back != NULL)
-			ft_strlcat(result, back, ft_strlen(back) + 1);
-		printf("result: %s\n", result);
+			ft_strlcat(result, back, result_len);
 	}
 	free(front);
 	free(back);
@@ -78,7 +81,7 @@ char	*expansions(char *input)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '$')
+		if (input[i] == '$' && !single_quotes(input, i))
 		{
 			var = extract_var_name(input, i, &end);
 			temp = getenv(var);
