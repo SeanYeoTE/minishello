@@ -6,11 +6,15 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/15 12:49:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/15 12:59:35 by seayeo           ###   ########.fr       */
+
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
+// pls remove this
 
 int  pipe_counter(t_node *loop)
 {
