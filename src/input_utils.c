@@ -6,110 +6,87 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/27 17:39:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/09 13:15:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*settle_front(char *input, int i)
+static int needs_spacing(const char *input, int i)
 {
-	char	*front;
-	char	*ans;
-
-	front = ft_substr(input, 0, i);
-	if (input[i - 1] == ' ')
-	{
-		front = ft_substr(input, 0, i);
-		ans = ft_strjoin(front, ft_substr(input, i, 1));
-	}
-	else
-	{
-		front = ft_substr(input, 0, i);
-		ans = ft_strjoin(ft_strjoin(front, " "), ft_substr(input, i, 1));
-	}
-	return (free(front), ans);
+	if (!is_operator(input[i]))
+		return 0;
+	if (i > 0 && input[i - 1] != ' ' && !is_operator(input[i - 1]))
+		return 1;
+	if (input[i + 1] && input[i + 1] != ' ' && 
+		!is_operator(input[i + 1]))
+		return 1;
+	return 0;
 }
 
-char	*settle_back(char *input, int i)
+static char	*add_space_before(char *str, int i)
 {
+	char	*front;
 	char	*back;
-	char	*ans;
+	char	*ret;
 
-	if (input[i + 1] == ' ')
-	{
-		back = ft_substr(input, i + 1, ft_strlen(input) - i);
-		ans = ft_strdup(back);
-	}
-	else
-	{
-		back = ft_substr(input, i + 1, ft_strlen(input) - i);
-		ans = ft_strjoin(" ", back);
-	}
-	return (free(back), ans);
+	front = ft_substr(str, 0, i);
+	back = ft_substr(str, i, ft_strlen(str) - i);
+	ret = ft_strjoin(front, " ");
+	free(front);
+	front = ft_strjoin(ret, back);
+	free(ret);
+	free(back);
+	return (front);	
+}
+
+static char	*add_space_after(char *str, int i, int len)
+{
+	char	*front;
+	char	*back;
+	char	*ret;
+
+	front = ft_substr(str, 0, i + len);
+	back = ft_substr(str, i + len, ft_strlen(str) - i - len);
+	ret = ft_strjoin(front, " ");
+	free(front);
+	front = ft_strjoin(ret, back);
+	free(ret);
+	free(back);
+	return (front);
 }
 
 // introduces spaces between operators and strings
 char	*input_spacer(char *input)
 {
 	int		i;
-	char	*front;
-	char	*back;
-	int		detected;
+	char	*ret;
+	int		double_op;
 
 	i = 0;
-	detected = 0;
 	while (input[i])
 	{
-		if (input[i] == '<' || input[i] == '>' || input[i] == '|'
-			|| input[i] == '=')
-			detected = 1;
-		if (detected == 1)
+		double_op = is_double_operator(input, i);
+		if (needs_spacing(input, i))
 		{
-			front = settle_front(input, i);
-			back = settle_back(input, i);
-			input = ft_strjoin(front, back);
-			free(front);
-			free(back);
-			i++;
-			detected = 0;
+			if (i == 0 || input[i - 1] != ' ')
+			{
+				ret = add_space_before(input, i);
+				free(input);
+				input = ret;
+				i++;
+			}
+			if (input[i + 1 + double_op] && input[i + 1 + double_op] != ' ')
+			{
+				ret = add_space_after(input, i, 1 + double_op);
+				free(input);
+				input = ret;
+				i++;
+			}
+			i += 1 + double_op;
 		}
-		i++;
+		else
+			i++;
 	}
 	return (input);
-}
-
-// 34 is double quote, 39 is single quote
-// returns 1 if all quotes are closed, 0 if not
-int	check_quotes(char *line)
-{
-	int	i;
-	int	sml;
-	int	dbl;
-
-	sml = 0;
-	dbl = 0;
-	i = 0;
-	while (line[i])
-	{
-		if (line[i] == 34 && !sml)
-			dbl = !dbl;
-		if (line[i] == 39 && !dbl)
-			sml = !dbl;
-		i++;
-	}
-	return (!(sml || dbl));
-}
-
-int	redir_checker(t_node *cmd)
-{
-	if (ft_strcmp(cmd->data, ">") == 0)
-		return (1);
-	if (ft_strcmp(cmd->data, ">>") == 0)
-		return (1);
-	if (ft_strcmp(cmd->data, "<") == 0)
-		return (1);
-	if (ft_strcmp(cmd->data, "<<") == 0)
-		return (1);
-	return (0);
 }

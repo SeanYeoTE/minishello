@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 16:13:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/12 15:37:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ void	free_env(t_env **env)
 }
 
 // init var
-void	init_var(t_shell *store)
+void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 {		
 	store->input_fd = dup(0);
 	store->output_fd = dup(1);
 	store->head = NULL;
 	store->tail = NULL;
+
+	store->quotes = false;
 
 	store->cmd_head = NULL;
 	store->cmd_tail = NULL;
@@ -48,6 +50,10 @@ void	init_var(t_shell *store)
 	store->path = getenv("PATH");
 	store->envp = ft_split(store->path, ':');
 	store->paths = ft_split(store->path, ':');
+	store->pid = NULL;
+
+	store->env = env_head;
+	store->var = var_head;
 }
 
 // scrolling up for history works, but scrolling down after messes up the prompt
@@ -56,6 +62,7 @@ int	main(int argc, char **argv, char **envp)
 	t_shell	store;
 	char	*prompt;
 	char	*input;
+	t_env	*env_head;
 	
 	
 	if (argc != 1 || argv[1])
@@ -63,7 +70,7 @@ int	main(int argc, char **argv, char **envp)
 		perror("run without args");
 		return (0);
 	}
-	
-	// env_init(&store, envp);
-	prompter(&store);
+//might need to put this init into the handler so everytime it is called, it is the most updated.
+	env_head = env_init(&store, envp);
+	prompter(&store, env_head, NULL);
 }

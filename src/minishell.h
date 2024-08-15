@@ -2,6 +2,7 @@
 #define MINISHELL_H
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -11,6 +12,8 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
+
+#include <errno.h>
 
 // global variable
 extern	int		t_exit_status;
@@ -46,11 +49,21 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_var
+{
+	char	*name;
+	char	*data;
+	char	*hidden;
+	struct s_var	*next;
+}	t_var;
+
 typedef struct s_shell
 {
 	char	**envp;
 	int		input_fd;
 	int		output_fd;
+
+	bool	quotes;
 
 	char	*input;
 
@@ -59,32 +72,45 @@ typedef struct s_shell
 
 	t_cmd	*cmd_head;
 	t_cmd	*cmd_tail;
+	int		*pid;
+	int		pipes;
 
 	t_node	*head;
 	t_node	*tail;
 	t_env	*env;
+	t_var	*var;
 }	t_shell;
 
 ///////////////////////////////////////////
 // the ui portion //
 // main.c
 void		free_env(t_env **env);
-void		init_var(t_shell *store);
+void		init_var(t_shell *store, t_env *env_head, t_var *var_head);
 int			main(int argc, char **argv, char **envp);
 int			looper(t_shell *store);
 
 // input_utils.c
 char		*input_spacer(char *input);
-int			check_quotes(char *line);
-int 		redir_checker(t_node *cmd);
 
 // prompt.c
 char		*form_prompt(char *cwd);
 ///////////////////////////////////////////
 // lexer //
+// checks.c
+int			check_quotes(char *line);
+int 		redir_checker(t_node *cmd);
+int			check_builtin(t_node *loop);
+int			is_operator(char c);
+int			is_double_operator(const char *input, int i);
+
+// expansions.c
+char		*expansions(char *input);
+
+// remove_quote.c
+void		remove_quote(t_node *token);
+
 // parse_detection.c
 int			detect_operator(char *str);
-int			check_builtin(t_node *loop);
 int 		full_lexer(char *str, t_shell *store, int index);
 
 // scanner.c
@@ -102,11 +128,11 @@ void		revert_nodes(t_shell *store);
 ///////////////////////////////////////////
 // parser //
 // base.c
-int			prompter(t_shell *store);
+int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
 int			pre_execution(t_shell *store, char *input);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
-int			multiple_function(t_shell *store);
+int			multiple_function(t_shell *store, int count);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // t_cmd_utils.c
@@ -139,9 +165,14 @@ int			builtin_main(t_shell *store, t_node *current, t_node *end);
 int			cd_handler(t_node *current);
 int			echo_handler(t_node *current, t_node *end);
 int			pwd_handler(t_node *current);
-t_env		*create_env_node(char *env_var);
-void		env_init(t_shell *store, char **envp);
+t_env		*create_env_node(char *var);
+t_env		*env_init(t_shell *store, char **envp);
 void		env_handler(t_shell *store);
+t_var		*create_var_node(char *var, char *data);
+t_var		*split_var(char *src, t_var *var);
+t_var		*var_init(char *src, char *name, char *value, t_var *var);
+int			var_handler(char *src, t_var **var);
+int			export_handler(t_env *env, t_var *var);
 
 // redir.c
 
@@ -164,7 +195,6 @@ int 		pipe_counter(t_node *loop);
 // void		reg_ctrl_c(void);
 void		ctrl_c_handler(int signum);
 
-// expansions.c
-char		*expansions(char *input);
+
 
 #endif
