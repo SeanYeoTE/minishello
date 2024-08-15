@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/15 12:49:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/15 17:23:38 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ int	wait_for_pipes(int *pid, int amount)
 	return (EXIT_SUCCESS);
 }
 
+void	run_cmd(t_cmd *cmd, t_shell *store);
+
 void open_fd(t_cmd *cmd, t_shell *store, int end[2], int fd_in)
 {
     printf("Opening file descriptors for command: %s\n", cmd->command->data);
@@ -74,16 +76,16 @@ void open_fd(t_cmd *cmd, t_shell *store, int end[2], int fd_in)
             exit(EXIT_FAILURE);
         }
     }
-
     // Close unused pipe ends
     if (cmd->next)
         close(end[0]);
-    close(end[1]);
-
     printf("File descriptors opened for command: %s\n", cmd->command->data);
     fflush(stdout);
+	run_cmd(cmd, store);
+}
 
-    // Execute command
+void	run_cmd(t_cmd *cmd, t_shell *store)
+{    // Execute command
     if (check_builtin(cmd->command) == 0)
     {
         printf("Executing builtin command: %s\n", cmd->command->data);
@@ -119,6 +121,8 @@ int	ft_fork(t_shell *store, int end[2], int fd_in, t_cmd *cmd)
         fflush(stdout);
 		open_fd(cmd, store, end, fd_in);
 	}
+	else
+		store->fd_in = end[0];
 	i++;
 	printf("Forked process with PID: %d\n", store->pid[i - 1]);
     fflush(stdout);
@@ -132,7 +136,6 @@ int multi_executor(t_shell *store, int num_pipes)
 	t_cmd	*temp;
 	
 	temp = store->cmd_head;
-	fd_in = STDIN_FILENO;
 	while (store->cmd_head)
 	{
 		if (store->cmd_head->next)
@@ -149,11 +152,12 @@ int multi_executor(t_shell *store, int num_pipes)
 		printf("Forking for command: %s\n", store->cmd_head->command->data);
 		fflush(stdout);
 		redir_handler(store, store->cmd_head->redir, NULL);
-		ft_fork(store, end, fd_in, store->cmd_head);
+		printf(store->fd_in == STDIN_FILENO ? "STDIN_FILENO\n" : "NOT STDIN_FILENO\n");
+		ft_fork(store, end, store->fd_in, store->cmd_head);
 		if (store->cmd_head->next)
 		{
 			close(end[1]);
-			fd_in = end[0];
+			store->fd_in = end[0];
 		}
 		// fd_in = check_fd_heredoc(store, end, store->cmd_head);
 		store->cmd_head = store->cmd_head->next;
