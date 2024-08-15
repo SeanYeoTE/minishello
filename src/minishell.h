@@ -103,6 +103,12 @@ int			check_builtin(t_node *loop);
 int			is_operator(char c);
 int			is_double_operator(const char *input, int i);
 
+// expansions.c
+char		*expansions(char *input);
+
+// remove_quote.c
+void		remove_quote(t_node *token);
+
 // parse_detection.c
 int			detect_operator(char *str);
 int 		full_lexer(char *str, t_shell *store, int index);
@@ -189,7 +195,6 @@ int 		pipe_counter(t_node *loop);
 // void		reg_ctrl_c(void);
 void		ctrl_c_handler(int signum);
 
-// expansions.c
-char		*expansions(char *input);
+
 
 #endif
