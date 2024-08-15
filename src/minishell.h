@@ -146,7 +146,7 @@ int			count_cmds(t_shell *store);
 char		*findprocesspath(t_shell *store, char **arr);
 int			executor(t_shell *store, t_node *start, t_node *end);
 char		**argv_creator(t_node *start, t_node *end);
-int			multi_executor(t_shell *store, int	num_pipes);
+
 
 // printer.c
 int 		print_stack(t_node **head);
@@ -185,11 +185,7 @@ void		handle_heredoc_redirection(t_shell *store, char *filename);
 // pipe.c
 
 int 		pipe_counter(t_node *loop);
-// void		pre_interpreter(t_shell *store, t_node *temp);
-// void		single_function(t_shell *store, t_node *start, t_node *end);
-// t_node		*pipe_slicer(t_node *tail);
-// t_node		*get_start(t_node *start, int i);
-// t_node		*get_end(t_node *start, int i);
+int			multi_executor(t_shell *store, int	num_pipes);
 
 //sig_handler.c
 // void		reg_ctrl_c(void);
