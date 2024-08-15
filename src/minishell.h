@@ -63,6 +63,8 @@ typedef struct s_shell
 	int		input_fd;
 	int		output_fd;
 
+	bool	quotes;
+
 	char	*input;
 
 	char	*path;
@@ -89,16 +91,26 @@ int			looper(t_shell *store);
 
 // input_utils.c
 char		*input_spacer(char *input);
-int			check_quotes(char *line);
-int 		redir_checker(t_node *cmd);
 
 // prompt.c
 char		*form_prompt(char *cwd);
 ///////////////////////////////////////////
 // lexer //
+// checks.c
+int			check_quotes(char *line);
+int 		redir_checker(t_node *cmd);
+int			check_builtin(t_node *loop);
+int			is_operator(char c);
+int			is_double_operator(const char *input, int i);
+
+// expansions.c
+char		*expansions(char *input);
+
+// remove_quote.c
+void		remove_quote(t_node *token);
+
 // parse_detection.c
 int			detect_operator(char *str);
-int			check_builtin(t_node *loop);
 int 		full_lexer(char *str, t_shell *store, int index);
 
 // scanner.c
@@ -134,7 +146,7 @@ int			count_cmds(t_shell *store);
 char		*findprocesspath(t_shell *store, char **arr);
 int			executor(t_shell *store, t_node *start, t_node *end);
 char		**argv_creator(t_node *start, t_node *end);
-int			multi_executor(t_shell *store, int	num_pipes);
+
 
 // printer.c
 int 		print_stack(t_node **head);
@@ -173,17 +185,12 @@ void		handle_heredoc_redirection(t_shell *store, char *filename);
 // pipe.c
 
 int 		pipe_counter(t_node *loop);
-// void		pre_interpreter(t_shell *store, t_node *temp);
-// void		single_function(t_shell *store, t_node *start, t_node *end);
-// t_node		*pipe_slicer(t_node *tail);
-// t_node		*get_start(t_node *start, int i);
-// t_node		*get_end(t_node *start, int i);
+int			multi_executor(t_shell *store, int	num_pipes);
 
 //sig_handler.c
 // void		reg_ctrl_c(void);
 void		ctrl_c_handler(int signum);
 
-// expansions.c
-char		*expansions(char *input);
+
 
 #endif
