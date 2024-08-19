@@ -6,7 +6,8 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 14:48:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/13 14:27:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/19 12:50:13 by seayeo           ###   ########.fr       */
+
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +51,10 @@ int	scanner_quote(char *str, int start, t_shell *store)
 				type = 8;
 			count = !count;
 			if (count == true)
-				break ;
+			{
+				if (str[start + i + 1] && str[start + i + 1] == ' ')
+					break;
+			}
 		}
 		i++;
 	}

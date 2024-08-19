@@ -12,6 +12,9 @@
 
 #include "minishell.h"
 
+
+// pls remove this
+
 int  pipe_counter(t_node *loop)
 {
 	int    count;
