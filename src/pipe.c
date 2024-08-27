@@ -6,11 +6,14 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/21 16:56:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/27 14:18:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
+// pls remove this
 
 int  pipe_counter(t_node *loop)
 {
@@ -39,7 +42,7 @@ int	wait_for_pipes(int *pid, int amount)
 		waitpid(pid[i], &status, 0);
 		if (WIFEXITED(status))
 		{
-            printf("PID %d exited with status: %d\n", pid[i], WEXITSTATUS(status));
+      printf("PID %d exited with status: %d\n", pid[i], WEXITSTATUS(status));
 			fflush(stdout);
 		}
 		i++;

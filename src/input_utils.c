@@ -6,14 +6,36 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/09 13:15:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/19 12:27:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static bool	within_quote(const char *input, int index)
+{
+	bool	in_single_quotes;
+	bool	in_double_quotes;
+	
+	in_single_quotes = false;
+	in_double_quotes = false;
+	int i = 0;
+	while (i < index)
+	{
+		if (input[i] == '\'' && !in_double_quotes)
+			in_single_quotes = !in_single_quotes;
+		if (input[i] == '"' && !in_single_quotes)
+			in_double_quotes = !in_double_quotes;
+		i++;
+	}
+	if (in_single_quotes || in_double_quotes)
+		return true;
+	return false;
+}
 static int needs_spacing(const char *input, int i)
 {
+	if (within_quote(input, i))
+		return 0;
 	if (!is_operator(input[i]))
 		return 0;
 	if (i > 0 && input[i - 1] != ' ' && !is_operator(input[i - 1]))
@@ -56,6 +78,8 @@ static char	*add_space_after(char *str, int i, int len)
 	return (front);
 }
 
+
+
 // introduces spaces between operators and strings
 char	*input_spacer(char *input)
 {
@@ -90,3 +114,4 @@ char	*input_spacer(char *input)
 	}
 	return (input);
 }
+
