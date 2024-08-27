@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/15 17:23:38 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/27 14:18:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,19 +91,19 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {    // Execute command
     if (check_builtin(cmd->command) == 0)
     {
-        printf("Executing builtin command: %s\n", cmd->command->data);
+		printf("Executing non-builtin command: %s\n", cmd->command->data);
         fflush(stdout);
-        t_exit_status = builtin_main(store, cmd->command, cmd->redir);
-        printf("Builtin command executed with exit status: %d\n", t_exit_status);
+        t_exit_status = executor(store, cmd->command, NULL);
+        printf("Non-builtin command executed with exit status: %d\n", t_exit_status);
         fflush(stdout);
         exit(t_exit_status);
     }
     else
     {
-        printf("Executing non-builtin command: %s\n", cmd->command->data);
+		printf("Executing builtin command: %s\n", cmd->command->data);
         fflush(stdout);
-        t_exit_status = executor(store, cmd->command, NULL);
-        printf("Non-builtin command executed with exit status: %d\n", t_exit_status);
+        t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+        printf("Builtin command executed with exit status: %d\n", t_exit_status);
         fflush(stdout);
         exit(t_exit_status);
     }
@@ -139,6 +139,7 @@ int multi_executor(t_shell *store, int num_pipes)
 	t_cmd	*temp;
 	
 	temp = store->cmd_head;
+	print_cmd_stack(&store->cmd_head);
 	while (store->cmd_head)
 	{
 		if (store->cmd_head->next)

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/19 12:54:23 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/27 14:22:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	multiple_function(t_shell *store, int count)
 		if (ft_strcmp(back->data, "|") == 0)
 		{
 			temp = back->next;
-			create_cmd(store, front, back, create);
+			create_cmd(store, front, back->prev, create);
 			create = false;
 			front = temp;
 			back = temp;
@@ -96,7 +96,7 @@ int	multiple_function(t_shell *store, int count)
 		else
 			back = back->next;
 	}
-	create_cmd(store, front, back->prev, create);
+	create_cmd(store, front, back, create);
 	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
 	revert_nodes(store);
