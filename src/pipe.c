@@ -40,51 +40,16 @@ int	wait_for_pipes(int *pid, int amount)
 		printf("Waiting for PID: %d\n", pid[i]);
 		fflush(stdout);
 		waitpid(pid[i], &status, 0);
-		if (WIFEXITED(status)) {
-            printf("PID %d exited with status: %d\n", pid[i], WEXITSTATUS(status));
+		if (WIFEXITED(status))
+		{
+      printf("PID %d exited with status: %d\n", pid[i], WEXITSTATUS(status));
 			fflush(stdout);
 		}
 		i++;
 	}
-	waitpid(pid[i], &status, 0);
 	if (WIFEXITED(status))
 		t_exit_status = WEXITSTATUS(status);
 	return (EXIT_SUCCESS);
-}
-
-void	run_cmd(t_cmd *cmd, t_shell *store);
-
-void open_fd(t_cmd *cmd, t_shell *store, int end[2], int fd_in)
-{
-    printf("Opening file descriptors for command: %s\n", cmd->command->data);
-    fflush(stdout);
-
-    // Handle input redirection
-    if (cmd->prev)
-    {
-        if (dup2(fd_in, STDIN_FILENO) < 0)
-        {
-            perror("dup2 failed for input");
-            exit(EXIT_FAILURE);
-        }
-        close(fd_in);
-    }
-
-    // Handle output redirection
-    if (cmd->next)
-    {
-        if (dup2(end[1], STDOUT_FILENO) < 0)
-        {
-            perror("dup2 failed for output");
-            exit(EXIT_FAILURE);
-        }
-    }
-    // Close unused pipe ends
-    if (cmd->next)
-        close(end[0]);
-    printf("File descriptors opened for command: %s\n", cmd->command->data);
-    fflush(stdout);
-	run_cmd(cmd, store);
 }
 
 void	run_cmd(t_cmd *cmd, t_shell *store)
@@ -100,7 +65,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
     }
     else
     {
-		printf("Executing builtin command: %s\n", cmd->command->data);
+ 		printf("Executing builtin command: %s\n", cmd->command->data);
         fflush(stdout);
         t_exit_status = builtin_main(store, cmd->command, cmd->redir);
         printf("Builtin command executed with exit status: %d\n", t_exit_status);
@@ -109,9 +74,42 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
     }
 }
 
-int	ft_fork(t_shell *store, int end[2], int fd_in, t_cmd *cmd)
+void open_fd(t_cmd *cmd, t_shell *store, int end[2])
+{
+    printf("Opening file descriptors for command: %s\n", cmd->command->data);
+    fflush(stdout);
+
+    // Handle input redirection
+    if (store->input_fd != 0)
+    {
+        if (dup2(store->input_fd, STDIN_FILENO) < 0)
+        {
+            perror("dup2 failed for input");
+            exit(EXIT_FAILURE);
+        }
+    }
+    // Handle output redirection
+    if (cmd->next)
+    {
+        if (dup2(end[1], STDOUT_FILENO) < 0)
+        {
+            perror("dup2 failed for output");
+            exit(EXIT_FAILURE);
+        }
+		close(end[1]);
+    }
+	close(store->input_fd);
+    printf("File descriptors opened for command: %s\n", cmd->command->data);
+    fflush(stdout);
+	run_cmd(cmd, store);
+	exit(EXIT_FAILURE);
+}
+
+int	ft_fork(t_shell *store, int end[2], t_cmd *cmd)
 {
 	static int	i = 0;
+	char buffer[1024];
+	int nbytes;
 
 	printf("Forking process\n");
     fflush(stdout);
@@ -122,11 +120,21 @@ int	ft_fork(t_shell *store, int end[2], int fd_in, t_cmd *cmd)
 	{
 		printf("In child process for: %s\n", store->cmd_head->command->data);
         fflush(stdout);
-		open_fd(cmd, store, end, fd_in);
+		open_fd(cmd, store, end);
 	}
 	else
-		store->fd_in = end[0];
-	i++;
+	{
+		printf("Forked process with PID: %d\n", store->pid[i]);
+        fflush(stdout);
+        wait(NULL); // Wait for the child process to complete
+        close(end[1]); // Close the write end of the pipe in the parent
+		while ((nbytes = read(end[0], buffer, sizeof(buffer) - 1)) > 0)
+		{
+			buffer[nbytes] = '\0';
+			printf("%s", buffer);
+		}
+        store->input_fd = end[0];
+	}
 	printf("Forked process with PID: %d\n", store->pid[i - 1]);
     fflush(stdout);
 	return (EXIT_SUCCESS);
@@ -135,18 +143,16 @@ int	ft_fork(t_shell *store, int end[2], int fd_in, t_cmd *cmd)
 int multi_executor(t_shell *store, int num_pipes)
 {
 	int		end[2];
-	int		fd_in;
 	t_cmd	*temp;
 	
 	temp = store->cmd_head;
-	print_cmd_stack(&store->cmd_head);
 	while (store->cmd_head)
 	{
 		if (store->cmd_head->next)
 		{
-			printf("Creating pipe\n");
-            fflush(stdout);
-			if (pipe(end) < 0)
+			// printf("Creating pipe\n");
+            // fflush(stdout);
+			if(pipe(end) == -1)
 				print_error("Pipe failed");
 		}
 		else
@@ -156,13 +162,13 @@ int multi_executor(t_shell *store, int num_pipes)
 		printf("Forking for command: %s\n", store->cmd_head->command->data);
 		fflush(stdout);
 		redir_handler(store, store->cmd_head->redir, NULL);
-		printf(store->fd_in == STDIN_FILENO ? "STDIN_FILENO\n" : "NOT STDIN_FILENO\n");
-		ft_fork(store, end, store->fd_in, store->cmd_head);
-		if (store->cmd_head->next)
-		{
-			close(end[1]);
-			store->fd_in = end[0];
-		}
+		// printf(store->input_fd == STDIN_FILENO ? "STDIN_FILENO\n" : "NOT STDIN_FILENO\n");
+		ft_fork(store, end, store->cmd_head);
+		// if (store->cmd_head->next)
+		// {
+		// 	close(end[1]);
+		// 	store->input_fd = end[0];
+		// }
 		// fd_in = check_fd_heredoc(store, end, store->cmd_head);
 		store->cmd_head = store->cmd_head->next;
 	}

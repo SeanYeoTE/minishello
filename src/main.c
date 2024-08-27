@@ -37,7 +37,7 @@ void	free_env(t_env **env)
 // init var
 void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 {		
-	store->input_fd = dup(0);
+	store->input_fd = STDIN_FILENO;
 	store->output_fd = dup(1);
 	store->head = NULL;
 	store->tail = NULL;
