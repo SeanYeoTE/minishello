@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/27 14:18:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/28 12:11:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int  pipe_counter(t_node *loop)
 	return (count);
 }
 
-int	wait_for_pipes(int *pid, int amount)
+int	wait_for_pipes(t_shell *store, int amount)
 {
 	int	i;
 	int	status;
@@ -37,12 +37,12 @@ int	wait_for_pipes(int *pid, int amount)
 	i = 0;
 	while (i < amount)
 	{
-		printf("Waiting for PID: %d\n", pid[i]);
+		printf("Waiting for PID: %d\n", store->pid[i]);
 		fflush(stdout);
-		waitpid(pid[i], &status, 0);
+		waitpid(store->pid[i], &status, 0);
 		if (WIFEXITED(status))
 		{
-      printf("PID %d exited with status: %d\n", pid[i], WEXITSTATUS(status));
+			printf("PID %d exited with status: %d\n", store->pid[i], WEXITSTATUS(status));
 			fflush(stdout);
 		}
 		i++;
@@ -105,9 +105,8 @@ void open_fd(t_cmd *cmd, t_shell *store, int end[2])
 	exit(EXIT_FAILURE);
 }
 
-int	ft_fork(t_shell *store, int end[2], t_cmd *cmd)
+int	ft_fork(t_shell *store, int end[2], t_cmd *cmd, int i)
 {
-	static int	i = 0;
 	char buffer[1024];
 	int nbytes;
 
@@ -144,7 +143,9 @@ int multi_executor(t_shell *store, int num_pipes)
 {
 	int		end[2];
 	t_cmd	*temp;
+	int		i;
 	
+	i = 0;
 	temp = store->cmd_head;
 	while (store->cmd_head)
 	{
@@ -163,7 +164,7 @@ int multi_executor(t_shell *store, int num_pipes)
 		fflush(stdout);
 		redir_handler(store, store->cmd_head->redir, NULL);
 		// printf(store->input_fd == STDIN_FILENO ? "STDIN_FILENO\n" : "NOT STDIN_FILENO\n");
-		ft_fork(store, end, store->cmd_head);
+		ft_fork(store, end, store->cmd_head, i);
 		// if (store->cmd_head->next)
 		// {
 		// 	close(end[1]);
@@ -171,10 +172,11 @@ int multi_executor(t_shell *store, int num_pipes)
 		// }
 		// fd_in = check_fd_heredoc(store, end, store->cmd_head);
 		store->cmd_head = store->cmd_head->next;
+		i++;
 	}
 	store->cmd_head = temp;
 	printf("Waiting for all child processes\n");
     fflush(stdout);
-	wait_for_pipes(store->pid, store->pipes);
+	wait_for_pipes(store, i);
 	return (0);
 }
