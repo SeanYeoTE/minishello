@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/29 15:52:16 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/02 20:55:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@ int	wait_for_pipes(t_shell *store, int amount)
 			fflush(stdout);
 			t_exit_status = WEXITSTATUS(status);
 		}
+		else if (WIFSIGNALED(status))
+        {
+            printf("Process %d killed by signal %d\n", store->pid[i], WTERMSIG(status));
+        }
 		i++;
 	}
 return (EXIT_SUCCESS);
@@ -96,12 +100,9 @@ void open_fd(t_cmd *cmd, t_shell *store, int end[2])
             perror("dup2 failed for output");
             exit(EXIT_FAILURE);
         }
-    }
-	if (cmd->next)
-	{
-		// close(end[0]);j
 		close(end[1]);
-	}
+    }
+	close(end[0]);
     printf("File descriptors opened for command: %s\n", cmd->command->data);
     fflush(stdout);
 	run_cmd(cmd, store);
@@ -119,21 +120,19 @@ int	ft_fork(t_shell *store, int end[2], t_cmd *cmd, int i)
 		print_error("Fork failed");
 	if (store->pid[i] == 0)
 	{
-		printf("In child process for: %s\n", store->cmd_head->command->data);
+		printf("In child process for: %s\n", cmd->command->data);
         fflush(stdout);
 		open_fd(cmd, store, end);
+		close(end[1]);
 	}
 	else
 	{
 		printf("Forked process with PID: %d\n", store->pid[i]);
         fflush(stdout);
-        // close(end[1]);
 		wait(NULL);
-		close(end[1]);
-		store->input_fd = end[0];
+		// close(end[1]);
+		// store->input_fd = end[0];
 	}
-	printf("Forked process with PID: %d\n", store->pid[i - 1]);
-    fflush(stdout);
 	return (EXIT_SUCCESS);
 }
 
@@ -149,7 +148,7 @@ int multi_executor(t_shell *store, int num_pipes)
 	{
 		if (store->cmd_head->next)
 		{
-			if(pipe(end) == -1)
+			if (pipe(end) == -1)
 				print_error("Pipe failed");
 			printf("Pipe created: read end = %d, write end = %d\n", end[0], end[1]);
 		}
