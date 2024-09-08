@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/03 15:11:07 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/08 19:01:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,11 +157,10 @@ int multi_executor(t_shell *store, int num_pipes)
 		fflush(stdout);
 		// redir_handler(store, store->cmd_head->redir, NULL);
 		ft_fork(store, end, store->cmd_head, i);
-		
+		close(end[1]);
 		// if (store->input_fd != STDIN_FILENO)
 		// 	close(store->input_fd);
 		printf("Input fd set to: %d\n", store->input_fd);
-		// fd_in = check_fd_heredoc(store, end, store->cmd_head);
 		store->cmd_head = store->cmd_head->next;
 		i++;
 	}
@@ -172,3 +171,14 @@ int multi_executor(t_shell *store, int num_pipes)
 	wait_for_pipes(store, i);
 	return (0);
 }
+
+// system fds dont need to be closed, 
+
+// in the child close the unused fds, 
+
+// parent doesnt seem to require closing the fds
+
+// first child closes read fd, cuz read input from std
+// second child closes write fd , cuz print output to std
+
+// im having problems because i am initing fds to be stored in my struct

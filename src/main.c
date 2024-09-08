@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/15 17:18:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/08 18:03:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	free_env(t_env **env)
 void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 {		
 	store->input_fd = STDIN_FILENO;
-	store->output_fd = dup(1);
+	store->output_fd = STDOUT_FILENO;
 	store->head = NULL;
 	store->tail = NULL;
 	store->fd_in = STDIN_FILENO;
