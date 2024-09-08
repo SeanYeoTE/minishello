@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/02 20:55:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/03 15:11:07 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ void open_fd(t_cmd *cmd, t_shell *store, int end[2])
             perror("dup2 failed for output");
             exit(EXIT_FAILURE);
         }
-		close(end[1]);
     }
 	close(end[0]);
     printf("File descriptors opened for command: %s\n", cmd->command->data);
@@ -123,15 +122,15 @@ int	ft_fork(t_shell *store, int end[2], t_cmd *cmd, int i)
 		printf("In child process for: %s\n", cmd->command->data);
         fflush(stdout);
 		open_fd(cmd, store, end);
-		close(end[1]);
+		// close(end[1]);
 	}
 	else
 	{
 		printf("Forked process with PID: %d\n", store->pid[i]);
         fflush(stdout);
 		wait(NULL);
-		// close(end[1]);
-		// store->input_fd = end[0];
+		close(end[1]);
+		store->input_fd = end[0];
 	}
 	return (EXIT_SUCCESS);
 }
@@ -158,16 +157,15 @@ int multi_executor(t_shell *store, int num_pipes)
 		fflush(stdout);
 		// redir_handler(store, store->cmd_head->redir, NULL);
 		ft_fork(store, end, store->cmd_head, i);
-		close(end[1]);
-		if (store->input_fd != STDIN_FILENO)
-			close(store->input_fd);
-		store->input_fd = end[0];
+		
+		// if (store->input_fd != STDIN_FILENO)
+		// 	close(store->input_fd);
 		printf("Input fd set to: %d\n", store->input_fd);
 		// fd_in = check_fd_heredoc(store, end, store->cmd_head);
 		store->cmd_head = store->cmd_head->next;
 		i++;
 	}
-    close(store->input_fd);
+    // close(store->input_fd);
 	store->cmd_head = temp;
 	printf("Waiting for all child processes\n");
     fflush(stdout);
