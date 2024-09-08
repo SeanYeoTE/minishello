@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/04 18:09:12 by mchua            ###   ########.fr       */
+/*   Updated: 2024/08/15 17:18:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,12 @@ void	free_env(t_env **env)
 // init var
 void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 {		
-	store->input_fd = dup(0);
+	store->input_fd = STDIN_FILENO;
 	store->output_fd = dup(1);
 	store->head = NULL;
 	store->tail = NULL;
+	store->fd_in = STDIN_FILENO;
+	store->quotes = false;
 
 	store->cmd_head = NULL;
 	store->cmd_tail = NULL;
@@ -48,6 +50,7 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->path = getenv("PATH");
 	store->envp = ft_split(store->path, ':');
 	store->paths = ft_split(store->path, ':');
+	store->pid = NULL;
 
 	store->env = env_head;
 	store->var = var_head;

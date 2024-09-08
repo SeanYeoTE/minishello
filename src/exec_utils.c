@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/27 15:38:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/08/27 14:17:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,61 +48,23 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	while (start && start->type != 3)
 		start = start->next;
 	exepath = findprocesspath(store, temp);
+	
 	if (exepath == NULL)
 	{
 		perror("Path not found");
-		free(exepath);
+		free(temp);
 		t_exit_status = 127;
 		return (t_exit_status);
 	}
 	dup2(store->output_fd, 1);
 	dup2(store->input_fd, 0);
 	execveresult = execve(exepath, temp, store->envp);
-	if (execveresult == -1)
-		t_exit_status = 127;
 	if (exepath)
 		free(exepath);
 	free(temp);
-	return (t_exit_status);
-}
-
-int	multi_executor(t_shell *store, int	num_pipes)
-{
-	t_cmd	*temp;
-	int		pipefd[num_pipes][2];
-	int		count;
-	int		pids[num_pipes];
-	count = 0;
-	t_exit_status = 0;
-	temp = store->cmd_head;
-	while (temp)
-	{
-		pipe(pipefd[count]);
-		if (count > 0)
-			store->input_fd = pipefd[count - 1][0];
-		store->output_fd = pipefd[count][1];
-		if (check_builtin(temp->command) == 0)
-		{
-			pids[count] = fork();
-			if (pids[count] == 0)
-			{
-				redir_handler(store, temp->redir, NULL);
-				t_exit_status = executor(store, temp->command, NULL);
-				exit(t_exit_status);
-			}
-			else
-			{
-				waitpid(pids[count], &t_exit_status, WUNTRACED);
-				temp = temp->next;
-			}
-			count++;
-		}
-		else
-		{
-			t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
-		}
-	}		
-	return (t_exit_status);
+	printf("Command executed with exit status: %d\n", t_exit_status);
+	fflush(stdout);
+	exit(127);
 }
 
 // intention is to create an argv array for execve

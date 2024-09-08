@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/04 18:11:26 by mchua            ###   ########.fr       */
+/*   Updated: 2024/08/27 14:22:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		prompter(store);
+		prompter(store, env_head, var_head);
 	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
@@ -38,12 +38,13 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 
 int	pre_execution(t_shell *store, char *input)
 {
-	if (input == NULL)
-		store->input = input_spacer(store->input);
+	store->input = input_spacer(store->input);
 	// printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
+	// print_stack(&store->head);
+	remove_quote(store->head);
 	// print_stack(&store->head);
 	parser(store);
 	
@@ -62,7 +63,7 @@ int		parser(t_shell* store)
 		if (pipe_counter(store->head) == 0)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
-			multiple_function(store);
+			multiple_function(store, pipe_counter(store->head));
 	}
 	free_nonessential(store);
 	prompter(store, env_head, var_head);
@@ -70,23 +71,24 @@ int		parser(t_shell* store)
 	return (EXIT_SUCCESS);
 }
 
-int	multiple_function(t_shell *store)
+int	multiple_function(t_shell *store, int count)
 {
 	t_node	*front;
 	t_node 	*back;
 	t_node	*temp;
 	bool	create;
 	
-	puts("multiple_function");
+	// puts("multiple_function");
 	front = store->head;
 	back = store->head;
 	create = true;
+	store->pid = ft_calloc(sizeof(int), count + 2);
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)
 		{
 			temp = back->next;
-			create_cmd(store, front, back, create);
+			create_cmd(store, front, back->prev, create);
 			create = false;
 			front = temp;
 			back = temp;
@@ -94,7 +96,7 @@ int	multiple_function(t_shell *store)
 		else
 			back = back->next;
 	}
-	create_cmd(store, front, back->prev, create);
+	create_cmd(store, front, back, create);
 	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
 	revert_nodes(store);
@@ -108,10 +110,6 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	int	pid1;
 	
 	create_cmd(store, head, tail, true);
-	// puts("command\n");
-	// print_stack(&store->cmd_head->command);
-	// puts("redir\n");
-	// print_stack(&store->cmd_head->redir);
 	if (check_builtin(store->cmd_head->command) == 0)
 	{
 		pid1 = fork();
@@ -131,7 +129,8 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 		// need to change builtiin main; currently still functioning on the old method of
 		// linked lists, would not function as expected when redirections are required
 		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
+		exit(t_exit_status);
 	}
-	return (0);
+	return (t_exit_status);
 }
 		
