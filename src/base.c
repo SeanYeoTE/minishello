@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/27 14:22:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/08 18:02:31 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 
 int	pre_execution(t_shell *store, char *input)
 {
-	store->input = input_spacer(store->input);
+	//store->input = input_spacer(store->input);
 	// printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
@@ -56,8 +56,6 @@ int		parser(t_shell* store)
 	t_env	*env_head;
 	t_var	*var_head;
 
-	env_head = store->env;
-	var_head = store->var;
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -66,6 +64,9 @@ int		parser(t_shell* store)
 			multiple_function(store, pipe_counter(store->head));
 	}
 	free_nonessential(store);
+	env_head = store->env;
+	var_head = store->var;
+	printf ("%p\n", var_head);
 	prompter(store, env_head, var_head);
 
 	return (EXIT_SUCCESS);
@@ -129,7 +130,7 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 		// need to change builtiin main; currently still functioning on the old method of
 		// linked lists, would not function as expected when redirections are required
 		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
-		exit(t_exit_status);
+		//exit(t_exit_status);
 	}
 	return (t_exit_status);
 }

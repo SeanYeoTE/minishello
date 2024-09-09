@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/12 15:25:47 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/08 18:21:46 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 	else if (!ft_strcmp(current->data, "export"))
 		exit_status = export_handler(store->env, store->var);
 	else
-		exit_status = var_handler(current->data, &store->var);
-	exit(exit_status);
+		exit_status = var_handler(current->data, store);
+	//exit(exit_status);
 	return (exit_status);
 }
 
@@ -192,48 +192,113 @@ t_var	*split_var(char *src, t_var *var)
 		value[j] = src[i];
 		j++;
 	}
-	new_var = var_init(src, name, value, var);
-	return (new_var);
-}
+	// new_var = var_init(src, name, value, var);
+	
 
-t_var	*var_init(char *src, char *name, char *value, t_var *var)
-{
-	t_var	*new_var;
-
-	while (var)
-	{
-		if (var->name != NULL)
-		{
-			if (ft_strcmp(name, var->name) == 0)
-			{
-				free(var->data);
-				var->data = NULL;
-				var->data = ft_strdup(value);
-				return (0);
-			}
-		}
-		var = var->next;
-	}
 	new_var = create_var_node(name, value);
 	new_var->hidden = ft_strdup(src);
 	return (new_var);
 }
 
-int	var_handler(char *src, t_var **var)
+// t_var	*var_init(char *src, char *name, char *value, t_var *var)
+// {
+// 	t_var	*new_var;
+// 	t_var	*head;
+
+// 	// current = var;
+// 	// while (current)
+// 	// {
+// 	// 	if (current->name != NULL)
+// 	// 	{
+// 	// 		if (ft_strcmp(name, current->name) == 0)
+// 	// 		{
+// 	// 			free(current->data);
+// 	// 			current->data = NULL;
+// 	// 			current->data = ft_strdup(value);
+// 	// 			return (0);
+// 	// 		}
+// 	// 	}
+// 	// 	current = current->next;
+// 	// }
+// 	head = var;
+// 	new_var = create_var_node(name, value);
+// 	new_var->hidden = ft_strdup(src);
+	
+// 	if (!var)
+// 	{
+// 		var = new_var;
+// 		head = var;
+// 	}
+// 	// while (var->next)
+// 	// {
+// 	// 	var = var->next;
+// 	// 	if (var->next == NULL)
+// 	// 		var->next = new_var;
+// 	// }
+
+
+
+// 	else
+// 	{
+// 		while (var)
+// 		{
+// 			if (var->next == NULL)
+// 			{
+// 				var->next = new_var;
+// 				break ;
+// 			}
+// 			var = var->next;
+// 		}
+// 	}
+// 	// current = current->next;
+// 	// current = new_var;
+// 	var = head;
+// 	return (var);
+// }
+
+static int print_var(t_var *var)
+{
+	t_var	*start;
+	int		count;
+
+	count = 0;
+	start = var;
+	while (start)
+	{
+		printf("Var: %s\n", start->hidden);
+		printf("***************\n");
+		start = start->next;
+		count++;
+	}
+	printf("Total Nodes: %d\n", count);
+	return (0);
+}
+
+int	var_handler(char *src, t_shell *store)
 {
 	t_var	*new_var;
 	t_var	*current;
 
-	current = *var;
-	new_var = split_var(src, current);
-	if (current == NULL)
-		current = new_var;
+	//check env list
+	//check var list
+	new_var = split_var(src, store->var);
+	if (store->var == NULL)
+		store->var = new_var;
 	else
 	{
-		while (current->next)
+		current = store->var;
+		while (current)
+		{
+			if (current->next == NULL)
+			{
+				current->next = new_var;
+				break ;
+			}
 			current = current->next;
-		current->next = new_var;
+		}
 	}
+
+	print_var(store->var);
 	return (0);
 }
 
@@ -245,8 +310,8 @@ int	export_handler(t_env *env, t_var *var)
 	t_env	*new_env;
 
 	var_head = var;
-	puts (var->name);
-	puts (var->data);
+	current = NULL;
+	//check env list
 	while (var_head)
 	{
 		current = env;
