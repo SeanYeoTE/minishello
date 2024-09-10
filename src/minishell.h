@@ -38,6 +38,10 @@ typedef struct s_cmd
 	
 	t_node 	*command;
 	t_node	*redir;
+
+	int		input_fd;
+	int		output_fd;
+	
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 

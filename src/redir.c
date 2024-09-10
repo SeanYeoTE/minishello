@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/06/26 13:55:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 22:20:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@ t_node	*redir_handler(t_shell *store, t_node *loop, t_node *end)
 	}
 	return (loop);
 }
+
+// change redirs to be stored in cmd struct, executor can check for input output fds,
+// to account for redirects and pipes occuring together
 
 void	handle_output_redirection(t_shell *store, char *filename, t_node *start, t_node *end)
 {
