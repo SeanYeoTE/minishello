@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/08 18:02:31 by mchua            ###   ########.fr       */
+/*   Updated: 2024/09/10 20:53:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,14 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 
 int	pre_execution(t_shell *store, char *input)
 {
-	//store->input = input_spacer(store->input);
-	// printf("input: %s\n", store->input);
+	store->input = input_spacer(store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
+	printf("input: %s\n", store->input);
 	full_lexer(store->input, store, 0);
-	// print_stack(&store->head);
+	print_stack(&store->head);
 	remove_quote(store->head);
-	// print_stack(&store->head);
 	parser(store);
-	
 	return (EXIT_SUCCESS);
 }
 
@@ -66,7 +64,6 @@ int		parser(t_shell* store)
 	free_nonessential(store);
 	env_head = store->env;
 	var_head = store->var;
-	printf ("%p\n", var_head);
 	prompter(store, env_head, var_head);
 
 	return (EXIT_SUCCESS);
@@ -79,7 +76,6 @@ int	multiple_function(t_shell *store, int count)
 	t_node	*temp;
 	bool	create;
 	
-	// puts("multiple_function");
 	front = store->head;
 	back = store->head;
 	create = true;
@@ -98,13 +94,10 @@ int	multiple_function(t_shell *store, int count)
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
-	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
 	revert_nodes(store);
 	return (0);
 }
-
-
 
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {

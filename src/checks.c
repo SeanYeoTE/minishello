@@ -6,11 +6,12 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 12:54:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/09 12:59:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/10 21:14:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 // 34 is double quote, 39 is single quote
 // returns 1 if all quotes are closed, 0 if not
 int	check_quotes(char *line)
@@ -66,7 +67,7 @@ int	check_builtin(t_node *loop)
 
 int	is_operator(char c)
 {
-	return (c == '>' || c == '<' || c == '|' || c == '=');
+	return (c == '>' || c == '<' || c == '|');
 }
 
 int	is_double_operator(const char *input, int i)

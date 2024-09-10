@@ -111,6 +111,8 @@ char		*expansions(char *input);
 // remove_quote.c
 void		remove_quote(t_node *token);
 
+///////////////////////////////////////////
+// tokenizer //
 // parse_detection.c
 int			detect_operator(char *str);
 int 		full_lexer(char *str, t_shell *store, int index);
