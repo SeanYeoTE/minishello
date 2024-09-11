@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 22:01:39 by mchua            ###   ########.fr       */
+/*   Updated: 2024/09/11 21:43:17 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ static int	name_counter(char *src)
 	checker = false;
 
 	n = 0;
-	while (src)
+	while (*src != '\0')
 	{
 		if (*src != '=')
 			n++;
@@ -293,7 +293,7 @@ static int	name_counter(char *src)
 		}
 		src++;
 	}
-	if (checker)
+	if (checker || !ft_strchr(src, '='))
 		return (n);
 	else
 		return (0);
@@ -373,64 +373,164 @@ int	var_handler(char *src, t_shell *store)
 	}
 	return (0);
 }
-
-// during export search the entire 
-int	export_handler(t_shell *store)
+static void	handle_export1(t_shell *store, int count)
 {
 	t_env	*current_env;
 	t_var	*current_var;
-	t_env	*new_env;
-	int	count;
-	// var_head = var;
-	// current = NULL;
-	// //check env list
-	// while (var_head)
-	// {
-	// 	current = env;
-	// 	while (current)
-	// 	{
-	// 		if (ft_strcmp(current->var, var->hidden) == 0)
-	// 			return (0);
-	// 		current = current->next;
-	// 	}
-	// 	new_env = create_env_node(var->hidden);
-	// 	current = env;
-	// 	while (current->next)
-	// 		current = current->next;
-	// 	current->next = new_env;
-	// 	new_env->next = NULL;
-	// 	var_head = var_head->next;
-	// }
-	// return (0);
-	count = name_counter(store->var->name) + 1;
-	if (!count)
+
+	current_env = store->env;
+	current_var = store->var;
+	while (current_var)
 	{
-		while (current_var)
+		current_env = store->env;
+		while(current_env)
 		{
-			current_env = store->env;
-			while (current_env)
-			{
-				if (ft_strncmp(current_env->var, current_var->name, count) == 0)
+			if (ft_strncmp(current_env->var, current_var->hidden, count))
+				if (ft_strcmp(current_env->var, current_var->hidden))
+					return ;
+				else
 				{
-					if (!ft_strcmp(current_env->var, current_var->hidden))
-					{
-						free (current_env->var);
-						current_env->var = ft_strdup(current_var->hidden);
-					}
-					break ;
+					free (current_env->var);
+					ft_strdup(current_var->hidden);
+					return ;
 				}
-				else if (current_env->next == NULL)
-				{
-					new_env = create_env_node(current_var->hidden);
-					current_var->next = new_env;
-					break ;
-				}
-				current_env = current_env->next;
-			}
-			current_var = current_var->next;
+			current_env = current_env->next;
+		}
+		current_var = current_var->next;
+	}
+	current_var = store->var;
+	create_env_node(current_var->hidden);
+}
+// during export search the entire 
+int	export_handler(t_shell *store)
+{
+	t_env	*new_env;
+	char	*args;
+	int		count;
+
+	count = name_counter(store->var->name);
+	if (store->cmd_head->command->next->data)
+	{
+		args = store->cmd_head->command->next->data;
+		while (*args)
+		{
+			if (ft_strchr(*args, '='))
 		}
 	}
-	//else if ABC=
-	
-	
+	// else
+	// 	//handle no arguments
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// if (!ft_strchr(args, '=') && current_var->hidden) //ABC
+	// {
+	// 	while (current_var)
+	// 	{
+	// 		current_env = store->env;
+	// 		while (current_env)
+	// 		{
+	// 			if (ft_strncmp(current_env->var, args, count) == 0) //if env variable name = input
+	// 			{
+	// 				if (ft_strcmp(current_env->var, current_var->hidden) == 0) // check if whole variable same
+	// 					break ;
+	// 				else //if not replace
+	// 				{
+	// 					free (current_env->var);
+	// 					ft_strdup (current_var->hidden);
+	// 					break ;
+	// 				}
+	// 			}
+	// 			current_env = current_env->next;
+	// 		}
+	// 		current_var = current_var->next;
+	// 	}
+	// }
+
+	// current_var = store->var;
+	// if (!ft_strchr(store->var->hidden, '=') && count != 0)
+	// {
+	// 	while (current_var)
+	// 	{
+	// 		current_env = store->env;
+	// 		while (current_env)
+	// 		{
+	// 			if (ft_strncmp(current_env->var, current_var->name, count) == 0)
+	// 			{
+	// 				if (!ft_strcmp(current_env->var, current_var->hidden))
+	// 				{
+	// 					free (current_env->var);
+	// 					current_env->var = ft_strdup(current_var->hidden);
+	// 				}
+	// 				break ;
+	// 			}
+	// 			else if (current_env->next == NULL)
+	// 			{
+	// 				new_env = create_env_node(current_var->hidden);
+	// 				current_env->next = new_env;
+	// 				break ;
+	// 			}
+	// 			current_env = current_env->next;
+	// 		}
+	// 		current_var = current_var->next;
+	// 	}
+	// }
+	// else if (ft_strchr(store->var->name, '=') && count != 0)
+	// {
+	// 	while (current_var)
+	// 	{
+	// 		current_env = store->env;
+	// 		while (current_env)
+	// 		{
+	// 			if (ft_strncmp(current_env->var, current_var->name, count) == 0)
+	// 			{
+	// 				if (!ft_strcmp(current_env->var, current_var->hidden))
+	// 				{
+	// 					free (current_env->var);
+	// 					current_env->var = ft_strdup(current_var->hidden);
+	// 				}
+	// 				break ;
+	// 			}
+	// 			else if (current_env->next == NULL)
+	// 			{
+	// 				new_env = create_env_node(current_var->hidden);
+	// 				current_env->next = new_env;
+	// 				break ;
+	// 			}
+	// 			current_env = current_env->next;
+	// 		}
+	// 		current_var = current_var->next;
+	// 	}
+	// }
+	return (0);
 }
