@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 20:53:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/14 12:18:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,12 +104,13 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	int	pid1;
 	
 	create_cmd(store, head, tail, true);
+	print_cmd_stack(&store->cmd_head);
 	if (check_builtin(store->cmd_head->command) == 0)
 	{
 		pid1 = fork();
 		if (pid1 == 0)
 		{
-			redir_handler(store, store->cmd_head->redir, NULL);
+			redir_handler(store->cmd_head, store->cmd_head->redir, NULL);
 			t_exit_status = executor(store, store->cmd_head->command, NULL);
 			exit(t_exit_status);
 		}

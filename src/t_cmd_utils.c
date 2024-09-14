@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/07/27 18:19:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/14 12:20:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	if (end->next)
 		end->next = NULL;
 	detach_redir(cmd);
+	cmd->input_fd = STDIN_FILENO;
+	cmd->output_fd = STDOUT_FILENO;
 	// print_stack_se(store->head, NULL);
 	// print_cmd_stack(&cmd);
 	
@@ -93,13 +95,7 @@ void	detach_redir(t_cmd *new)
 			puts("detach_redir");
 			new->redir = temp;
 
-			temp->prev->next = NULL;			
-			// temp->prev->next = new->redir->next->next;	
-			// if (temp->next->next)
-			// 	temp->next->next->prev = temp->prev;
-			
-			// new->redir->next->next = NULL;
-			// new->redir->prev = NULL;
+			temp->prev->next = NULL;
 		}
 		temp = temp->next;
 	}

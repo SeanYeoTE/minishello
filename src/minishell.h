@@ -184,11 +184,11 @@ int			export_handler(t_env *env, t_var *var);
 
 // redir.c
 
-t_node		*redir_handler(t_shell *store, t_node *loop, t_node *end);
-void		handle_output_redirection(t_shell *store, char *filename, t_node *start, t_node *end);
-void		handle_append_redirection(t_shell *store, char *filename, t_node *start, t_node *end);
-void		handle_input_redirection(t_shell *store, char *filename, t_node *start, t_node *end);
-void		handle_heredoc_redirection(t_shell *store, char *filename);
+t_node		*redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
+void		handle_output_redirection(t_cmd *cmd, char *filename, t_node *start, t_node *end);
+void		handle_append_redirection(t_cmd *cmd, char *filename, t_node *start, t_node *end);
+void		handle_input_redirection(t_cmd *cmd, char *filename, t_node *start, t_node *end);
+// void		handle_heredoc_redirection(t_shell *store, char *filename);
 
 // pipe.c
 
