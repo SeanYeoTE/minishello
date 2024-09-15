@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/27 14:17:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/15 14:43:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // takes in the struct and processnum int, returning
 // full path for execution
-char	*findprocesspath(t_shell *store, char **arr)
+static char	*findprocesspath(t_shell *store, char **arr)
 {
 	int		i;
 	char	*temp;
@@ -36,39 +36,8 @@ char	*findprocesspath(t_shell *store, char **arr)
 	return (joined);
 }
 
-// fd issues, output not redirecting properly
-int	executor(t_shell *store, t_node *start, t_node *end)
-{
-	int		execveresult;
-	char	*exepath;
-	char	**temp;
-	
-	execveresult = 0;
-	temp = argv_creator(start, end);
-	while (start && start->type != 3)
-		start = start->next;
-	exepath = findprocesspath(store, temp);
-	
-	if (exepath == NULL)
-	{
-		perror("Path not found");
-		free(temp);
-		t_exit_status = 127;
-		return (t_exit_status);
-	}
-	dup2(store->output_fd, 1);
-	dup2(store->input_fd, 0);
-	execveresult = execve(exepath, temp, store->envp);
-	if (exepath)
-		free(exepath);
-	free(temp);
-	printf("Command executed with exit status: %d\n", t_exit_status);
-	fflush(stdout);
-	exit(127);
-}
-
 // intention is to create an argv array for execve
-char	**argv_creator(t_node *start, t_node *end)
+static char	**argv_creator(t_node *start, t_node *end)
 {
 	int		i;
 	t_node	*temp;
@@ -92,3 +61,40 @@ char	**argv_creator(t_node *start, t_node *end)
 	ret[i] = '\0';
 	return (ret);
 }
+
+static void	set_fd(t_shell *store, t_cmd *node)
+{
+	
+	if (node->input_fd != 0)
+		dup2(node->input_fd, 0);
+
+	if (node->output_fd != 1)
+		dup2(node->output_fd, 1);
+}
+
+int	executor(t_shell *store, t_node *start, t_node *end)
+{
+	int		execveresult;
+	char	*exepath;
+	char	**temp;
+	
+	execveresult = 0;
+	temp = argv_creator(start, end);
+	while (start && start->type != 3)
+		start = start->next;
+	exepath = findprocesspath(store, temp);
+	if (exepath == NULL)
+	{
+		perror("Path not found");
+		free(temp);
+		t_exit_status = 127;
+		return (t_exit_status);
+	}
+	set_fd(store, store->cmd_head);
+	execveresult = execve(exepath, temp, store->envp);
+	if (exepath)
+		free(exepath);
+	free(temp);
+	exit(127);
+}
+

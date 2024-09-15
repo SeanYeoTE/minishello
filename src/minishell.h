@@ -118,7 +118,6 @@ void		remove_quote(t_node *token);
 ///////////////////////////////////////////
 // tokenizer //
 // parse_detection.c
-int			detect_operator(char *str);
 int 		full_lexer(char *str, t_shell *store, int index);
 
 // scanner.c
@@ -151,9 +150,7 @@ void		detach_redir(t_cmd *new);
 int			count_cmds(t_shell *store);
 
 // exec_utils.c
-char		*findprocesspath(t_shell *store, char **arr);
 int			executor(t_shell *store, t_node *start, t_node *end);
-char		**argv_creator(t_node *start, t_node *end);
 
 
 // printer.c

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/14 12:20:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/15 14:42:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	cmd->redir = NULL;
 	if (create)
 	{
-		// initialising for single command
 		cmd->prev = NULL;
 		cmd->next = NULL;
 		store->cmd_head = cmd;
@@ -51,7 +50,6 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	else
 	{
 		last = get_last_cmd(store->cmd_head);
-		// second executable commands onwards
 		cmd->prev = last;
 		cmd->next = NULL;
 		last->next = cmd;
@@ -63,8 +61,7 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	detach_redir(cmd);
 	cmd->input_fd = STDIN_FILENO;
 	cmd->output_fd = STDOUT_FILENO;
-	// print_stack_se(store->head, NULL);
-	// print_cmd_stack(&cmd);
+
 	
 	return (cmd);
 }
@@ -92,9 +89,7 @@ void	detach_redir(t_cmd *new)
 	{
 		if (redir_checker(temp) == 1)
 		{
-			puts("detach_redir");
 			new->redir = temp;
-
 			temp->prev->next = NULL;
 		}
 		temp = temp->next;

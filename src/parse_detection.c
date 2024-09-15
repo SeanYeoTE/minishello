@@ -6,14 +6,14 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 21:14:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/15 14:51:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // not checking for >> redirection to file
-int	detect_operator(char *str)
+static int	detect_operator(char *str)
 {
 	if ((*str == '|') || (*str == '>') || (*str == '<'))
 		return (1);
@@ -25,8 +25,6 @@ int	detect_operator(char *str)
 		return (1);
 	return (0);
 }
-
-
 
 int	full_lexer(char *str, t_shell *store, int index)
 {
