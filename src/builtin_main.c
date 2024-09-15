@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/11 21:43:17 by mchua            ###   ########.fr       */
+/*   Updated: 2024/09/15 16:21:40 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,7 +293,7 @@ static int	name_counter(char *src)
 		}
 		src++;
 	}
-	if (checker || !ft_strchr(src, '='))
+	if (checker)
 		return (n);
 	else
 		return (0);
@@ -373,164 +373,107 @@ int	var_handler(char *src, t_shell *store)
 	}
 	return (0);
 }
-static void	handle_export1(t_shell *store, int count)
-{
-	t_env	*current_env;
-	t_var	*current_var;
 
-	current_env = store->env;
-	current_var = store->var;
-	while (current_var)
+// during export search the entire
+static int	args_key_counter(char *src)
+{
+	int	i;
+
+	i = 0;
+	while (*src != '\0')
 	{
-		current_env = store->env;
-		while(current_env)
-		{
-			if (ft_strncmp(current_env->var, current_var->hidden, count))
-				if (ft_strcmp(current_env->var, current_var->hidden))
-					return ;
-				else
-				{
-					free (current_env->var);
-					ft_strdup(current_var->hidden);
-					return ;
-				}
-			current_env = current_env->next;
-		}
-		current_var = current_var->next;
+		src++;
+		i++;
 	}
-	current_var = store->var;
-	create_env_node(current_var->hidden);
+	return (i);
 }
-// during export search the entire 
+
+static	t_env	*get_env_loc(t_env *env_list, char *arg)
+{
+	char	*env_data;
+	while (env_list)
+	{
+		env_data = env_list->var;
+		while (*arg)
+		{
+			if (*env_data == *arg)
+			{
+				arg++;
+				env_data++;
+			}
+			else
+				break ;
+		}
+		env_list = env_list->next;
+	}
+	return (env_list);
+}
+
+static t_var	*get_var_loc(char *arg, t_var *var_list)
+{
+	int	count;
+	char	*var_data;
+	if (!var_list)
+		return (NULL);
+	count = ft_strlen(arg);
+	while (var_list)
+	{
+		var_data = var_list->name;
+		if (ft_strncmp(var_data, arg, count) == 0 || ft_strchr(arg, '=') != NULL)
+			return (var_list);
+		var_list = var_list->next;
+	}
+	return (NULL);
+}
+
+static bool	is_in_env(t_env *env_list, char *arg, t_shell *store)
+{
+	int	count;
+	t_env	*current_env;
+	count = args_key_counter(arg);
+
+	current_env = get_env_loc(env_list, arg);
+	if (!current_env)
+		return (false);
+	return (true);
+}
+
+static t_env	*get_last_env(t_env *current_env)
+{
+	t_env	*last_env;
+
+	last_env = current_env;
+	while (last_env->next)
+		last_env = last_env->next;
+	return (last_env);
+}
+
 int	export_handler(t_shell *store)
 {
 	t_env	*new_env;
-	char	*args;
-	int		count;
+	t_env	*current_env;
+	t_var	*current_var;
+	char	*arg;
 
-	count = name_counter(store->var->name);
-	if (store->cmd_head->command->next->data)
-	{
-		args = store->cmd_head->command->next->data;
-		while (*args)
+	current_env = store->env;
+	arg = store->cmd_head->command->next->data;
+	current_var = get_var_loc(arg, store->var);
+	if (is_in_env(current_env, arg, store))
 		{
-			if (ft_strchr(*args, '='))
+			current_env = get_env_loc(store->env, arg);
+			free (current_env->var);
+			if (current_var)
+				current_env->var = ft_strdup(store->var->hidden);
+			else
+				current_env->var = ft_strdup(arg);
 		}
+	else
+	{
+		current_env = get_last_env(current_env);
+		if (current_var)
+			current_env->next = create_env_node(store->var->hidden);			
+		else
+			current_env->next = create_env_node(arg);
 	}
-	// else
-	// 	//handle no arguments
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// if (!ft_strchr(args, '=') && current_var->hidden) //ABC
-	// {
-	// 	while (current_var)
-	// 	{
-	// 		current_env = store->env;
-	// 		while (current_env)
-	// 		{
-	// 			if (ft_strncmp(current_env->var, args, count) == 0) //if env variable name = input
-	// 			{
-	// 				if (ft_strcmp(current_env->var, current_var->hidden) == 0) // check if whole variable same
-	// 					break ;
-	// 				else //if not replace
-	// 				{
-	// 					free (current_env->var);
-	// 					ft_strdup (current_var->hidden);
-	// 					break ;
-	// 				}
-	// 			}
-	// 			current_env = current_env->next;
-	// 		}
-	// 		current_var = current_var->next;
-	// 	}
-	// }
-
-	// current_var = store->var;
-	// if (!ft_strchr(store->var->hidden, '=') && count != 0)
-	// {
-	// 	while (current_var)
-	// 	{
-	// 		current_env = store->env;
-	// 		while (current_env)
-	// 		{
-	// 			if (ft_strncmp(current_env->var, current_var->name, count) == 0)
-	// 			{
-	// 				if (!ft_strcmp(current_env->var, current_var->hidden))
-	// 				{
-	// 					free (current_env->var);
-	// 					current_env->var = ft_strdup(current_var->hidden);
-	// 				}
-	// 				break ;
-	// 			}
-	// 			else if (current_env->next == NULL)
-	// 			{
-	// 				new_env = create_env_node(current_var->hidden);
-	// 				current_env->next = new_env;
-	// 				break ;
-	// 			}
-	// 			current_env = current_env->next;
-	// 		}
-	// 		current_var = current_var->next;
-	// 	}
-	// }
-	// else if (ft_strchr(store->var->name, '=') && count != 0)
-	// {
-	// 	while (current_var)
-	// 	{
-	// 		current_env = store->env;
-	// 		while (current_env)
-	// 		{
-	// 			if (ft_strncmp(current_env->var, current_var->name, count) == 0)
-	// 			{
-	// 				if (!ft_strcmp(current_env->var, current_var->hidden))
-	// 				{
-	// 					free (current_env->var);
-	// 					current_env->var = ft_strdup(current_var->hidden);
-	// 				}
-	// 				break ;
-	// 			}
-	// 			else if (current_env->next == NULL)
-	// 			{
-	// 				new_env = create_env_node(current_var->hidden);
-	// 				current_env->next = new_env;
-	// 				break ;
-	// 			}
-	// 			current_env = current_env->next;
-	// 		}
-	// 		current_var = current_var->next;
-	// 	}
-	// }
 	return (0);
 }
