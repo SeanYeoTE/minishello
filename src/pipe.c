@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/08 19:01:39 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/15 18:13:56 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,63 +37,74 @@ int	wait_for_pipes(t_shell *store, int amount)
 	i = 0;
 	while (i < amount)
 	{
-		printf("Waiting for PID: %d\n", store->pid[i]);
-		fflush(stdout);
+		// printf("Waiting for PID: %d\n", store->pid[i]);
+		// fflush(stdout);
 		waitpid(store->pid[i], &status, 0);
 		if (WIFEXITED(status))
 		{
-			printf("PID %d exited with status: %d\n", store->pid[i], WEXITSTATUS(status));
-			fflush(stdout);
+			// printf("PID %d exited with status: %d\n", store->pid[i], WEXITSTATUS(status));
+			// fflush(stdout);
 			t_exit_status = WEXITSTATUS(status);
 		}
 		else if (WIFSIGNALED(status))
         {
-            printf("Process %d killed by signal %d\n", store->pid[i], WTERMSIG(status));
+            // printf("Process %d killed by signal %d\n", store->pid[i], WTERMSIG(status));
         }
 		i++;
 	}
-return (EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }
 
 void	run_cmd(t_cmd *cmd, t_shell *store)
 {    // Execute command
     if (check_builtin(cmd->command) == 0)
     {
-		printf("Executing non-builtin command: %s\n", cmd->command->data);
-        fflush(stdout);
+		// printf("Executing non-builtin command: %s\n", cmd->command->data);
+        // fflush(stdout);
         t_exit_status = executor(store, cmd->command, NULL);
-        printf("Non-builtin command executed with exit status: %d\n", t_exit_status);
-        fflush(stdout);
+        // printf("Non-builtin command executed with exit status: %d\n", t_exit_status);
+        // fflush(stdout);
         exit(t_exit_status);
     }
     else
     {
- 		printf("Executing builtin command: %s\n", cmd->command->data);
-        fflush(stdout);
+ 		// printf("Executing builtin command: %s\n", cmd->command->data);
+        // fflush(stdout);
         t_exit_status = builtin_main(store, cmd->command, cmd->redir);
-        printf("Builtin command executed with exit status: %d\n", t_exit_status);
-        fflush(stdout);
+        // printf("Builtin command executed with exit status: %d\n", t_exit_status);
+        // fflush(stdout);
         exit(t_exit_status);
     }
 }
 
-void open_fd(t_cmd *cmd, t_shell *store, int end[2])
+void open_fd(t_cmd *cmd, t_shell *store, int end[2], int i)
 {
-    printf("Opening file descriptors for command: %s\n", cmd->command->data);
-    fflush(stdout);
+    // printf("Opening file descriptors for command: %s\n", cmd->command->data);
+    // fflush(stdout);
 
     // Handle input redirection
-    if (store->input_fd != 0)
+    if (cmd->input_fd != 0)
     {
         if (dup2(store->input_fd, STDIN_FILENO) < 0)
         {
             perror("dup2 failed for input");
             exit(EXIT_FAILURE);
         }
-		close(store->input_fd);
+		close(cmd->input_fd);
     }
+	if (i == 0)
+		close(end[0]);
     // Handle output redirection
-    if (cmd->next)
+	if (cmd->redir != NULL)
+	{
+		if (dup2(cmd->output_fd, STDOUT_FILENO) < 0)
+		{
+			perror("dup2 failed for output");
+			exit(EXIT_FAILURE);
+		}
+		close(end[1]);
+	}
+    else if (cmd->redir == NULL && cmd->next)
     {
         if (dup2(end[1], STDOUT_FILENO) < 0)
         {
@@ -101,9 +112,8 @@ void open_fd(t_cmd *cmd, t_shell *store, int end[2])
             exit(EXIT_FAILURE);
         }
     }
-	close(end[0]);
-    printf("File descriptors opened for command: %s\n", cmd->command->data);
-    fflush(stdout);
+	// printf("File descriptors opened for command: %s\n", cmd->command->data);
+    // fflush(stdout);
 	run_cmd(cmd, store);
 	exit(EXIT_FAILURE);
 }
@@ -112,22 +122,22 @@ int	ft_fork(t_shell *store, int end[2], t_cmd *cmd, int i)
 {
 	int nbytes;
 
-	printf("Forking process\n");
-    fflush(stdout);
+	// printf("Forking process\n");
+    // fflush(stdout);
 	store->pid[i] = fork();
 	if (store->pid[i] < 0)
 		print_error("Fork failed");
 	if (store->pid[i] == 0)
 	{
-		printf("In child process for: %s\n", cmd->command->data);
-        fflush(stdout);
-		open_fd(cmd, store, end);
+		// printf("In child process for: %s\n", cmd->command->data);
+        // fflush(stdout);
+		open_fd(cmd, store, end, i);
 		// close(end[1]);
 	}
 	else
 	{
-		printf("Forked process with PID: %d\n", store->pid[i]);
-        fflush(stdout);
+		// printf("Forked process with PID: %d\n", store->pid[i]);
+        // fflush(stdout);
 		wait(NULL);
 		close(end[1]);
 		store->input_fd = end[0];
@@ -149,32 +159,36 @@ int multi_executor(t_shell *store, int num_pipes)
 		{
 			if (pipe(end) == -1)
 				print_error("Pipe failed");
-			printf("Pipe created: read end = %d, write end = %d\n", end[0], end[1]);
+			// printf("Pipe created: read end = %d, write end = %d\n", end[0], end[1]);
 		}
 		else
 			end[1] = STDOUT_FILENO;
-		printf("Forking for command: %s\n", store->cmd_head->command->data);
-		fflush(stdout);
-		// redir_handler(store, store->cmd_head->redir, NULL);
+		// printf("Forking for command: %s\n", store->cmd_head->command->data);
+		// fflush(stdout);
+		redir_handler(store->cmd_head, store->cmd_head->redir, NULL);
+		print_cmd_stack(&store->cmd_head);
 		ft_fork(store, end, store->cmd_head, i);
-		close(end[1]);
 		// if (store->input_fd != STDIN_FILENO)
 		// 	close(store->input_fd);
-		printf("Input fd set to: %d\n", store->input_fd);
+		// printf("Input fd set to: %d\n", store->input_fd);
 		store->cmd_head = store->cmd_head->next;
 		i++;
 	}
     // close(store->input_fd);
 	store->cmd_head = temp;
-	printf("Waiting for all child processes\n");
-    fflush(stdout);
+	// printf("Waiting for all child processes\n");
+    // fflush(stdout);
 	wait_for_pipes(store, i);
 	return (0);
 }
 
 // system fds dont need to be closed, 
 
-// in the child close the unused fds, 
+// // in the child close the unused fds, 
+// which are the read end of the pipe,
+
+// compare write end to cmd->output_fd, if not equal, close write end
+// prio is output_fd
 
 // parent doesnt seem to require closing the fds
 
