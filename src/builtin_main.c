@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/15 18:11:01 by mchua            ###   ########.fr       */
+/*   Updated: 2024/09/18 20:31:44 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -462,14 +462,16 @@ int	export_handler(t_shell *store)
 	char	*arg;
 
 	current_env = store->env;
+	current_var = NULL;
 	arg = store->cmd_head->command->next->data;
+	if (store->var)
+		current_var = get_var_loc(arg, store->var, current_env);
 	if (is_in_env(current_env, arg, store))
 		{
 			current_env = get_env_loc(store->env, arg);
-			current_var = get_var_loc(arg, store->var, current_env);
 			free (current_env->var);
 			if (current_var)
-				current_env->var = ft_strdup(store->var->hidden);
+				current_env->var = ft_strdup(current_var->hidden);
 			else if (!current_var && ft_strchr(arg, '='))
 				current_env->var = ft_strdup(arg);
 		}
@@ -477,9 +479,26 @@ int	export_handler(t_shell *store)
 	{
 		current_env = get_last_env(current_env);
 		if (current_var)
-			current_env->next = create_env_node(store->var->hidden);			
+			current_env->next = create_env_node(current_var->hidden);			
 		else
 			current_env->next = create_env_node(arg);
 	}
 	return (0);
+}
+
+//unset
+int	unset_handler(t_shell *store)
+{
+	t_env	*current_env;
+	char	*arg;
+
+	//print not enough variable
+	arg = store->cmd_head->command->next->data;
+	if (!arg)
+		ft_printf("unset: not enough arguments");
+	else
+	{
+		current_env = get_env_loc(store->env, arg);
+		
+	}
 }
