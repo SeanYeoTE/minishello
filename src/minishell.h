@@ -175,6 +175,7 @@ t_var		*split_var(char *src, t_var *var);
 t_var		*var_init(char *src, char *name, char *value, t_var *var);
 int			var_handler(char *src, t_shell *store);
 int			export_handler(t_shell *store);
+int			unset_handler(t_shell *store);
 
 // redir.c
 

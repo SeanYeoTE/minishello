@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/18 20:31:44 by mchua            ###   ########.fr       */
+/*   Updated: 2024/09/18 20:47:11 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 		env_handler(store);
 	else if (!ft_strcmp(current->data, "export"))
 		exit_status = export_handler(store);
+	else if (ft_strcmp(current->data, "unset"))
+		exit_status = unset_handler(store);
 	else
 		exit_status = var_handler(current->data, store);
 	//exit(exit_status);
@@ -487,6 +489,20 @@ int	export_handler(t_shell *store)
 }
 
 //unset
+static bool	is_equal(t_env *current_env)
+{
+	int		i;
+
+	i = 0;
+	while (current_env->var[i])
+	{
+		if (current_env->var[i] == '=')
+			return true;
+		i++;
+	}
+	return false;
+}
+
 int	unset_handler(t_shell *store)
 {
 	t_env	*current_env;
@@ -495,10 +511,14 @@ int	unset_handler(t_shell *store)
 	//print not enough variable
 	arg = store->cmd_head->command->next->data;
 	if (!arg)
-		ft_printf("unset: not enough arguments");
-	else
-	{
-		current_env = get_env_loc(store->env, arg);
+		printf("unset: not enough arguments");
+	else if (is_equal(current_env))
+		printf("unset: %s: invalid parameter name", arg);
+	// else
+	// {
+	// 	current_env = get_env_loc(store->env, arg);
+
 		
-	}
+	// }
+	return (0);
 }
