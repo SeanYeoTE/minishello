@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/18 15:39:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/20 13:42:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,24 +26,18 @@ int	pipe_counter(t_node *loop)
 	return (count);
 }
 
-int	wait_for_pipes(t_shell *store, int amount)
+int	wait_for_command(pid_t pid)
 {
-	int	i;
 	int	status;
 	
-	i = 0;
-	while (i < amount)
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
 	{
-		waitpid(store->pid[i], &status, 0);
-		if (WIFEXITED(status))
-		{
-			t_exit_status = WEXITSTATUS(status);
-		}
-		else if (WIFSIGNALED(status))
-		{
-			t_exit_status = WTERMSIG(status) + 128;
-		}
-		i++;
+		t_exit_status = WEXITSTATUS(status);
+	}
+	else if (WIFSIGNALED(status))
+	{
+		t_exit_status = WTERMSIG(status) + 128;
 	}
 	return (EXIT_SUCCESS);
 }
@@ -82,62 +76,67 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 	}
 }
 
-int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int i)
+int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 {
-	store->pid[i] = fork();
-	if (store->pid[i] < 0)
+	pid_t	pid;
+
+	pid = fork();
+	if (pid < 0)
 	{
 		perror("Fork failed");
 		return EXIT_FAILURE;
 	}
 	
-	if (store->pid[i] == 0)
+	if (pid == 0)
 	{
 		setup_pipes(in_fd, out_fd, cmd);
 		redir_handler(cmd, cmd->redir, NULL);
 		run_cmd(cmd, store);
 	}
 	
-	if (in_fd != STDIN_FILENO)
-		close(in_fd);
-	if (out_fd != STDOUT_FILENO)
-		close(out_fd);
-	
-	return EXIT_SUCCESS;
+	return pid;
 }
 
 int	multi_executor(t_shell *store, int num_pipes)
 {
-	int		pipe_fds[2][2];
+	int		pipe_fds[2];
 	int		in_fd = STDIN_FILENO;
-	int		i = 0;
 	t_cmd	*cmd = store->cmd_head;
+	pid_t	last_pid;
 
 	while (cmd)
 	{
 		if (cmd->next)
 		{
-			if (pipe(pipe_fds[i % 2]) == -1)
+			if (pipe(pipe_fds) == -1)
 			{
 				perror("Pipe failed");
 				return EXIT_FAILURE;
 			}
 		}
 
-		int out_fd = cmd->next ? pipe_fds[i % 2][1] : STDOUT_FILENO;
+		int out_fd = cmd->next ? pipe_fds[1] : STDOUT_FILENO;
 
-		if (execute_command(store, cmd, in_fd, out_fd, i) == EXIT_FAILURE)
+		last_pid = execute_command(store, cmd, in_fd, out_fd);
+		if (last_pid == EXIT_FAILURE)
 			return EXIT_FAILURE;
+
+		if (in_fd != STDIN_FILENO)
+			close(in_fd);
 
 		if (cmd->next)
 		{
-			close(pipe_fds[i % 2][1]);
-			in_fd = pipe_fds[i % 2][0];
+			close(pipe_fds[1]);
+			in_fd = pipe_fds[0];
 		}
 
+		if (!cmd->next)  // Only wait for the last command
+			wait_for_command(last_pid);
+		else
+			waitpid(last_pid, NULL, 0);  // Wait but don't update exit status
+
 		cmd = cmd->next;
-		i++;
 	}
 
-	return wait_for_pipes(store, i);
+	return EXIT_SUCCESS;
 }
