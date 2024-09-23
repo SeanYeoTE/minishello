@@ -6,13 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/23 13:39:07 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/23 19:20:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
+void	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 {
 	char 	cwd[1024];
 	char	*prompt;
@@ -28,10 +28,11 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	{
 		free_nonessential(store);
 		prompter(store, env_head, var_head);
+		return;
 	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
-		return (print_error("minishell: syntax error\n"));
+		return (print_error("minishell: syntax error\n", NULL));
 	pre_execution(store, NULL);
 	return (EXIT_SUCCESS);
 }

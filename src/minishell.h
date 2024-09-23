@@ -158,7 +158,7 @@ int 		print_stack(t_node **head);
 int 		print_stack_se(t_node *start, t_node *end);
 int			print_argv(char **argv);
 int			print_cmd_stack(t_cmd **head);
-int			print_error(char *str);
+int			print_error(char *str, char *arg);
 
 // mem_utils.c
 void		freechararray(char **v);
@@ -182,10 +182,10 @@ int			export_handler(t_env *env, t_var *var);
 // redir.c
 
 t_node		*redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
-void		handle_output_redirection(t_cmd *cmd, char *filename, t_node *start, t_node *end);
-void		handle_append_redirection(t_cmd *cmd, char *filename, t_node *start, t_node *end);
-void		handle_input_redirection(t_cmd *cmd, char *filename, t_node *start, t_node *end);
-// void		handle_heredoc_redirection(t_shell *store, char *filename);
+void		handle_output_redirection(t_cmd *cmd, char *filename);
+void		handle_append_redirection(t_cmd *cmd, char *filename);
+void		handle_input_redirection(t_cmd *cmd, char *filename);
+void		handle_heredoc_redirection(t_cmd *cmd, char *delimiter);
 
 // pipe.c
 int			wait_for_command(pid_t pid);
