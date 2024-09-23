@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/15 14:33:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/23 13:39:07 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,7 @@ int	pre_execution(t_shell *store, char *input)
 	store->input = input_spacer(store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
-	// printf("input: %s\n", store->input);
 	full_lexer(store->input, store, 0);
-	// print_stack(&store->head);
 	remove_quote(store->head);
 	parser(store);
 	return (EXIT_SUCCESS);
@@ -65,7 +63,6 @@ int		parser(t_shell* store)
 	env_head = store->env;
 	var_head = store->var;
 	prompter(store, env_head, var_head);
-
 	return (EXIT_SUCCESS);
 }
 
@@ -98,34 +95,3 @@ int	multiple_function(t_shell *store, int count)
 	revert_nodes(store);
 	return (0);
 }
-
-int	single_function(t_shell *store, t_node *head, t_node *tail)
-{
-	int	pid1;
-	
-	create_cmd(store, head, tail, true);
-	// print_cmd_stack(&store->cmd_head);
-	if (check_builtin(store->cmd_head->command) == 0)
-	{
-		pid1 = fork();
-		if (pid1 == 0)
-		{
-			redir_handler(store->cmd_head, store->cmd_head->redir, NULL);
-			t_exit_status = executor(store, store->cmd_head->command, NULL);
-			exit(t_exit_status);
-		}
-		else
-			waitpid(pid1, &t_exit_status, WUNTRACED);
-		if (WIFEXITED(t_exit_status))
-			t_exit_status = WEXITSTATUS(t_exit_status);
-	}
-	else
-	{
-		// need to change builtiin main; currently still functioning on the old method of
-		// linked lists, would not function as expected when redirections are required
-		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
-		//exit(t_exit_status);
-	}
-	return (t_exit_status);
-}
-		

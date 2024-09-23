@@ -27,6 +27,7 @@ SRC =	main.c \
 		redir.c \
 		sig_handler.c \
 		pipe.c \
+		single.c \
 		expansions.c \
 		remove_quote.c \
 

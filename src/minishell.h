@@ -188,7 +188,7 @@ void		handle_input_redirection(t_cmd *cmd, char *filename, t_node *start, t_node
 // void		handle_heredoc_redirection(t_shell *store, char *filename);
 
 // pipe.c
-
+int			wait_for_command(pid_t pid);
 int 		pipe_counter(t_node *loop);
 int			multi_executor(t_shell *store, int	num_pipes);
 
