@@ -24,6 +24,15 @@ SRC =	main.c \
 		printer.c \
 		mem_utils.c \
 		builtin_main.c \
+		cd.c \
+		echo.c \
+		env.c \
+		export.c \
+		export_utils.c \
+		pwd.c \
+		unset.c \
+		var_handler.c \
+		var_utils.c \
 		redir.c \
 		sig_handler.c \
 		pipe.c \
