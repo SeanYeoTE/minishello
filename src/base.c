@@ -6,19 +6,19 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/23 19:20:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:36:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	prompter(t_shell *store, t_env *env_head, t_var *var_head)
+int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 {
 	char 	cwd[1024];
 	char	*prompt;
 	
 	signal(SIGINT, ctrl_c_handler);
-	init_var(store, env_head, var_head);
+	init_var(store, env_head, var_head, store->envp);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
@@ -27,12 +27,11 @@ void	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		prompter(store, env_head, var_head);
-		return;
+		return (prompter(store, env_head, var_head));
 	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
-		return (print_error("minishell: syntax error\n", NULL));
+		return (print_error("syntax error", NULL));
 	pre_execution(store, NULL);
 	return (EXIT_SUCCESS);
 }
@@ -63,8 +62,7 @@ int		parser(t_shell* store)
 	free_nonessential(store);
 	env_head = store->env;
 	var_head = store->var;
-	prompter(store, env_head, var_head);
-	return (EXIT_SUCCESS);
+	return (prompter(store, env_head, var_head));
 }
 
 int	multiple_function(t_shell *store, int count)

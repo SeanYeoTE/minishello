@@ -91,7 +91,7 @@ typedef struct s_shell
 // the ui portion //
 // main.c
 void		free_env(t_env **env);
-void		init_var(t_shell *store, t_env *env_head, t_var *var_head);
+void		init_var(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
 int			main(int argc, char **argv, char **envp);
 int			looper(t_shell *store);
 
@@ -185,8 +185,9 @@ t_node		*redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
 void		handle_output_redirection(t_cmd *cmd, char *filename);
 void		handle_append_redirection(t_cmd *cmd, char *filename);
 void		handle_input_redirection(t_cmd *cmd, char *filename);
-void		handle_heredoc_redirection(t_cmd *cmd, char *delimiter);
-
+char		*handle_heredoc_redirection(t_cmd *cmd, char *delimiter, int heredoc_level);
+void		apply_heredocs(t_cmd *cmd, char **heredoc_contents, int heredoc_count);
+char		*ft_read_fd(int fd);
 // pipe.c
 int			wait_for_command(pid_t pid);
 int 		pipe_counter(t_node *loop);

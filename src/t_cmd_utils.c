@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/15 14:42:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:44:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	t_cmd	*last;
 	
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
+	if (!cmd)
+	{
+		fprintf(stderr, "ERROR: Failed to allocate memory for cmd\n");
+		return NULL;
+	}
 	cmd->redir = NULL;
 	if (create)
 	{
@@ -61,8 +66,6 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	detach_redir(cmd);
 	cmd->input_fd = STDIN_FILENO;
 	cmd->output_fd = STDOUT_FILENO;
-
-	
 	return (cmd);
 }
 
@@ -70,12 +73,18 @@ int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 {
 	t_cmd	*new;
 	t_node	*temp;
-	
+
 	if (start == NULL)
+	{
 		return (1);
+	}
 	else
 	{
-		init_cmd(store, start, end, create);
+		new = init_cmd(store, start, end, create);
+		if (!new)
+		{
+			return (1);
+		}
 		return (0);
 	}
 }
@@ -90,7 +99,11 @@ void	detach_redir(t_cmd *new)
 		if (redir_checker(temp) == 1)
 		{
 			new->redir = temp;
-			temp->prev->next = NULL;
+			if (temp->prev)
+			{
+				temp->prev->next = NULL;
+			}
+			break;
 		}
 		temp = temp->next;
 	}

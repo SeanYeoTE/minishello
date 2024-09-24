@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/23 13:38:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:43:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,12 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
-	
 	if (check_builtin(store->cmd_head->command) == 0)
+	{
 		return (execute_external_command(store, store->cmd_head));
+	}
 	else
+	{
 		return (execute_builtin_command(store, store->cmd_head));
+	}
 }

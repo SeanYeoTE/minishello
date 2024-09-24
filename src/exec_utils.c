@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/23 18:27:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:43:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,19 @@ static char	*findprocesspath(t_shell *store, char **arr)
 	char	*joined;
 
 	i = 0;
+	joined = NULL;
 	while ((store->paths)[i])
 	{
 		temp = ft_strjoin((store->paths)[i], "/");
-		joined = ft_strjoin(temp, arr[0]);
-		free(temp);
+        joined = ft_strjoin(temp, arr[0]);
 		if (access(joined, X_OK) == 0)
-			return (joined);
+			break ;
 		free(joined);
+		joined = NULL;
 		i++;
 	}
-	return (NULL);
+	free(temp);
+	return (joined);
 }
 
 static char	**argv_creator(t_node *start, t_node *end)
@@ -45,12 +47,15 @@ static char	**argv_creator(t_node *start, t_node *end)
 		temp = temp->next;
 		i++;
 	}
-	if (!(ret = (char **)malloc(sizeof(char *) * (i + 1))))
-		return (NULL);
+	ret = (char **)malloc(sizeof(char *) * (i + 1));
 	i = 0;
 	while (start && start != end)
-		ret[i++] = ft_strdup(start->data);
-	ret[i] = NULL;
+	{
+		ret[i] = ft_strdup(start->data);
+		start = start->next;
+		i++;
+	}
+	ret[i] = '\0';
 	return (ret);
 }
 
@@ -59,13 +64,13 @@ static void	set_fd(t_cmd *node)
 	if (node->input_fd != STDIN_FILENO)
 	{
 		if (dup2(node->input_fd, STDIN_FILENO) == -1)
-			print_error("dup2 failed on input", NULL);
+			print_error("dup2 failed on input", strerror(errno));
 		close(node->input_fd);
 	}
 	if (node->output_fd != STDOUT_FILENO)
 	{
 		if (dup2(node->output_fd, STDOUT_FILENO) == -1)
-			print_error("dup2 failed on output", NULL);
+			print_error("dup2 failed on output", strerror(errno));
 		close(node->output_fd);
 	}
 }
@@ -91,18 +96,22 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	char	**argv;
 	
 	if (!(argv = argv_creator(start, end)))
-		print_error("Failed to create argv", NULL);
+	{
+		return (EXIT_FAILURE);
+	}
 	if (!(exepath = findprocesspath(store, argv)))
 	{
 		cleanup(NULL, argv);
 		print_error("Command not found", argv[0]);
+		return (EXIT_FAILURE);
 	}
 	set_fd(store->cmd_head);
 	if (execve(exepath, argv, store->envp) == -1)
 	{
 		cleanup(exepath, argv);
-		print_error("execve failed", NULL);
+		print_error("execve failed", strerror(errno));
+		return (EXIT_FAILURE);
 	}
 	cleanup(exepath, argv);
-	exit(EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }

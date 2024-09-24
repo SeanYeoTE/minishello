@@ -6,15 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/08 18:03:14 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:42:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int		t_exit_status;
-
-// t_exit_status = 0;
 
 void	free_env(t_env **env)
 {
@@ -34,8 +32,7 @@ void	free_env(t_env **env)
 	*env = NULL;
 }
 
-// init var
-void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
+void	init_var(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 {		
 	store->input_fd = STDIN_FILENO;
 	store->output_fd = STDOUT_FILENO;
@@ -48,29 +45,26 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->cmd_tail = NULL;
 	
 	store->path = getenv("PATH");
-	store->envp = ft_split(store->path, ':');
 	store->paths = ft_split(store->path, ':');
+	store->envp = ft_split(store->path, ':');
 	store->pid = NULL;
 
 	store->env = env_head;
 	store->var = var_head;
 }
 
-// scrolling up for history works, but scrolling down after messes up the prompt
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	store;
-	char	*prompt;
-	char	*input;
 	t_env	*env_head;
-	
 	
 	if (argc != 1 || argv[1])
 	{
 		perror("run without args");
 		return (0);
 	}
-//might need to put this init into the handler so everytime it is called, it is the most updated.
+
 	env_head = env_init(&store, envp);
-	prompter(&store, env_head, NULL);
+	init_var(&store, env_head, NULL, envp);
+	return (prompter(&store, env_head, NULL));
 }
