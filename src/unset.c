@@ -36,12 +36,12 @@ int	unset_handler(t_shell *store)
 	t_env	*current_env;
 	char	*arg;
 
-	current_env = NULL;
+	current_env = store->env;
 	arg = store->cmd_head->command->next->data;
 	if (!arg)
-		printf("unset: not enough arguments");
-	else if (is_equal(current_env))
-		printf("unset: %s: invalid parameter name", arg);
+		printf("unset: not enough arguments\n");
+	else if (!is_equal(current_env))
+		printf("unset: %s: invalid parameter name\n", arg);
 	else
 	{
 		current_env = get_env_loc(store->env, arg);
