@@ -65,5 +65,5 @@ int	var_handler(char *src, t_shell *store)
 			current = current->next;
 		}
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

@@ -18,7 +18,7 @@ int	pwd_handler(t_node *current)
 	{
 		perror("PWD Error\n");
 		free(cwd);
-		return (1);
+		return (BUILTIN_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

@@ -12,8 +12,12 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
-
 #include <errno.h>
+
+#define	EXIT_SUCCESS 0
+#define BUILTIN_FAILURE 1
+#define BADCMD_FAILURE 126
+#define	NO_PERMISSION_FAILURE 127
 
 // global variable
 extern	int		t_exit_status;
@@ -178,7 +182,7 @@ int			pwd_handler(t_node *current);
 //env.c
 t_env		*create_env_node(char *var);
 t_env		*env_init(t_shell *store, char **envp);
-void		env_handler(t_shell *store);
+int			env_handler(t_shell *store);
 
 //export.c
 t_env		*get_env_loc(t_env *env_list, char *arg);

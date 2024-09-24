@@ -47,5 +47,5 @@ int	unset_handler(t_shell *store)
 		current_env = get_env_loc(store->env, arg);
 		perform_unset(current_env, store);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }

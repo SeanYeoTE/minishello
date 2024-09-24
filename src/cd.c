@@ -10,10 +10,10 @@ int	cd_handler(t_node *current)
 		if (home == NULL || chdir(home) != 0)
 		{
 			perror("no home");
-			return (1);
+			return (BUILTIN_FAILURE);
 		}
 	}
 	else if (chdir(current->next->data) != 0)
 		perror(current->data);
-	return (0);
+	return (EXIT_SUCCESS);
 }

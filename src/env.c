@@ -38,7 +38,7 @@ t_env	*env_init(t_shell *store, char **envp)
 	return (head);
 }
 
-void	env_handler(t_shell *store)
+int	env_handler(t_shell *store)
 {
 	t_env	*current;
 
@@ -48,4 +48,5 @@ void	env_handler(t_shell *store)
 		printf("%s\n", current->var);
 		current = current->next;
 	}
+	return (EXIT_SUCCESS);
 }

@@ -21,5 +21,5 @@ int	echo_handler(t_node *current, t_node *end)
 	}
 	if (option == 0 || printed == false)
 		printf("\n");
-	return (0);
+	return (EXIT_SUCCESS);
 }
