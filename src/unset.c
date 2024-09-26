@@ -1,16 +1,9 @@
 #include "minishell.h"
 
-static bool	is_equal(t_env *current_env)
+static bool	got_equal(t_env *current_env, char *arg)
 {
-	int		i;
-
-	i = 0;
-	while (current_env->var[i])
-	{
-		if (current_env->var[i] == '=')
-			return true;
-		i++;
-	}
+	if (ft_strchr(arg, '=') != NULL)
+		return true;
 	return false;
 }
 
@@ -60,14 +53,23 @@ int	unset_handler(t_shell *store)
 	char	*arg;
 
 	current_env = store->env;
-	arg = store->cmd_head->command->next->data;
-	if (!arg)
+
+	if (!(store->cmd_head->command->next))
+	{
 		printf("unset: not enough arguments\n");
-	else if (!is_equal(current_env))
+		return (BUILTIN_FAILURE);
+	}
+	arg = store->cmd_head->command->next->data;
+	if (got_equal(current_env, arg))
+	{
 		printf("unset: %s: invalid parameter name\n", arg);
+		return (BUILTIN_FAILURE);
+	}
 	else
 	{
 		current_env = get_target_loc(store->env, arg);
+		if (!current_env)
+			return (EXIT_SUCCESS);
 		perform_unset(current_env, store);
 	}
 	return (EXIT_SUCCESS);
