@@ -12,8 +12,12 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
-
 #include <errno.h>
+
+#define	EXIT_SUCCESS 0
+#define BUILTIN_FAILURE 1
+#define BADCMD_FAILURE 126
+#define	NO_PERMISSION_FAILURE 127
 
 // global variable
 extern	int		t_exit_status;
@@ -165,19 +169,48 @@ void		freechararray(char **v);
 void		free_stack(t_node **stack);
 void		free_nonessential(t_shell *store);
 
+//////////////////////////////////////////////////
 // builtin_main.c
 int			builtin_main(t_shell *store, t_node *current, t_node *end);
+
+//cd.c
 int			cd_handler(t_node *current);
+
+//echo.c
 int			echo_handler(t_node *current, t_node *end);
+
+//pwd.c
 int			pwd_handler(t_node *current);
+
+//env.c
 t_env		*create_env_node(char *var);
 t_env		*env_init(t_shell *store, char **envp);
-void		env_handler(t_shell *store);
+int			env_handler(t_shell *store);
+
+//export.c
+t_env		*get_env_loc(t_env *env_list, char *arg);
+t_var		*get_var_loc(char *arg, t_var *var_list, t_env *current_env);
+int			export_handler(t_shell *store);
+
+//export_utils.c
+int			args_key_counter(char *src);
+bool		is_in_env(t_env *env_list, char *arg, t_shell*store);
+t_env		*get_last_env(t_env *current_env);
+
+//var_handler.c
 t_var		*create_var_node(char *var, char *data);
 t_var		*split_var(char *src, t_var *var);
-t_var		*var_init(char *src, char *name, char *value, t_var *var);
 int			var_handler(char *src, t_shell *store);
-int			export_handler(t_env *env, t_var *var);
+
+//var_utils.c
+int			print_var(t_var *var);
+int			name_counter(char *src);
+bool		same_env(char *src, t_shell *store);
+bool		same_var(char *src, t_shell *store);
+
+//unset.c
+int			unset_handler(t_shell *store);
+/////////////////////////////////////////////////////////////
 
 // redir.c
 

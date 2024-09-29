@@ -57,6 +57,8 @@ int	check_builtin(t_node *loop)
 		return (1);	
 	if (ft_strcmp(loop->data, "export") == 0)
 		return (1);
+	if (ft_strcmp(loop->data, "unset") == 0)
+		return (1);
 	if (ft_strcmp(loop->data, "env") == 0)
 		return (1);
 	if (ft_strchr(loop->data,  '=') != NULL)
