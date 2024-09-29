@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/19 12:54:23 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 19:20:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 
 int	pre_execution(t_shell *store, char *input)
 {
-	store->input = input_spacer(store->input);
+	//store->input = input_spacer(store->input);
 	// printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
@@ -56,8 +56,6 @@ int		parser(t_shell* store)
 	t_env	*env_head;
 	t_var	*var_head;
 
-	env_head = store->env;
-	var_head = store->var;
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -66,6 +64,9 @@ int		parser(t_shell* store)
 			multiple_function(store, pipe_counter(store->head));
 	}
 	free_nonessential(store);
+	env_head = store->env;
+	var_head = store->var;
+	printf ("%p\n", var_head);
 	prompter(store, env_head, var_head);
 
 	return (EXIT_SUCCESS);
@@ -88,7 +89,7 @@ int	multiple_function(t_shell *store, int count)
 		if (ft_strcmp(back->data, "|") == 0)
 		{
 			temp = back->next;
-			create_cmd(store, front, back, create);
+			create_cmd(store, front, back->prev, create);
 			create = false;
 			front = temp;
 			back = temp;
@@ -96,7 +97,7 @@ int	multiple_function(t_shell *store, int count)
 		else
 			back = back->next;
 	}
-	create_cmd(store, front, back->prev, create);
+	create_cmd(store, front, back, create);
 	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
 	revert_nodes(store);
@@ -129,7 +130,7 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 		// need to change builtiin main; currently still functioning on the old method of
 		// linked lists, would not function as expected when redirections are required
 		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
-		exit(t_exit_status);
+		//exit(t_exit_status);
 	}
 	return (t_exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 12:54:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/09 12:59:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 19:21:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int	check_builtin(t_node *loop)
 	if (ft_strcmp(loop->data, "pwd") == 0)
 		return (1);	
 	if (ft_strcmp(loop->data, "export") == 0)
+		return (1);
+	if (ft_strcmp(loop->data, "unset") == 0)
 		return (1);
 	if (ft_strcmp(loop->data, "env") == 0)
 		return (1);
