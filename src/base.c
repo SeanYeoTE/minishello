@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/24 19:20:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:36:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	char	*prompt;
 	
 	signal(SIGINT, ctrl_c_handler);
-	init_var(store, env_head, var_head);
+	init_var(store, env_head, var_head, store->envp);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
@@ -27,27 +27,23 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		prompter(store, env_head, var_head);
+		return (prompter(store, env_head, var_head));
 	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
-		return (print_error("minishell: syntax error\n"));
+		return (print_error("syntax error", NULL));
 	pre_execution(store, NULL);
 	return (EXIT_SUCCESS);
 }
 
 int	pre_execution(t_shell *store, char *input)
 {
-	//store->input = input_spacer(store->input);
-	// printf("input: %s\n", store->input);
+	store->input = input_spacer(store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
 	full_lexer(store->input, store, 0);
-	// print_stack(&store->head);
 	remove_quote(store->head);
-	// print_stack(&store->head);
 	parser(store);
-	
 	return (EXIT_SUCCESS);
 }
 
@@ -66,10 +62,7 @@ int		parser(t_shell* store)
 	free_nonessential(store);
 	env_head = store->env;
 	var_head = store->var;
-	printf ("%p\n", var_head);
-	prompter(store, env_head, var_head);
-
-	return (EXIT_SUCCESS);
+	return (prompter(store, env_head, var_head));
 }
 
 int	multiple_function(t_shell *store, int count)
@@ -79,7 +72,6 @@ int	multiple_function(t_shell *store, int count)
 	t_node	*temp;
 	bool	create;
 	
-	// puts("multiple_function");
 	front = store->head;
 	back = store->head;
 	create = true;
@@ -98,40 +90,7 @@ int	multiple_function(t_shell *store, int count)
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
-	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
 	revert_nodes(store);
 	return (0);
 }
-
-
-
-int	single_function(t_shell *store, t_node *head, t_node *tail)
-{
-	int	pid1;
-	
-	create_cmd(store, head, tail, true);
-	if (check_builtin(store->cmd_head->command) == 0)
-	{
-		pid1 = fork();
-		if (pid1 == 0)
-		{
-			redir_handler(store, store->cmd_head->redir, NULL);
-			t_exit_status = executor(store, store->cmd_head->command, NULL);
-			exit(t_exit_status);
-		}
-		else
-			waitpid(pid1, &t_exit_status, WUNTRACED);
-		if (WIFEXITED(t_exit_status))
-			t_exit_status = WEXITSTATUS(t_exit_status);
-	}
-	else
-	{
-		// need to change builtiin main; currently still functioning on the old method of
-		// linked lists, would not function as expected when redirections are required
-		t_exit_status = builtin_main(store, store->cmd_head->command, NULL);
-		//exit(t_exit_status);
-	}
-	return (t_exit_status);
-}
-		

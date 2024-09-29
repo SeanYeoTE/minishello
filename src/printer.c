@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 int print_stack(t_node **head)
@@ -10,11 +9,8 @@ int print_stack(t_node **head)
 	start = *head;
 	while (start)
 	{
-		// ft_printf("Node Counter: %d\n", count);
 		printf("Node Value: %s\n", start->data);
 		printf("Token Type: %d\n", start->type);
-		// if (start->prev != NULL)
-		// 	printf("Prev Node: %s\n", start->prev->data);
 		printf("***************\n");
 		start = start->next;
 		count++;
@@ -30,7 +26,6 @@ int print_stack_se(t_node *start, t_node *end)
 	count = 0;
 	while (start != end)
 	{
-		// ft_printf("Node Counter: %d\n", count);
 		printf("Node Value: %s\n", start->data);
 		printf("Token Type: %d\n", start->type);
 		printf("***************\n");
@@ -60,7 +55,6 @@ int	print_cmd_stack(t_cmd **head)
 	start = *head;
 	while (start)
 	{
-		// ft_printf("Node Counter: %d\n", count);
 		printf("Command: %d\n", count);
 		print_stack(&start->command);
 		if (start->redir)
@@ -76,10 +70,11 @@ int	print_cmd_stack(t_cmd **head)
 	return (0);
 }
 
-int	print_error(char *str)
+int	print_error(char *str, char *arg)
 {
-	ft_putstr_fd("syntax error: unable to locate closing quotation\n",
-			STDERR_FILENO);
-	// perror(str);
-	return (EXIT_FAILURE);
+	if (arg)
+		printf("minishell: %s: %s\n", arg, str);
+	else
+		printf("minishell: %s\n", str);
+	return (EXIT_FAILURE);  // Changed back to EXIT_FAILURE
 }

@@ -12,9 +12,9 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 # Source files
 SRC_PATH = src/
 SRC =	main.c \
-		input_utils.c \
-		checks.c \
 		prompt.c \
+		checks.c \
+		input_utils.c \
 		parse_detection.c \
 		scanner.c \
 		exec_utils.c \
@@ -36,6 +36,7 @@ SRC =	main.c \
 		redir.c \
 		sig_handler.c \
 		pipe.c \
+		single.c \
 		expansions.c \
 		remove_quote.c \
 

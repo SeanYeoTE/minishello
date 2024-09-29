@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   args_init.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/04 16:45:31 by mchua            ###   ########.fr       */
+/*   Updated: 2024/09/15 14:53:49 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void	revert_nodes(t_shell *store)
 	iter = store->tail;
 	while (iter->prev != NULL)
 	{
-		// printf("Node Value: %s\n", iter->data);
 		iter->prev->next = iter;
 		iter = iter->prev;
 	}

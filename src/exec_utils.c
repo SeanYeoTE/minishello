@@ -6,15 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/27 14:17:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/24 12:43:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// takes in the struct and processnum int, returning
-// full path for execution
-char	*findprocesspath(t_shell *store, char **arr)
+static char	*findprocesspath(t_shell *store, char **arr)
 {
 	int		i;
 	char	*temp;
@@ -36,39 +34,7 @@ char	*findprocesspath(t_shell *store, char **arr)
 	return (joined);
 }
 
-// fd issues, output not redirecting properly
-int	executor(t_shell *store, t_node *start, t_node *end)
-{
-	int		execveresult;
-	char	*exepath;
-	char	**temp;
-	
-	execveresult = 0;
-	temp = argv_creator(start, end);
-	while (start && start->type != 3)
-		start = start->next;
-	exepath = findprocesspath(store, temp);
-	
-	if (exepath == NULL)
-	{
-		perror("Path not found");
-		free(temp);
-		t_exit_status = 127;
-		return (t_exit_status);
-	}
-	dup2(store->output_fd, 1);
-	dup2(store->input_fd, 0);
-	execveresult = execve(exepath, temp, store->envp);
-	if (exepath)
-		free(exepath);
-	free(temp);
-	printf("Command executed with exit status: %d\n", t_exit_status);
-	fflush(stdout);
-	exit(127);
-}
-
-// intention is to create an argv array for execve
-char	**argv_creator(t_node *start, t_node *end)
+static char	**argv_creator(t_node *start, t_node *end)
 {
 	int		i;
 	t_node	*temp;
@@ -91,4 +57,61 @@ char	**argv_creator(t_node *start, t_node *end)
 	}
 	ret[i] = '\0';
 	return (ret);
+}
+
+static void	set_fd(t_cmd *node)
+{
+	if (node->input_fd != STDIN_FILENO)
+	{
+		if (dup2(node->input_fd, STDIN_FILENO) == -1)
+			print_error("dup2 failed on input", strerror(errno));
+		close(node->input_fd);
+	}
+	if (node->output_fd != STDOUT_FILENO)
+	{
+		if (dup2(node->output_fd, STDOUT_FILENO) == -1)
+			print_error("dup2 failed on output", strerror(errno));
+		close(node->output_fd);
+	}
+}
+
+static void	cleanup(char *exepath, char **argv)
+{
+	int i;
+
+	if (exepath)
+		free(exepath);
+	if (argv)
+	{
+		i = 0;
+		while (argv[i])
+			free(argv[i++]);
+		free(argv);
+	}
+}
+
+int	executor(t_shell *store, t_node *start, t_node *end)
+{
+	char	*exepath;
+	char	**argv;
+	
+	if (!(argv = argv_creator(start, end)))
+	{
+		return (EXIT_FAILURE);
+	}
+	if (!(exepath = findprocesspath(store, argv)))
+	{
+		cleanup(NULL, argv);
+		print_error("Command not found", argv[0]);
+		return (EXIT_FAILURE);
+	}
+	set_fd(store->cmd_head);
+	if (execve(exepath, argv, store->envp) == -1)
+	{
+		cleanup(exepath, argv);
+		print_error("execve failed", strerror(errno));
+		return (EXIT_FAILURE);
+	}
+	cleanup(exepath, argv);
+	return (EXIT_SUCCESS);
 }
