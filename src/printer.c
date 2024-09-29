@@ -73,7 +73,7 @@ int	print_cmd_stack(t_cmd **head)
 int	print_error(char *str, char *arg)
 {
 	if (arg)
-		printf("minishell: %s: %s\n", arg, str);
+		printf("%s: %s\n", arg, str);
 	else
 		printf("minishell: %s\n", str);
 	return (EXIT_FAILURE);  // Changed back to EXIT_FAILURE

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/24 12:43:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/29 17:13:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static char	**argv_creator(t_node *start, t_node *end)
 		start = start->next;
 		i++;
 	}
-	ret[i] = '\0';
 	return (ret);
 }
 
@@ -101,8 +100,10 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	}
 	if (!(exepath = findprocesspath(store, argv)))
 	{
+		print_error("Command not found", *argv);
 		cleanup(NULL, argv);
-		print_error("Command not found", argv[0]);
+		// printf("argv[0]: %s\n", argv[0]);
+		
 		return (EXIT_FAILURE);
 	}
 	set_fd(store->cmd_head);

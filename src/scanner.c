@@ -102,7 +102,6 @@ int	scanner_word(char *str, int start, t_shell *store)
 {
 	int		i;
 	char	*data;
-
 	i = 0;
 	while (str[start + i])
 	{
