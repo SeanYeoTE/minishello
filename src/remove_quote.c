@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 12:02:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/15 12:21:18 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/23 19:20:16 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static char	*quote_remover(const char *str, int len)
 	i = 0;
 	ret = (char *)malloc(len + 1);
 	if (!ret)
-		print_error("malloc failed");
+		print_error("malloc failed", NULL);
 	in_single_quotes = false;
 	in_double_quotes = false;
 	while (i < len)
