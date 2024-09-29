@@ -44,6 +44,21 @@ t_var	*get_var_loc(char *arg, t_var *var_list, t_env *current_env)
 	return (NULL);
 }
 
+static void	handle_no_arg(char **envp)
+{
+	char **arg;
+
+	arg = envp;
+	while (*arg != NULL)
+	{
+		//need to print
+		//need to sort env
+
+		printf("declare -x %s\n", *arg);
+		arg++;
+	}
+}
+
 int	export_handler(t_shell *store)
 {
 	t_env	*new_env;
@@ -53,7 +68,10 @@ int	export_handler(t_shell *store)
 
 	current_env = store->env;
 	current_var = NULL;
-	arg = store->cmd_head->command->next->data;
+	if (store->cmd_head->command->next == NULL)
+		handle_no_arg(store->envp);
+	else
+		arg = store->cmd_head->command->next->data;
 	if (store->var)
 		current_var = get_var_loc(arg, store->var, current_env);
 	if (is_in_env(current_env, arg, store))

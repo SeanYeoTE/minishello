@@ -210,6 +210,9 @@ bool		same_var(char *src, t_shell *store);
 
 //unset.c
 int			unset_handler(t_shell *store);
+
+//exit.c
+int			exit_handler(t_shell *store);
 /////////////////////////////////////////////////////////////
 
 // redir.c

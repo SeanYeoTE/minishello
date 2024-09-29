@@ -31,6 +31,7 @@ SRC =	main.c \
 		export_utils.c \
 		pwd.c \
 		unset.c \
+		exit.c	\
 		var_handler.c \
 		var_utils.c \
 		redir.c \
