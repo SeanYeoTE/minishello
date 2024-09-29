@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/10 20:23:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/29 16:59:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,13 +80,11 @@ static char	*replace_exit_status(char *input, int start)
 	result_len = 0;
 	front = ft_strndup(input, start);
 	back = ft_strdup(input + start + 2);
-	printf("t_exit_status: %d\n", t_exit_status);
 	result_len = ft_strlen(ft_itoa(t_exit_status)) + 1;
 	if (front)
 		result_len += ft_strlen(front);
 	if (back)
 		result_len += ft_strlen(back);
-	printf("result_len: %zu\n", result_len);
 	result = (char *)malloc(result_len);
 	result[0] = '\0';
 	if (result)
@@ -115,8 +113,13 @@ char	*expansions(char *input)
 	while (input[i])
 	{
 		if (input[i] == '$' && input[i + 1] == '?')
+		{
 			new_input = replace_exit_status(input, i);
-		if (input[i] == '$' && !single_quotes(input, i))
+			free(input);
+			input = new_input;
+			i = 0;
+		}
+		else if (input[i] == '$' && !single_quotes(input, i))
 		{
 			var = extract_var_name(input, i, &end);
 			temp = getenv(var);
@@ -126,6 +129,7 @@ char	*expansions(char *input)
 			free(input);
 			input = new_input;
 			free(var);
+			i = 0;
 		}
 		i++;
 	}
