@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/24 12:36:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/29 16:30:10 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	char	*prompt;
 	
 	signal(SIGINT, ctrl_c_handler);
+	signal(SIGQUIT, SIG_IGN);
 	init_var(store, env_head, var_head, store->envp);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
