@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/29 17:13:05 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/09/30 17:55:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,25 @@ static char	**argv_creator(t_node *start, t_node *end)
 		temp = temp->next;
 		i++;
 	}
-	ret = (char **)malloc(sizeof(char *) * (i + 1));
+	ret = (char **)malloc(sizeof(char *) * (i + 2)); // Allocate one extra for NULL terminator
+	if (!ret)
+		return (NULL);
 	i = 0;
 	while (start && start != end)
 	{
 		ret[i] = ft_strdup(start->data);
+		if (!ret[i])
+		{
+			// Clean up if strdup fails
+			while (--i >= 0)
+				free(ret[i]);
+			free(ret);
+			return (NULL);
+		}
 		start = start->next;
 		i++;
 	}
+	ret[i] = NULL; // Null-terminate the array
 	return (ret);
 }
 
@@ -94,19 +105,16 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	char	*exepath;
 	char	**argv;
 	
-	if (!(argv = argv_creator(start, end)))
-	{
+	argv = argv_creator(start, end);
+	if (!argv)
 		return (EXIT_FAILURE);
-	}
 	if (!(exepath = findprocesspath(store, argv)))
 	{
 		print_error("Command not found", *argv);
 		cleanup(NULL, argv);
-		// printf("argv[0]: %s\n", argv[0]);
-		
 		return (EXIT_FAILURE);
 	}
-	set_fd(store->cmd_head);
+	set_fd(store->cmd_head);	
 	if (execve(exepath, argv, store->envp) == -1)
 	{
 		cleanup(exepath, argv);
