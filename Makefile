@@ -40,6 +40,7 @@ SRC =	main.c \
 		single.c \
 		expansions.c \
 		remove_quote.c \
+		heredoc.c \
 
 SRCS		= $(addprefix $(SRC_PATH), $(SRC))
 

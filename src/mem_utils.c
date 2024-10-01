@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/15 14:54:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/01 13:20:52 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	free_nonessential(t_shell *store)
 	freechararray(store->paths);		
 	if (store->head != NULL)
 		free_stack(&(store->head));
-	// if (store->cmd_head != NULL)
-	// 	free_cmd(&(store->cmd_head));
+	if (store->cmd_head != NULL)
+		free_cmd(&(store->cmd_head));
 	// free(store);
 }

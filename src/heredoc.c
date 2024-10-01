@@ -5,182 +5,106 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/30 15:14:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/30 17:46:57 by seayeo           ###   ########.fr       */
+/*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
+/*   Updated: 2024/10/01 18:15:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-#define MAX_HEREDOCS 10
-
-static void heredoc_sigint_handler(int sig)
+#include "minishell.h"
+ 
+static char	*get_heredoc_filename(int index)
 {
-    (void)sig;
-    write(STDERR_FILENO, "\n", 1);
-    exit(130);
+	char	*filename;
+	char	*index_str;
+
+	index_str = ft_itoa(index);
+	filename = ft_strjoin("/tmp/heredoc_tmp_", index_str);
+	free(index_str);
+	return (filename);
 }
 
-static char *create_prompt(int heredoc_level)
-{
-    char *prompt;
-    char *level_str;
-    char *temp;
 
-    level_str = ft_itoa(heredoc_level);
-    temp = ft_strjoin("heredoc", level_str);
-    prompt = ft_strjoin(temp, "> ");
-    free(level_str);
-    free(temp);
-    return prompt;
+static int	open_heredoc_file(char *filename, int flags)
+{
+	int	fd;
+	
+	fd = open(filename, flags, 0600);
+	if (fd == -1)
+	{
+		perror("open");
+		exit(EXIT_FAILURE);
+	}
+	return (fd);
 }
 
-static char *heredoc_child_process(char *delimiter, int heredoc_level)
+static void	write_heredoc_line(int fd, char *line)
 {
-    char *heredoc_input;
-    char *prompt;
-    char *content;
-    size_t content_size;
-    size_t content_len;
-
-    signal(SIGINT, heredoc_sigint_handler);
-    prompt = create_prompt(heredoc_level);
-    content_size = 1024;
-    content = malloc(content_size);
-    content[0] = '\0';
-    content_len = 0;
-
-    while (1)
-    {
-        heredoc_input = readline(prompt);
-        if (!heredoc_input || strcmp(heredoc_input, delimiter) == 0)
-        {
-            free(heredoc_input);
-            break;
-        }
-        size_t input_len = strlen(heredoc_input) + 1; // +1 for '\n'
-        if (content_len + input_len >= content_size)
-        {
-            content_size *= 2;
-            content = realloc(content, content_size);
-        }
-        strcat(content, heredoc_input);
-        strcat(content, "\n");
-        content_len += input_len;
-        free(heredoc_input);
-    }
-    free(prompt);
-    return content;
+	write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
 }
 
-char	*handle_heredoc_redirection(t_cmd *cmd, char *delimiter, int heredoc_level)
+static void	read_heredoc_input(int fd, char *delimiter)
 {
-	pid_t	pid;
-	int		pipefd[2];
-	char	*content;
+	char	*line;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (line == NULL || ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break;
+		}
+		write_heredoc_line(fd, line);
+		free(line);
+	}
+}
+
+static void	handle_nested_heredoc(t_cmd *cmd, int *index)
+{
+	char	*filename;
+	int		fd;
+
+	filename = get_heredoc_filename(*index);
+	fd = open_heredoc_file(filename, O_CREAT | O_WRONLY | O_TRUNC);
+	read_heredoc_input(fd, cmd->heredoc_delimiter);
+	close(fd);
+	cmd->heredoc_fd = open_heredoc_file(filename, O_RDONLY);
+	free(filename);
+	(*index);
+}
+
+void	handle_heredoc(t_cmd *cmd)
+{
+	static int	index = 0;
+	char		*filename;
+	int			fd;
+
+	if (cmd->next && cmd->next->heredoc_delimiter)
+		handle_nested_heredoc(cmd, &index);
+	filename = get_heredoc_filename(index);
+	fd = open_heredoc_file(filename, O_CREAT | O_WRONLY | O_TRUNC);
+	read_heredoc_input(fd, cmd->heredoc_delimiter);
+	close(fd);
+	cmd->heredoc_fd = open_heredoc_file(filename, O_RDONLY);
+	free(filename);
+	index;
+}
+
+void	handle_heredoc_pipe(t_cmd *cmd)
+{
+	int	pipefd[2];
 
 	if (pipe(pipefd) == -1)
 	{
-		perror("Error creating pipe for heredoc");
-		return (NULL);
+		perror("pipe");
+		exit(EXIT_FAILURE);
 	}
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("Error forking for heredoc");
-		close(pipefd[0]);
-		close(pipefd[1]);
-		return (NULL);
-	}
-	if (pid == 0)
-	{
-		close(pipefd[0]);
-		content = heredoc_child_process(delimiter, heredoc_level);
-		write(pipefd[1], content, ft_strlen(content));
-		close(pipefd[1]);
-		exit(0);
-	}
-	else
-	{
-		close(pipefd[1]);
-		content = ft_read_fd(pipefd[0]);
-		close(pipefd[0]);
-		waitpid(pid, NULL, 0);
-		return (content);
-	}
-}
-
-void	process_heredocs(t_cmd *cmd)
-{
-	t_node	*loop;
-	int		heredoc_count;
-	char	*heredoc_contents[MAX_HEREDOCS];
-
-	loop = cmd->redir;
-	heredoc_count = 0;
-	while (loop && heredoc_count < MAX_HEREDOCS)
-	{
-		if (ft_strcmp(loop->data, "<<") == 0)
-		{
-			heredoc_contents[heredoc_count] = handle_heredoc_redirection(cmd, loop->next->data, heredoc_count);
-			heredoc_count++;
-		}
-		loop = loop->next;
-	}
-	if (heredoc_count > 0)
-		apply_heredocs(cmd, heredoc_contents, heredoc_count);
-}
-
-void	apply_heredocs(t_cmd *cmd, char **heredoc_contents, int heredoc_count)
-{
-	int		pipefd[2];
-	pid_t	pid;
-	int		i;
-
-	if (pipe(pipefd) == -1)
-	{
-		perror("Error creating pipe for heredocs");
-		return;
-	}
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("Error forking for heredocs");
-		close(pipefd[0]);
-		close(pipefd[1]);
-		return;
-	}
-	if (pid == 0)
-	{
-		close(pipefd[0]);
-		for (i = 0; i < heredoc_count; i++)
-		{
-			write(pipefd[1], heredoc_contents[i], ft_strlen(heredoc_contents[i]));
-			free(heredoc_contents[i]);
-		}
-		close(pipefd[1]);
-		exit(0);
-	}
-	else
-	{
-		close(pipefd[1]);
-		dup2(pipefd[0], cmd->input_fd);
-		close(pipefd[0]);
-		waitpid(pid, NULL, 0);
-	}
-}
-
-char	*ft_read_fd(int fd)
-{
-	char	*content;
-	char	buffer[1024];
-	int		bytes_read;
-
-	content = ft_strdup("");
-	while ((bytes_read = read(fd, buffer, sizeof(buffer) - 1)) > 0)
-	{
-		buffer[bytes_read] = '\0';
-		content = ft_strjoin(content, buffer);
-	}
-	return (content);
-}
+	handle_heredoc(cmd);
+	dup2(cmd->heredoc_fd, pipefd[0]);
+	close(cmd->heredoc_fd);
+	cmd->heredoc_fd = pipefd[0];
+	cmd->pipe_out = pipefd[1];
+ }
