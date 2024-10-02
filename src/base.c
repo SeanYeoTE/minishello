@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/29 17:00:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/02 16:16:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	add_history(store->input);
 	if (!check_quotes(store->input))
 		return (print_error("syntax error", NULL));
-	pre_execution(store, NULL);
+	pre_execution(store);
 	return (EXIT_SUCCESS);
 }
 
-int	pre_execution(t_shell *store, char *input)
+int	pre_execution(t_shell *store)
 {
 	store->input = input_spacer(store->input);
 	if (ft_strchr(store->input, '$') != NULL)

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/24 12:44:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/02 16:16:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,7 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 {
 	t_cmd	*new;
-	t_node	*temp;
-
+	
 	if (start == NULL)
 	{
 		return (1);

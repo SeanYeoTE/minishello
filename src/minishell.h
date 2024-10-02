@@ -139,7 +139,7 @@ void		revert_nodes(t_shell *store);
 
 // base.c
 int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
-int			pre_execution(t_shell *store, char *input);
+int			pre_execution(t_shell *store);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
 int			multiple_function(t_shell *store, int count);
