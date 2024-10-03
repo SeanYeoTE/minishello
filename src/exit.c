@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mchua <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/09/29 15:47:37 by mchua            ###   ########.fr       */
+/*   Updated: 2024/10/03 20:12:21 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,11 @@ int	exit_handler(t_shell *store)
 	status = 0;
 	if (!one_cmd(store->cmd_head->command)) // means got more than 1 variable
 	{
-		//check if more than 2 arg
 		if(store->cmd_head->command->next->next != NULL) //more than 2 argument
 		{
 			fprintf(stdout, "%s: too many arguments\n", store->cmd_head->command->data);
 			return (BUILTIN_FAILURE);
 		}
-		//check if numeric
 		else if (!is_numeric(store->cmd_head->command->next->data)) //non numeric
 		{
 			fprintf(stdout, "%s: %s: numeric argument required\n", store->cmd_head->command->data, store->cmd_head->command->next->data);
