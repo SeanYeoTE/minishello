@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/02 16:16:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/03 14:05:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	detach_redir(cmd);
 	cmd->input_fd = STDIN_FILENO;
 	cmd->output_fd = STDOUT_FILENO;
+	cmd->heredoc_fd = -1;
 	return (cmd);
 }
 
