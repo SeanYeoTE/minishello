@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/10/03 19:59:34 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/04 15:29:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,6 @@ int	exit_handler(t_shell *store)
 	}
 	if (status < 0) //handle negative value
 		status = status % 256;
-	free_nonessential(store);
+	free_all(store);
 	exit (status);
 }

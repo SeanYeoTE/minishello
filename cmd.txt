@@ -1,1 +1,4 @@
 valgrind --suppressions=supp.txt --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind-out.txt ./minishell
+
+
+valgrind --suppressions=supp.txt --leak-check=full --show-leak-kinds=all --track-origins=yes --log-file=valgrind-out.txt ./minishell

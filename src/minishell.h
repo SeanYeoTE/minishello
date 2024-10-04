@@ -100,7 +100,6 @@ typedef struct s_shell
 void		free_env(t_env **env);
 void		init_var(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
 int			main(int argc, char **argv, char **envp);
-int			looper(t_shell *store);
 
 // input_utils.c
 char		*input_spacer(char *input);
@@ -138,7 +137,7 @@ t_node		*get_node(t_node *ret, int num);
 void		revert_nodes(t_shell *store);
 
 // base.c
-int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
+int			prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
 int			pre_execution(t_shell *store);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
@@ -166,6 +165,7 @@ int			print_error(char *str, char *arg);
 void		freechararray(char **v);
 void		free_stack(t_node **stack);
 void		free_nonessential(t_shell *store);
+void		free_all(t_shell *store);
 
 // builtin_main.c
 int			builtin_main(t_shell *store, t_node *current, t_node *end);
