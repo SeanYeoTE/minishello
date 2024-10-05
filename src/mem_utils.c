@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/04 15:28:56 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/05 13:47:38 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	free_stack(t_node **stack)
 	while (current)
 	{
 		tmp = current->next;
+		free(current->data);
 		free(current);
 		current = tmp;
 	}
