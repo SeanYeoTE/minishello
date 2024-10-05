@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/05 17:29:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/05 19:57:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ static void	free_cmd(t_cmd **cmd)
 	while (current)
 	{
 		tmp = current->next;
+		free_stack(&current->command);
+		if (current->redir)
+			free_stack(&current->redir);
 		free(current);
 		current = tmp;
 	}
@@ -83,8 +86,8 @@ static void	free_env(t_env **env)
 void	free_nonessential(t_shell *store)
 {
 	freechararray(store->paths);		
-	if (store->head != NULL)
-		free_stack(&(store->head));
+	// if (store->head != NULL)
+	// 	free_stack(&(store->head));
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
 }
@@ -92,8 +95,8 @@ void	free_nonessential(t_shell *store)
 void	free_all(t_shell *store)
 {
 	freechararray(store->paths);		
-	if (store->head != NULL)
-		free_stack(&(store->head));
+	// if (store->head != NULL)
+	// 	free_stack(&(store->head));
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
 	freechararray(store->envp);
