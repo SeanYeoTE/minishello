@@ -97,7 +97,7 @@ typedef struct s_shell
 // Function prototypes
 
 // main.c
-void		free_env(t_env **env);
+
 void		init_var(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
 int			main(int argc, char **argv, char **envp);
 
@@ -162,8 +162,6 @@ int			print_cmd_stack(t_cmd **head);
 int			print_error(char *str, char *arg);
 
 // mem_utils.c
-void		freechararray(char **v);
-void		free_stack(t_node **stack);
 void		free_nonessential(t_shell *store);
 void		free_all(t_shell *store);
 
