@@ -6,13 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/15 14:54:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/05 19:57:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	freechararray(char **v)
+static void	freechararray(char **v)
 {
 	char	**tmp;
 
@@ -27,7 +27,7 @@ void	freechararray(char **v)
 	free(v);
 }
 
-void	free_stack(t_node **stack)
+static void	free_stack(t_node **stack)
 {
 	t_node	*tmp;
 	t_node	*current;
@@ -38,13 +38,14 @@ void	free_stack(t_node **stack)
 	while (current)
 	{
 		tmp = current->next;
+		free(current->data);
 		free(current);
 		current = tmp;
 	}
 	*stack = NULL;
 }
 
-void	free_cmd(t_cmd **cmd)
+static void	free_cmd(t_cmd **cmd)
 {
 	t_cmd	*tmp;
 	t_cmd	*current;
@@ -55,18 +56,49 @@ void	free_cmd(t_cmd **cmd)
 	while (current)
 	{
 		tmp = current->next;
+		free_stack(&current->command);
+		if (current->redir)
+			free_stack(&current->redir);
 		free(current);
 		current = tmp;
 	}
 	*cmd = NULL;
 }
 
+static void	free_env(t_env **env)
+{
+	t_env	*tmp;
+	t_env	*current;
+
+	if (NULL == env)
+		return ;
+	current = *env;
+	while (current)
+	{
+		tmp = current->next;
+		free(current->var);
+		free(current);
+		current = tmp;
+	}
+	*env = NULL;
+}
+
 void	free_nonessential(t_shell *store)
 {
 	freechararray(store->paths);		
-	if (store->head != NULL)
-		free_stack(&(store->head));
-	// if (store->cmd_head != NULL)
-	// 	free_cmd(&(store->cmd_head));
-	// free(store);
+	// if (store->head != NULL)
+	// 	free_stack(&(store->head));
+	if (store->cmd_head != NULL)
+		free_cmd(&(store->cmd_head));
+}
+
+void	free_all(t_shell *store)
+{
+	freechararray(store->paths);		
+	// if (store->head != NULL)
+	// 	free_stack(&(store->head));
+	if (store->cmd_head != NULL)
+		free_cmd(&(store->cmd_head));
+	freechararray(store->envp);
+	free_env(&(store->env));
 }

@@ -56,5 +56,6 @@ int	exit_handler(t_shell *store)
 	}
 	if (status < 0) //handle negative value
 		status = status % 256;
+	free_all(store);
 	exit (status);
 }
