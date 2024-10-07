@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/07 15:38:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/07 17:57:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@ static char	*extract_var_name(const char *input, int start, int *end)
 	int	j;
 
 	j = start + 1;
+	if (!ft_isalpha(input[j]) && input[j] != '_')
+	{
+		*end = j;
+		return (NULL);
+	}
 	while ((ft_isalnum(input[j]) || input[j] == '_') && input[j] != '\0')
 		j++;
 	*end = j;
@@ -26,16 +31,17 @@ static char	*extract_var_name(const char *input, int start, int *end)
 static bool	single_quotes(const char *input, int index)
 {
 	bool	in_single_quotes;
-	
+	int		i;
+
 	in_single_quotes = false;
-	int i = 0;
+	i = 0;
 	while (i < index)
 	{
 		if (input[i] == '\'')
 			in_single_quotes = !in_single_quotes;
 		i++;
 	}
-	return in_single_quotes;
+	return (in_single_quotes);
 }
 
 // Helper function to replace variable with its value
@@ -122,7 +128,12 @@ char	*expansions(char *input)
 		else if (input[i] == '$' && !single_quotes(input, i))
 		{
 			var = extract_var_name(input, i, &end);
-			temp = getenv(var);
+			if (var == NULL)
+			{
+				i++;
+				continue;
+			}
+			temp = getenv(var); // need to write a custom getenv to seach the struct env list
 			if (temp == NULL)
 				temp = "";
 			new_input = replace_var(input, i, end, temp);
@@ -131,7 +142,8 @@ char	*expansions(char *input)
 			free(var);
 			i = 0;
 		}
-		i++;
+		else
+			i++;
 	}
 	return (input);
 }
