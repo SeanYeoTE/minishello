@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/29 16:59:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/07 15:38:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ char	*expansions(char *input)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '$' && input[i + 1] == '?')
+		if (input[i] == '$' && input[i + 1] == '?' && !single_quotes(input, i))
 		{
 			new_input = replace_exit_status(input, i);
 			free(input);

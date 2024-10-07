@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/05 20:01:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/07 15:35:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	pre_execution(t_shell *store)
 	store->input = input_spacer(store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 		store->input = expansions(store->input);
+	printf("input: %s\n", store->input);
 	full_lexer(store->input, store, 0);
 	remove_quote(store->head);
 	parser(store);

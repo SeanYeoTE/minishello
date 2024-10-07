@@ -26,7 +26,7 @@ int print_stack_se(t_node *start, t_node *end)
 	count = 0;
 	while (start != end)
 	{
-		printf("Node Value: %s\n", start->data);
+		printf("Node Value: %s...\n", start->data);
 		printf("Token Type: %d\n", start->type);
 		printf("***************\n");
 		start = start->next;

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/01 16:33:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/07 14:50:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,21 @@ static char	*findprocesspath(t_shell *store, char **arr)
 	char	*joined;
 
 	i = 0;
-	joined = NULL;
 	while ((store->paths)[i])
 	{
 		temp = ft_strjoin((store->paths)[i], "/");
-        joined = ft_strjoin(temp, arr[0]);
+		if (!temp)
+			return (NULL);
+		joined = ft_strjoin(temp, arr[0]);
+		free(temp);
+		if (!joined)
+			return (NULL);
 		if (access(joined, X_OK) == 0)
-			break ;
+			return (joined);
 		free(joined);
-		joined = NULL;
 		i++;
 	}
-	free(temp);
-	return (joined);
+	return (NULL);
 }
 
 static char	**argv_creator(t_node *start, t_node *end)
@@ -113,7 +115,8 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	argv = argv_creator(start, end);
 	if (!argv)
 		return (EXIT_FAILURE);
-	if (!(exepath = findprocesspath(store, argv)))
+	exepath = findprocesspath(store, argv);
+	if (!exepath)
 	{
 		print_error("Command not found", *argv);
 		cleanup(NULL, argv);
