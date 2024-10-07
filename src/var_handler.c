@@ -48,7 +48,7 @@ int	var_handler(char *src, t_shell *store)
 	t_var	*current;
 
 	new_var = NULL;
-	if (!same_var(src, store) || !same_env(src, store))
+	if (!same_env(src, store) || !same_var(src, store))
 		new_var = split_var(src, store->var);
 	if (store->var == NULL)
 		store->var = new_var;
