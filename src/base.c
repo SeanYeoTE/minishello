@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/07 17:30:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/08 16:26:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	store->input = readline(prompt);
 	free(prompt);
 	if (store->input == NULL)
+	{
+		free_all(store);
 		exit(EXIT_SUCCESS);
+	}
 	if (store->input[0] == '\0')
 	{
 		// need to rewrite otherwise point to null
@@ -96,6 +99,7 @@ int	multiple_function(t_shell *store, int count)
 	}
 	create_cmd(store, front, back, create);
 	multi_executor(store, count_cmds(store) - 1);
+	free(store->pid);
 	revert_nodes(store);
 	return (0);
 }
