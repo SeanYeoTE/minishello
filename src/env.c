@@ -39,7 +39,7 @@ t_env	*env_init(t_shell *store, char **envp)
 }
 
 int	env_handler(t_shell *store)
-{
+{	
 	t_env	*current;
 
 	current = store->env;

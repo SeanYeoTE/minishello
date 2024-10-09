@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/01 18:22:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/09 20:20:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ static void	handle_nested_heredoc(t_cmd *cmd, int *index)
 	close(fd);
 	cmd->heredoc_fd = open_heredoc_file(filename, O_RDONLY);
 	free(filename);
-	(*index);
 }
 
 void	handle_heredoc(t_cmd *cmd)
@@ -90,7 +89,6 @@ void	handle_heredoc(t_cmd *cmd)
 	close(fd);
 	cmd->heredoc_fd = open_heredoc_file(filename, O_RDONLY);
 	free(filename);
-	index;
 }
 
 void	handle_heredoc_pipe(t_cmd *cmd)

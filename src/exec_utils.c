@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/09 12:01:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/09 20:17:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@ static char	**argv_creator(t_node *start, t_node *end)
 		temp = temp->next;
 		i++;
 	}
-	ret = (char **)malloc(sizeof(char *) * (i + 2)); // Allocate one extra for NULL terminator
+	// ret = (char **)malloc(sizeof(char *) * (i + 2)); // Allocate one extra for NULL terminator
+	ret = (char **)ft_calloc(i + 2, sizeof(char *));
 	if (!ret)
 		return (NULL);
 	i = 0;
