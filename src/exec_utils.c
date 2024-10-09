@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/07 14:50:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/09 12:01:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,17 @@ int	executor(t_shell *store, t_node *start, t_node *end)
 	argv = argv_creator(start, end);
 	if (!argv)
 		return (EXIT_FAILURE);
-	exepath = findprocesspath(store, argv);
+	
+	// Check if the command is a local script or contains a path
+	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))
+	{
+		exepath = ft_strdup(argv[0]);
+	}
+	else
+	{
+		exepath = findprocesspath(store, argv);
+	}
+	
 	if (!exepath)
 	{
 		print_error("Command not found", *argv);

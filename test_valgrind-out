@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "Running test cases..."
+
+# Test case with 2 pipes
+echo "Test case 1: ls | grep 'test' | sort" > test_valgrind-out.txt
+ls | grep 'test' | sort >> test_valgrind-out.txt
+
+echo "Test case 2: cat valgrind-out.txt | grep '==22523==' | wc -l" >> test_valgrind-out.txt
+cat valgrind-out.txt | grep '==22523==' | wc -l >> test_valgrind-out.txt
+
+# Test case with 3 pipes
+echo "Test case 3: ps aux | grep 'root' | awk '{print \$1}' | sort | uniq" >> test_valgrind-out.txt
+ps aux | grep 'root' | awk '{print $1}' | sort | uniq >> test_valgrind-out.txt
+
+echo "Test case 4: cat valgrind-out.txt | grep '==22523==' | awk '{print \$3}' | sort | uniq" >> test_valgrind-out.txt
+cat valgrind-out.txt | grep '==22523==' | awk '{print $3}' | sort | uniq >> test_valgrind-out.txt
+
+echo "Test cases completed. Results written to test_valgrind-out.txt"

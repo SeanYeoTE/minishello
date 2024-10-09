@@ -5,3 +5,4 @@ libft.a
 outfile
 minishell_tester/
 valgrind-out.txt
+test_valgrind-out.txt
