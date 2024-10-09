@@ -45,7 +45,8 @@ int	env_handler(t_shell *store)
 	current = store->env;
 	while (current)
 	{
-		printf("%s\n", current->var);
+		ft_putstr_fd(current->var, store->cmd_head->output_fd);
+		ft_putstr_fd("\n", store->cmd_head->output_fd);
 		current = current->next;
 	}
 	return (EXIT_SUCCESS);

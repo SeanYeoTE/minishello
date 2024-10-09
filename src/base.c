@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/09 20:29:45 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/09 21:04:45 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	multiple_function(t_shell *store, int count)
 	front = store->head;
 	back = store->head;
 	create = true;
-	store->pid = ft_calloc(sizeof(int), count + 2);
+	store->pid = ft_calloc(count + 2, sizeof(int));
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)
