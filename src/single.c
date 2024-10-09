@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/29 17:00:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/09 20:30:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,7 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	{
 		return (execute_builtin_command(store, store->cmd_head));
 	}
+	revert_nodes(store);
+	print_stack(&store->head);
+	return (0);
 }

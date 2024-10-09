@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/05 20:01:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/09 21:04:45 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	store->input = readline(prompt);
 	free(prompt);
 	if (store->input == NULL)
+	{
+		free_all(store);
 		exit(EXIT_SUCCESS);
+	}
 	if (store->input[0] == '\0')
 	{
 		// need to rewrite otherwise point to null
@@ -80,7 +83,7 @@ int	multiple_function(t_shell *store, int count)
 	front = store->head;
 	back = store->head;
 	create = true;
-	store->pid = ft_calloc(sizeof(int), count + 2);
+	store->pid = ft_calloc(count + 2, sizeof(int));
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)
@@ -96,6 +99,7 @@ int	multiple_function(t_shell *store, int count)
 	}
 	create_cmd(store, front, back, create);
 	multi_executor(store, count_cmds(store) - 1);
+	free(store->pid);
 	revert_nodes(store);
 	return (0);
 }

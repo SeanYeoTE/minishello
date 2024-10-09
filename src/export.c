@@ -107,7 +107,7 @@ static void	handle_no_arg(t_env *envp)
 		i++;
 		current_env = current_env->next;
 	}
-	str_array[i] = '\0';
+	str_array[i] = "\0";
 	sort_env(str_array, env_len);
 	while (*str_array != NULL)
 	{

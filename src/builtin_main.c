@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/02 16:17:14 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/09 20:19:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 int	builtin_main(t_shell *store, t_node *current, t_node *end)
 {
 	int		exit_status;
-	(void)store;
-	
+
+	exit_status = 0;
+	(void)store;	
 	if (ft_strcmp(current->data, "cd") == 0)
 		exit_status = cd_handler(current);
 	else if (!ft_strcmp(current->data, "echo"))

@@ -20,7 +20,7 @@
 #define	NO_PERMISSION_FAILURE 127
 
 // global variable
-extern	int		t_exit_status;
+extern	sig_atomic_t	t_exit_status;
 
 typedef struct s_node
 {	
