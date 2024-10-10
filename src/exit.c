@@ -6,7 +6,7 @@
 /*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/10/10 09:19:10 by melvin           ###   ########.fr       */
+/*   Updated: 2024/10/10 19:42:36 by melvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ int	exit_handler(t_shell *store)
 	{
 		if (!is_numeric(store->cmd_head->command->next->data)) //non numeric
 		{
-			fprintf(stdout, "%s: %s: numeric argument required\n", store->cmd_head->command->data, store->cmd_head->command->next->data);
+			fprintf(stderr, "%s: %s: numeric argument required\n", store->cmd_head->command->data, store->cmd_head->command->next->data);
 			free_all(store);
 			exit (2);
 		}
 		else if(store->cmd_head->command->next->next != NULL) //more than 2 argument
 		{
-			fprintf(stdout, "%s\n%s: too many arguments\n", store->cmd_head->command->data, store->cmd_head->command->data);
+			fprintf(stderr, "%s\n%s: too many arguments\n", store->cmd_head->command->data, store->cmd_head->command->data);
 			free_all(store);
 			exit (BUILTIN_FAILURE);
 		}
