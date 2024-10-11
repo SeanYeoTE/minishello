@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/11 12:50:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/11 17:56:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 	size_t	result_len;
 	char	*result;
 
+	// printf("replace_var: %s\n", value);
 	result_len = 0;
 	front = ft_strndup(input, start);
 	back = ft_strdup(input + end);
@@ -103,6 +104,41 @@ static char	*replace_exit_status(char *input, int start)
 	return (result);
 }
 
+// Updated function to handle $"..." syntax with variable expansion
+static char	*remove_dollar_quotes(char *input, int start)
+{
+	int		end;
+	char	*front;
+	char	*content;
+	char	*back;
+	char	*result;
+	char	*expanded_content;
+
+	end = start + 2;
+	while (input[end] && input[end] != '"')
+		end++;
+	if (input[end] != '"')
+		return (input);  // No closing quote found, return original input
+
+	front = ft_strndup(input, start);
+	content = ft_strndup(input + start + 2, end - start - 2);
+	// printf("content: .%s.\n", content);
+	back = ft_strdup(input + end + 1);
+
+
+	result = ft_strjoin(front, content);
+	free(front);
+	free(content);
+	front = result;
+	result = ft_strjoin(front, back);
+
+	free(front);
+	free(back);
+	free(input);
+	
+	return (result);
+}
+
 // Main function to expand variables
 char	*expansions(char *input)
 {
@@ -120,6 +156,19 @@ char	*expansions(char *input)
 	while (input[i])
 	{
 		update_quote_state(input[i], &in_single_quotes, &in_double_quotes);
+		if (in_single_quotes)
+		{
+			i++;
+			continue;
+		}
+		if (input[i] == '$' && input[i + 1] == '"')
+		{
+			input = remove_dollar_quotes(input, i);
+			i = 0;  // Reset to reprocess from the beginning
+			in_single_quotes = false;
+			in_double_quotes = false;
+			continue;
+		}
 		if (input[i] == '$' && input[i + 1] == '?' && should_expand(in_single_quotes, in_double_quotes))
 		{
 			new_input = replace_exit_status(input, i);

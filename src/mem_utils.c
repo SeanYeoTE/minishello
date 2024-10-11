@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/08 16:13:22 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/11 16:19:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ void	free_all(t_shell *store)
 	freechararray(store->paths);		
 	// if (store->head != NULL)
 	// 	free_stack(&(store->head));
+	if (store->expanded)
+		free(store->input);
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
 	free_stack(&(store->head));
