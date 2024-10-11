@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/09 21:04:45 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/11 12:49:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,15 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	init_var(store, env_head, var_head, envp);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
-	store->input = readline(prompt);
+	if (isatty(fileno(stdin)))
+		store->input = readline(prompt);
+	else
+	{
+		char *line = NULL;
+		line = get_next_line(fileno(stdin));
+		store->input = ft_strtrim(line, "\n");
+		free(line);
+	}
 	free(prompt);
 	if (store->input == NULL)
 	{
