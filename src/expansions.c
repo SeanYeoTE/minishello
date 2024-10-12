@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/11 17:56:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/12 14:36:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,9 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 		result_len += ft_strlen(front);
 	if (back)
 		result_len += ft_strlen(back);
-	result = (char *)malloc(result_len);
-	result[0] = '\0';
+	// result = (char *)malloc(result_len);
+	result = (char *)ft_calloc(result_len, sizeof(char));
+	// result[0] = '\0';
 	if (result)
 	{
 		if (front != NULL)
@@ -112,7 +113,6 @@ static char	*remove_dollar_quotes(char *input, int start)
 	char	*content;
 	char	*back;
 	char	*result;
-	char	*expanded_content;
 
 	end = start + 2;
 	while (input[end] && input[end] != '"')
