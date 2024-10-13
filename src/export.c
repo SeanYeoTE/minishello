@@ -6,7 +6,7 @@ t_env	*get_env_loc(t_env *env_list, char *arg)
 	int	count;
 	int	i;
 
-	count = 0;
+	count = -1;
 	i = 0;
 	while (arg[i] && arg[i] != '=')
 	{

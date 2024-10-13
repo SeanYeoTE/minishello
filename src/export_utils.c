@@ -15,9 +15,7 @@ int	args_key_counter(char *src)
 
 bool	is_in_env(t_env *env_list, char *arg, t_shell *store)
 {
-	int	count;
 	t_env	*current_env;
-	count = args_key_counter(arg);
 
 	current_env = get_env_loc(env_list, arg);
 	if (!current_env)

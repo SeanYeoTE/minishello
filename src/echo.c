@@ -14,12 +14,15 @@ int	echo_handler(t_node *current, t_node *end)
 	while (current != end)
 	{
 		printed = true;
-		printf("%s", current->data);
+		ft_putstr_fd(current->data, 1);
+		//printf("%s", current->data);
 		if (current->next)
-			printf(" ");
+			ft_putchar_fd(' ', 1);
+			//printf(" ");
 		current = current->next;  
 	}
 	if (option == 0 || printed == false)
-		printf("\n");
+		ft_putchar_fd('\n', 1);
+		//printf("\n");
 	return (EXIT_SUCCESS);
 }
