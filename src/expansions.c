@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/07 17:57:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/12 14:36:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,17 @@ static char	*extract_var_name(const char *input, int start, int *end)
 	return (ft_strndup(input + start + 1, j - start - 1));
 }
 
-static bool	single_quotes(const char *input, int index)
+static void	update_quote_state(char c, bool *in_single_quotes, bool *in_double_quotes)
 {
-	bool	in_single_quotes;
-	int		i;
+	if (c == '\'' && !*in_double_quotes)
+		*in_single_quotes = !*in_single_quotes;
+	else if (c == '"' && !*in_single_quotes)
+		*in_double_quotes = !*in_double_quotes;
+}
 
-	in_single_quotes = false;
-	i = 0;
-	while (i < index)
-	{
-		if (input[i] == '\'')
-			in_single_quotes = !in_single_quotes;
-		i++;
-	}
-	return (in_single_quotes);
+static bool	should_expand(bool in_single_quotes, bool in_double_quotes)
+{
+	return (!in_single_quotes);
 }
 
 // Helper function to replace variable with its value
@@ -52,6 +49,7 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 	size_t	result_len;
 	char	*result;
 
+	// printf("replace_var: %s\n", value);
 	result_len = 0;
 	front = ft_strndup(input, start);
 	back = ft_strdup(input + end);
@@ -60,8 +58,9 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 		result_len += ft_strlen(front);
 	if (back)
 		result_len += ft_strlen(back);
-	result = (char *)malloc(result_len);
-	result[0] = '\0';
+	// result = (char *)malloc(result_len);
+	result = (char *)ft_calloc(result_len, sizeof(char));
+	// result[0] = '\0';
 	if (result)
 	{
 		if (front != NULL)
@@ -106,6 +105,40 @@ static char	*replace_exit_status(char *input, int start)
 	return (result);
 }
 
+// Updated function to handle $"..." syntax with variable expansion
+static char	*remove_dollar_quotes(char *input, int start)
+{
+	int		end;
+	char	*front;
+	char	*content;
+	char	*back;
+	char	*result;
+
+	end = start + 2;
+	while (input[end] && input[end] != '"')
+		end++;
+	if (input[end] != '"')
+		return (input);  // No closing quote found, return original input
+
+	front = ft_strndup(input, start);
+	content = ft_strndup(input + start + 2, end - start - 2);
+	// printf("content: .%s.\n", content);
+	back = ft_strdup(input + end + 1);
+
+
+	result = ft_strjoin(front, content);
+	free(front);
+	free(content);
+	front = result;
+	result = ft_strjoin(front, back);
+
+	free(front);
+	free(back);
+	free(input);
+	
+	return (result);
+}
+
 // Main function to expand variables
 char	*expansions(char *input)
 {
@@ -114,18 +147,38 @@ char	*expansions(char *input)
 	char	*var;
 	char	*temp;
 	char	*new_input;
+	bool	in_single_quotes;
+	bool	in_double_quotes;
 
 	i = 0;
+	in_single_quotes = false;
+	in_double_quotes = false;
 	while (input[i])
 	{
-		if (input[i] == '$' && input[i + 1] == '?' && !single_quotes(input, i))
+		update_quote_state(input[i], &in_single_quotes, &in_double_quotes);
+		if (in_single_quotes)
+		{
+			i++;
+			continue;
+		}
+		if (input[i] == '$' && input[i + 1] == '"')
+		{
+			input = remove_dollar_quotes(input, i);
+			i = 0;  // Reset to reprocess from the beginning
+			in_single_quotes = false;
+			in_double_quotes = false;
+			continue;
+		}
+		if (input[i] == '$' && input[i + 1] == '?' && should_expand(in_single_quotes, in_double_quotes))
 		{
 			new_input = replace_exit_status(input, i);
 			free(input);
 			input = new_input;
 			i = 0;
+			in_single_quotes = false;
+			in_double_quotes = false;
 		}
-		else if (input[i] == '$' && !single_quotes(input, i))
+		else if (input[i] == '$' && should_expand(in_single_quotes, in_double_quotes))
 		{
 			var = extract_var_name(input, i, &end);
 			if (var == NULL)
@@ -133,7 +186,7 @@ char	*expansions(char *input)
 				i++;
 				continue;
 			}
-			temp = getenv(var); // need to write a custom getenv to seach the struct env list
+			temp = getenv(var); // need to write a custom getenv to search the struct env list
 			if (temp == NULL)
 				temp = "";
 			new_input = replace_var(input, i, end, temp);
@@ -141,6 +194,8 @@ char	*expansions(char *input)
 			input = new_input;
 			free(var);
 			i = 0;
+			in_single_quotes = false;
+			in_double_quotes = false;
 		}
 		else
 			i++;

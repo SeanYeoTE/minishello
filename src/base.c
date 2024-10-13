@@ -26,7 +26,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 		store->input = readline(prompt);
 	else
 	{
-		char *line;
+		char *line = NULL;
 		line = get_next_line(fileno(stdin));
 		store->input = ft_strtrim(line, "\n");
 		free(line);
@@ -54,7 +54,10 @@ int	pre_execution(t_shell *store)
 {
 	store->input = input_spacer(store->input);
 	if (ft_strchr(store->input, '$') != NULL)
+	{
+		store->expanded = true;
 		store->input = expansions(store->input);
+	}
 	full_lexer(store->input, store, 0);
 	remove_quote(store->head);
 	parser(store);

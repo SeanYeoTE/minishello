@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/05 17:27:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/11 16:18:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	store->tail = NULL;
 	store->fd_in = STDIN_FILENO;
 	store->quotes = false;
+	store->expanded = false;
 	store->cmd_head = NULL;
 	store->cmd_tail = NULL;
 	store->path = getenv("PATH");

@@ -77,6 +77,7 @@ typedef struct s_shell
 	int		fd_in;
 
 	bool	quotes;
+	bool	expanded;
 
 	char	*input;
 
