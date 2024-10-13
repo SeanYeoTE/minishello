@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/09 20:51:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/13 16:44:45 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
 	{
-		t_exit_status = executor(store, cmd->command, NULL);
+		t_exit_status = executor(store, cmd);
 		exit(t_exit_status);
 	}
 	else
@@ -55,6 +55,8 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 
 void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 {
+	// printf("before in_fd: %d\n", in_fd);
+	printf("before out_fd: %d\n", out_fd);
 	if (cmd->heredoc_fd != -1)
 	{
 		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
@@ -86,6 +88,9 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 			print_error("dup2 failed on output", strerror(errno));
 		close(out_fd);
 	}
+	// print_stack(&cmd->command);
+	// printf("after in_fd: %d\n", in_fd);
+	printf("after out_fd: %d\n", out_fd);
 }
 
 int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
@@ -156,7 +161,7 @@ int	handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd)
 		*out_fd = pipe_fds[1];
 	}
 	else
-		*out_fd = STDOUT_FILENO;
+		*out_fd = 1;
 	if (cmd->redir)
 		redir_handler(cmd, cmd->redir, NULL);
 	if (execute_and_wait(store, cmd, *in_fd, *out_fd, is_last_cmd) == EXIT_FAILURE)

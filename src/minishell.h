@@ -153,7 +153,7 @@ void		detach_redir(t_cmd *new);
 int			count_cmds(t_shell *store);
 
 // exec_utils.c
-int			executor(t_shell *store, t_node *start, t_node *end);
+int			executor(t_shell *store, t_cmd *cmd);
 
 // printer.c
 int 		print_stack(t_node **head);
