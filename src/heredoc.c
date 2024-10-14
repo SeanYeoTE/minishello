@@ -122,6 +122,7 @@ int	handle_heredoc(t_cmd *cmd)
 }
 
 int	handle_heredoc_pipe(t_cmd *cmd)
+
 {
 	int	pipefd[2];
 
@@ -138,3 +139,4 @@ int	handle_heredoc_pipe(t_cmd *cmd)
 	cmd->pipe_out = pipefd[1];
 	return (0);
 }
+
