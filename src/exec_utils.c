@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/13 16:43:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 11:49:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ static void	set_fd(t_cmd *node)
 	}
 	if (node->output_fd != STDOUT_FILENO)
 	{
-		printf("node output_fd: %d\n", node->output_fd);
-		write(1, "hello\n", 6);
-		write(6, "15e64\n", 6);
-		printf("STDOUT_FILENO: %d\n", STDOUT_FILENO);
+		// printf("node output_fd: %d\n", node->output_fd);
+		// write(1, "hello\n", 6);
+		// write(6, "15e64\n", 6);
+		// printf("STDOUT_FILENO: %d\n", STDOUT_FILENO);
 		if (dup2(node->output_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on output22", strerror(errno));
 		close(node->output_fd);

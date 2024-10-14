@@ -212,10 +212,10 @@ int			exit_handler(t_shell *store);
 
 // redir.c
 t_node		*redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
-void		handle_output_redirection(t_cmd *cmd, char *filename);
-void		handle_append_redirection(t_cmd *cmd, char *filename);
-void		handle_input_redirection(t_cmd *cmd, char *filename);
-void		handle_heredoc_redirection(t_cmd *cmd, char *delimiter);
+int			handle_output_redirection(t_cmd *cmd, char *filename);
+int			handle_append_redirection(t_cmd *cmd, char *filename);
+int			handle_input_redirection(t_cmd *cmd, char *filename);
+int			handle_heredoc_redirection(t_cmd *cmd, char *delimiter);
 
 // pipe.c
 int			wait_for_command(pid_t pid);
@@ -226,7 +226,7 @@ int			multi_executor(t_shell *store, int	num_pipes);
 void		ctrl_c_handler(int signum);
 
 // heredoc.c
-void		handle_heredoc(t_cmd *cmd);
-void		handle_heredoc_pipe(t_cmd *cmd);
+int			handle_heredoc(t_cmd *cmd);
+int			handle_heredoc_pipe(t_cmd *cmd);
 
 #endif
