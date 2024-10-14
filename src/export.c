@@ -88,6 +88,14 @@ static void	sort_env(char **str_array, int env_len)
 	}
 }
 
+static void print_export(char **str_arr, int env_len)
+{
+	int i = 0;
+	sort_env(str_arr, env_len);
+	while (str_arr[i] != NULL)
+		printf("declare -x %s\n", str_arr[i++]);
+}
+
 static void	handle_no_arg(t_env *envp)
 {
 	int		env_len;
@@ -107,31 +115,60 @@ static void	handle_no_arg(t_env *envp)
 		i++;
 		current_env = current_env->next;
 	}
-	str_array[i] = "\0";
-	sort_env(str_array, env_len);
-	while (*str_array != NULL)
+	str_array[i] = NULL;
+	print_export(str_array, env_len);
+	free(str_array);
+}
+
+	//check for alpha, '_', 2
+	//if -, invalid, 2
+	//if other things, invalid identifier, 1
+static int	check_arg(char *arg)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_isalpha(arg[i]) || arg[i] != '_')
 	{
-		printf("declare -x %s\n", *str_array);
-		str_array++;
+		if (arg[i] == '-')
+			return (2);
+		if (ft_isdigit(arg[i]) || arg[i] == '=')
+			return (1);
+		i++;
+	}
+	while (arg[i] && arg[i] != '=')
+	{
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+static void	print_error_msg(char *arg, int ret_value)
+{
+	if (ret_value == 1)
+	{
+		ft_putstr_fd("export: '", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putstr_fd("': not a valid identifier\n", 2);
+	}
+	if (ret_value == 2)
+	{
+		ft_putstr_fd("export: ", 2);
+		write (2, arg, 2);
+		ft_putstr_fd(": invalid option\n", 2);
 	}
 }
 
-int	export_handler(t_shell *store)
+static void	set_export(t_shell *store, char *arg)
 {
 	t_env	*new_env;
 	t_env	*current_env;
 	t_var	*current_var;
-	char	*arg;
 
 	current_env = store->env;
 	current_var = NULL;
-	if (store->cmd_head->command->next == NULL)
-	{
-		handle_no_arg(store->env);
-		return (0);
-	}
-	else
-		arg = store->cmd_head->command->next->data;
 	if (store->var)
 		current_var = get_var_loc(arg, store->var, current_env);
 	if (is_in_env(current_env, arg, store))
@@ -151,5 +188,23 @@ int	export_handler(t_shell *store)
 		else
 			current_env->next = create_env_node(arg);
 	}
-	return (0);
+}
+
+int	export_handler(t_shell *store)
+{
+	char	*arg;
+	int		ret_value;
+
+	ret_value = 0;
+	if (store->cmd_head->command->next == NULL)
+	{
+		handle_no_arg(store->env);
+		return (0);
+	}
+	arg = store->cmd_head->command->next->data;
+	ret_value = check_arg(arg);
+	print_error_msg(arg, ret_value);
+	if (ret_value == 0)
+		set_export(store, arg);
+	return (ret_value);
 }

@@ -5,7 +5,7 @@ static bool	is_valid_var_name(char *arg)
 	int	i;
 
 	i = 0;
-	if (!arg || !ft_isalpha(arg[i] || arg[i] != '_'))
+	if (!arg || !ft_isalpha(arg[i]))
 		return (false);
 	while (arg[i])
 	{
@@ -67,6 +67,13 @@ static bool	perform_unset(char *arg, t_shell *store)
 	return (true);
 }
 
+static	void	print_error_msg(int	flag, char *arg)
+{
+		ft_putstr_fd("unset: ", 1);
+		ft_putstr_fd(arg, 1);
+		ft_putstr_fd(": invalid parameter name\n", 1);
+}
+
 int	unset_handler(t_shell *store)
 {
 	t_env	*current_env;
@@ -74,19 +81,11 @@ int	unset_handler(t_shell *store)
 
 	current_env = store->env;
 	if (!(store->cmd_head->command->next))
-	{
-		printf("unset: not enough arguments\n");
-		return (BUILTIN_FAILURE);
-	}
+		return (EXIT_SUCCESS);
 	arg = store->cmd_head->command->next->data;
-	if (!is_valid_var_name(arg))
-	{
-		printf("unset: %s: invalid parameter name\n", arg);
-		return (BUILTIN_FAILURE);	
-	}
 	if (got_equal(current_env, arg))
 	{
-		printf("unset: %s: invalid parameter name\n", arg);
+		print_error_msg(3, arg);
 		return (BUILTIN_FAILURE);
 	}
 	if (!perform_unset(arg, store))
