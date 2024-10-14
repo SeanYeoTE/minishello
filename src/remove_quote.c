@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 12:02:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/07 14:50:45 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 19:59:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ void	remove_quote(t_node *token)
 
 	while (token)
 	{
-		if (token->type == 8 || token->type == 9)
+		if (ft_strchr(token->data, '"') || ft_strchr(token->data, '\''))
+		// if (token->type == 8 || token->type == 9)
 		{
 			len = ft_strlen(token->data);
 			new = quote_remover(token->data, len);

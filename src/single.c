@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/09 20:30:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/13 16:23:58 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 	if (pid == 0)
 	{
 		redir_handler(cmd, cmd->redir, NULL);
-		t_exit_status = executor(store, cmd->command, NULL);
+		t_exit_status = executor(store, cmd);
 		exit(t_exit_status);
 	}
 	return (wait_for_command(pid));
