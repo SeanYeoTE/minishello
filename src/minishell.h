@@ -162,6 +162,7 @@ int 		print_stack_se(t_node *start, t_node *end);
 int			print_argv(char **argv);
 int			print_cmd_stack(t_cmd **head);
 int			print_error(char *str, char *arg);
+void		print_erroronly(char *str, char *arg);
 
 // mem_utils.c
 void		free_nonessential(t_shell *store);

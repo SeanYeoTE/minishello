@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 11:49:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 20:56:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,9 +135,10 @@ int	executor(t_shell *store, t_cmd *cmd)
 	
 	if (!exepath)
 	{
-		print_error("Command not found", *argv);
+		print_erroronly("Command not found", *argv);
 		cleanup(NULL, argv);
-		return (EXIT_FAILURE);
+		// return (EXIT_FAILURE);
+		return (127);
 	}
 	set_fd(cmd);	
 	if (execve(exepath, argv, store->envp) == -1)
