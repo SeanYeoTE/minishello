@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/09 20:19:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 21:25:57 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 	else if (!ft_strcmp(current->data, "pwd"))
 		exit_status = pwd_handler(current);
 	else if (!ft_strcmp(current->data, "env"))
-		env_handler(store);
+		exit_status = env_handler(store);
 	else if (!ft_strcmp(current->data, "export"))
 		exit_status = export_handler(store);
 	else if (!ft_strcmp(current->data, "unset"))
@@ -35,6 +35,5 @@ int	builtin_main(t_shell *store, t_node *current, t_node *end)
 		exit_status = exit_handler(store);
 	else
 		exit_status = var_handler(current->data, store);
-	//exit(exit_status);
 	return (exit_status);
 }
