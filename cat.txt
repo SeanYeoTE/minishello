@@ -1,0 +1,17 @@
+after out_fd: 4
+node output_fd: 5
+STDOUT_FILENO: 1
+TYPE 5
+hey i am here
+total 216
+-rw-rw-r-- 1 parallels parallels  35149 Oct 13 17:36 LICENSE
+-rw-rw-r-- 1 parallels parallels   1381 Oct 13 17:37 Makefile
+-rw-r--r-- 1 parallels parallels     72 Oct 13 20:05 cat.txt
+-rw-rw-r-- 1 parallels parallels    293 Oct 13 17:37 cmd.txt
+-rw-rw-r-- 1 parallels parallels    407 Oct 13 17:37 failed_tests
+drwxrwxr-x 8 parallels parallels   4096 Oct 13 20:04 libft
+-rwxrwxr-x 1 parallels parallels 160328 Oct 13 20:04 minishell
+drwxrwxr-x 2 parallels parallels   4096 Oct 13 20:04 obj
+drwxrwxr-x 2 parallels parallels   4096 Oct 13 17:37 src
+-rw-rw-r-- 1 parallels parallels    112 Oct 13 17:36 supp.txt
+-rwxrwxr-x 1 parallels parallels    845 Oct 13 17:37 test_valgrind-out

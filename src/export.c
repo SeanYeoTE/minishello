@@ -88,6 +88,14 @@ static void	sort_env(char **str_array, int env_len)
 	}
 }
 
+static void print_export(char **str_arr, int env_len)
+{
+	int i = 0;
+	sort_env(str_arr, env_len);
+	while (str_arr[i] != NULL)
+		printf("declare -x %s\n", str_arr[i++]);
+}
+
 static void	handle_no_arg(t_env *envp)
 {
 	int		env_len;
@@ -107,13 +115,9 @@ static void	handle_no_arg(t_env *envp)
 		i++;
 		current_env = current_env->next;
 	}
-	str_array[i] = "\0";
-	sort_env(str_array, env_len);
-	while (*str_array != NULL)
-	{
-		printf("declare -x %s\n", *str_array);
-		str_array++;
-	}
+	str_array[i] = NULL;
+	print_export(str_array, env_len);
+	free(str_array);
 }
 
 	//check for alpha, '_', 2
