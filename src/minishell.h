@@ -122,6 +122,7 @@ char		*expansions(char *input);
 void		remove_quote(t_node *token);
 
 // parse_detection.c
+bool 		is_space(char c);
 int 		full_lexer(char *str, t_shell *store, int index);
 
 // scanner.c

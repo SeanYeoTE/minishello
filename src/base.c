@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/13 14:44:45 by mchua            ###   ########.fr       */
+/*   Updated: 2024/10/14 17:35:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ int	pre_execution(t_shell *store)
 		store->expanded = true;
 		store->input = expansions(store->input);
 	}
+	// printf("input: %s\n", store->input);
 	full_lexer(store->input, store, 0);
+	// print_stack(&store->head);
 	remove_quote(store->head);
 	parser(store);
 	return (EXIT_SUCCESS);

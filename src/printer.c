@@ -11,12 +11,12 @@ int print_stack(t_node **head)
 	{
 		printf("Node Value: %s\n", start->data);
 		printf("Token Type: %d\n", start->type);
-		if (start->next)
-			printf("Node Next Value: %s\n", start->next->data);
+		// if (start->next)
+		// 	printf("Node Next Value: %s\n", start->next->data);
 		printf("***************\n");
 		start = start->next;
 		count++;
-	}
+	}	
 	printf("Total Nodes: %d\n", count);
 	return (0);
 }

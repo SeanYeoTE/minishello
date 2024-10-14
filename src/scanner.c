@@ -32,37 +32,49 @@ int	scanner_comment(char *str, int start, t_shell *store)
 	return (start + i);
 }
 
+
+
 int	scanner_quote(char *str, int start, t_shell *store)
 {
 	int		i;
-	bool	count;
 	char	*data;
 	int		type;
+	char	quote_char;
+	int		matched;
+	int 	y;
 
+	y = 0;
+	while (str[start + y])
+	{
+		if (str[start + y] == '"' || str[start + y] == '\'')
+			break ;
+		y++;
+	}
+	quote_char = str[start + y];
+	matched = 0;
 	store->quotes = false;
 	i = 0;
-	count = true;
-	type = 9;
+	type = (quote_char == '"') ? 8 : 9;
+	// i++;
 	while (str[start + i])
 	{
-		if (str[start + i] == '"' || str[start + i] == '\'')
+		if (str[start + i] == quote_char)
+			matched++;
+		if (matched == 2)
 		{
-			if (str[start + i] == '"')
-				type = 8;
-			count = !count;
-			if (count == true)
-			{
-				if (str[start + i + 1] && str[start + i + 1] == ' ')
-					break;
-			}
+			if (!str[start + i + 1] || is_space(str[start + i + 1]))
+				break;
 		}
 		i++;
 	}
-	data = ft_strndup(str + start, i + 1);
+	i++;
+	data = ft_strndup(str + start, i);
 	init_node(data, &store->head);
 	store->tail = get_last(store->head);
 	get_last(store->head)->type = type;
-	return (start + i);
+	if (str[start + i + 1])
+		return (start + i);
+	return (start + i + 1);
 }
 
 int	scanner_operator(char *str, int start, t_shell *store)
@@ -91,7 +103,7 @@ int	scanner_space(char *str, int start)
 	i = 0;
 	while (str[start + i])
 	{
-		if (str[start + i] != ' ')
+		if (is_space(str[start + i]) == false)
 			break ;
 		i++;
 	}
@@ -105,11 +117,12 @@ int	scanner_word(char *str, int start, t_shell *store)
 	i = 0;
 	while (str[start + i])
 	{
-		if (str[start + i] == ' ')
+		if (is_space(str[start + i]))
 			break ;
 		if (str[start + i] == '\'' || str[start + i] == '"')
 		{
 			store->quotes = true;
+			// break ;
 			return (start);
 		}
 		i++;
