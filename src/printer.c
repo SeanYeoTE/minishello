@@ -80,3 +80,11 @@ int	print_error(char *str, char *arg)
 		printf("minishell: %s\n", str);
 	return (EXIT_FAILURE);  // Changed back to EXIT_FAILURE
 }
+
+void	print_erroronly(char *str, char *arg)
+{
+	if (arg)
+		printf("%s: %s\n", arg, str);
+	else
+		printf("minishell: %s\n", str);
+}

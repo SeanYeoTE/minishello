@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 11:50:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 21:31:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,13 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 	{
 		if (dup2(in_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on input", strerror(errno));
-		close(in_fd);
+		// close(in_fd);
 	}
 	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{
 		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on redirected input", strerror(errno));
-		close(cmd->input_fd);
+		// close(cmd->input_fd);
 	}
 	if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
 	{
@@ -86,7 +86,7 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 	{
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on output", strerror(errno));
-		close(out_fd);
+		// close(out_fd);
 	}
 	// print_stack(&cmd->command);
 	// printf("after in_fd: %d\n", in_fd);

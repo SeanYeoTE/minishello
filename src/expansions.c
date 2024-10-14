@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/12 14:36:43 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 21:21:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,13 +155,17 @@ char	*expansions(char *input)
 	in_double_quotes = false;
 	while (input[i])
 	{
+		// printf("input: %s\n", input);
 		update_quote_state(input[i], &in_single_quotes, &in_double_quotes);
 		if (in_single_quotes)
 		{
 			i++;
 			continue;
 		}
-		if (input[i] == '$' && input[i + 1] == '"')
+		if (input[i] == '"' || input[i] == '\'')
+			if (input[i] == input[i + 1])
+				break;
+		if (input[i] == '$' && input[i + 1] == '"' && !in_double_quotes)
 		{
 			input = remove_dollar_quotes(input, i);
 			i = 0;  // Reset to reprocess from the beginning

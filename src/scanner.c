@@ -55,14 +55,15 @@ int	scanner_quote(char *str, int start, t_shell *store)
 	store->quotes = false;
 	i = 0;
 	type = (quote_char == '"') ? 8 : 9;
-	// i++;
 	while (str[start + i])
 	{
 		if (str[start + i] == quote_char)
 			matched++;
-		if (matched == 2)
+		if (matched % 2 == 0)
 		{
-			if (!str[start + i + 1] || is_space(str[start + i + 1]))
+			if (str[start + i + 1] == '"' || str[start + i + 1] == '\'')
+				quote_char = str[start + i + 1];
+			else if (!str[start + i + 1] || is_space(str[start + i + 1]))
 				break;
 		}
 		i++;
@@ -122,7 +123,6 @@ int	scanner_word(char *str, int start, t_shell *store)
 		if (str[start + i] == '\'' || str[start + i] == '"')
 		{
 			store->quotes = true;
-			// break ;
 			return (start);
 		}
 		i++;
