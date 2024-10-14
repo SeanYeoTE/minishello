@@ -50,12 +50,14 @@ static bool	perform_unset(char *arg, t_shell *store)
 	t_env	*previous_node;//node before target unset arg
 	t_env	*next_node;//node after target unset arg
 	t_env	*target_env;
+	t_env	*head;
 
 	target_env = get_target_loc(store->env, arg);
+	head = store->env;
 	if (!target_env)
 		return (false);
 	previous_node = store->env;
-	while (previous_node->next != target_env)
+	while (previous_node->next != target_env && previous_node != target_env)
 		previous_node = previous_node->next;
 	if (target_env->next)
 		next_node = target_env->next;
@@ -63,7 +65,10 @@ static bool	perform_unset(char *arg, t_shell *store)
 		next_node = NULL;
 	free (target_env->var);
 	free (target_env);
-	previous_node->next = next_node;
+	if (head == target_env)
+		store->env = next_node;
+	else	
+		previous_node->next = next_node;
 	return (true);
 }
 
