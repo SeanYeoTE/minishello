@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/29 14:27:22 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 21:31:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
 	{
-		t_exit_status = executor(store, cmd->command, NULL);
+		t_exit_status = executor(store, cmd);
 		exit(t_exit_status);
 	}
 	else
@@ -55,30 +55,42 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 
 void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 {
-	if (in_fd != STDIN_FILENO)
+	// printf("before in_fd: %d\n", in_fd);
+	// printf("before out_fd: %d\n", out_fd);
+	if (cmd->heredoc_fd != -1)
+	{
+		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
+			print_error("dup2 failed on heredoc input", strerror(errno));
+		close(cmd->heredoc_fd);
+		cmd->heredoc_fd = -1;
+	}
+	else if (in_fd != STDIN_FILENO)
 	{
 		if (dup2(in_fd, STDIN_FILENO) == -1)
-			print_error("dup2 failed on input", NULL);
-		close(in_fd);
+			print_error("dup2 failed on input", strerror(errno));
+		// close(in_fd);
 	}
 	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{
 		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
-			print_error("dup2 failed on redirected input", NULL);
-		close(cmd->input_fd);
+			print_error("dup2 failed on redirected input", strerror(errno));
+		// close(cmd->input_fd);
 	}
 	if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
 	{
 		if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
-			print_error("dup2 failed on redirected output", NULL);
-		close(cmd->output_fd);
+			print_error("dup2 failed on redirected output", strerror(errno));
+		// close(cmd->output_fd);
 	}
 	else if (out_fd != STDOUT_FILENO)
 	{
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
-			print_error("dup2 failed on output", NULL);
-		close(out_fd);
+			print_error("dup2 failed on output", strerror(errno));
+		// close(out_fd);
 	}
+	// print_stack(&cmd->command);
+	// printf("after in_fd: %d\n", in_fd);
+	// printf("after out_fd: %d\n", out_fd);
 }
 
 int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
@@ -87,12 +99,16 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 
 	pid = fork();
 	if (pid < 0)
-		print_error("Fork failed", NULL);
+	{
+		print_error("Fork failed", strerror(errno));
+		return -1;
+	}
 	if (pid == 0)
 	{
 		setup_pipes(in_fd, out_fd, cmd);
-		redir_handler(cmd, cmd->redir, NULL);
 		run_cmd(cmd, store);
+		revert_nodes(store);
+		free_all(store);
 	}
 	return pid;
 }
@@ -100,7 +116,10 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 int	setup_pipe(int pipe_fds[2])
 {
 	if (pipe(pipe_fds) == -1)
-		print_error("Pipe failed", NULL);
+	{
+		print_error("Pipe failed", strerror(errno));
+		return EXIT_FAILURE;
+	}
 	return EXIT_SUCCESS;
 }
 
@@ -120,7 +139,7 @@ int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int is_l
 	pid_t	last_pid;
 
 	last_pid = execute_command(store, cmd, in_fd, out_fd);
-	if (last_pid == EXIT_FAILURE)
+	if (last_pid == -1)
 		return EXIT_FAILURE;
 	if (is_last_cmd)
 		wait_for_command(last_pid);
@@ -142,7 +161,7 @@ int	handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd)
 		*out_fd = pipe_fds[1];
 	}
 	else
-		*out_fd = STDOUT_FILENO;
+		*out_fd = 1;
 	if (cmd->redir)
 		redir_handler(cmd, cmd->redir, NULL);
 	if (execute_and_wait(store, cmd, *in_fd, *out_fd, is_last_cmd) == EXIT_FAILURE)

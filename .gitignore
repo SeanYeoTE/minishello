@@ -4,3 +4,14 @@ minishell
 libft.a
 outfile
 minishell_tester/
+valgrind-out.txt
+test_valgrind-out.txt
+
+42_minishell_tester/
+ asd
+echo
+outfile01
+tmp_err_bash
+tmp_err_minishell
+tmp_out_bash
+tmp_out_minishell

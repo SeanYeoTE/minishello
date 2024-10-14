@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/08/19 12:27:43 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/12 14:52:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static bool	within_quote(const char *input, int index)
 		return true;
 	return false;
 }
+
 static int needs_spacing(const char *input, int i)
 {
 	if (within_quote(input, i))
@@ -51,15 +52,16 @@ static char	*add_space_before(char *str, int i)
 	char	*front;
 	char	*back;
 	char	*ret;
+	char	*result;
 
 	front = ft_substr(str, 0, i);
 	back = ft_substr(str, i, ft_strlen(str) - i);
 	ret = ft_strjoin(front, " ");
 	free(front);
-	front = ft_strjoin(ret, back);
+	result = ft_strjoin(ret, back);
 	free(ret);
 	free(back);
-	return (front);	
+	return (result);	
 }
 
 static char	*add_space_after(char *str, int i, int len)
@@ -67,18 +69,17 @@ static char	*add_space_after(char *str, int i, int len)
 	char	*front;
 	char	*back;
 	char	*ret;
+	char	*result;
 
 	front = ft_substr(str, 0, i + len);
 	back = ft_substr(str, i + len, ft_strlen(str) - i - len);
 	ret = ft_strjoin(front, " ");
 	free(front);
-	front = ft_strjoin(ret, back);
+	result = ft_strjoin(ret, back);
 	free(ret);
 	free(back);
-	return (front);
+	return (result);
 }
-
-
 
 // introduces spaces between operators and strings
 char	*input_spacer(char *input)
@@ -114,4 +115,3 @@ char	*input_spacer(char *input)
 	}
 	return (input);
 }
-

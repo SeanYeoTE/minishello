@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/10/04 15:29:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 21:04:38 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,30 +34,42 @@ static bool	is_numeric(char *arg)
 	return true;
 }
 
+static void	print_error_msg(char *arg, t_shell *store, int fd)
+{
+	if (fd == 2)
+	{
+		ft_putstr_fd("exit\n", 1);
+		ft_putstr_fd("exit: numeric argument required\n", 2);
+		free_all(store);
+		exit (fd);
+	}
+	else
+	{
+		ft_putstr_fd("exit\n", 1);
+		ft_putstr_fd("exit: too many arguments\n", 2);
+		free_all(store);
+		exit (fd);
+	}
+}
+
 int	exit_handler(t_shell *store)
 {
-	int	status;
+	char	*arg;
+	int		status;
 
 	status = 0;
-	if (!one_cmd(store->cmd_head->command)) // means got more than 1 variable
-	{
-		//check if more than 2 arg
-		if(store->cmd_head->command->next->next != NULL) //more than 2 argument
-		{
-			fprintf(stdout, "%s: too many arguments\n", store->cmd_head->command->data);
-			return (BUILTIN_FAILURE);
-		}
-		//check if numeric
-		else if (!is_numeric(store->cmd_head->command->next->data)) //non numeric
-		{
-			fprintf(stdout, "%s: %s: numeric argument required\n", store->cmd_head->command->data, store->cmd_head->command->next->data);
-			return (BUILTIN_FAILURE);
-		}
-		else
-			status = ft_atoi(store->cmd_head->command->next->data); //handler numeric
-	}
-	if (status < 0) //handle negative value
+
+	if (!(store->cmd_head->command->next))
+		exit(status);
+	arg = store->cmd_head->command->next->data;
+	if (ft_strcmp(arg, "") == 0 || !is_numeric(arg))
+		print_error_msg(arg, store, 2);
+	else if (store->cmd_head->command->next->next != NULL)
+		print_error_msg(arg, store, 1);
+	else
+		status = ft_atoi(arg);
+	if (status < 0)
 		status = status % 256;
 	free_all(store);
-	exit (status);
+	exit(status);
 }

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/24 12:43:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 20:56:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,21 @@ static char	*findprocesspath(t_shell *store, char **arr)
 	char	*joined;
 
 	i = 0;
-	joined = NULL;
 	while ((store->paths)[i])
 	{
 		temp = ft_strjoin((store->paths)[i], "/");
-        joined = ft_strjoin(temp, arr[0]);
+		if (!temp)
+			return (NULL);
+		joined = ft_strjoin(temp, arr[0]);
+		free(temp);
+		if (!joined)
+			return (NULL);
 		if (access(joined, X_OK) == 0)
-			break ;
+			return (joined);
 		free(joined);
-		joined = NULL;
 		i++;
 	}
-	free(temp);
-	return (joined);
+	return (NULL);
 }
 
 static char	**argv_creator(t_node *start, t_node *end)
@@ -47,21 +49,39 @@ static char	**argv_creator(t_node *start, t_node *end)
 		temp = temp->next;
 		i++;
 	}
-	ret = (char **)malloc(sizeof(char *) * (i + 1));
+	// ret = (char **)malloc(sizeof(char *) * (i + 2)); // Allocate one extra for NULL terminator
+	ret = (char **)ft_calloc(i + 2, sizeof(char *));
+	if (!ret)
+		return (NULL);
 	i = 0;
 	while (start && start != end)
 	{
 		ret[i] = ft_strdup(start->data);
+		if (!ret[i])
+		{
+			// Clean up if strdup fails
+			while (--i >= 0)
+				free(ret[i]);
+			free(ret);
+			return (NULL);
+		}
 		start = start->next;
 		i++;
 	}
-	ret[i] = '\0';
+	ret[i] = NULL; // Null-terminate the array
 	return (ret);
 }
 
 static void	set_fd(t_cmd *node)
 {
-	if (node->input_fd != STDIN_FILENO)
+	if (node->heredoc_fd != -1)
+	{
+		if (dup2(node->heredoc_fd, STDIN_FILENO) == -1)
+			print_error("dup2 failed on heredoc input", strerror(errno));
+		close(node->heredoc_fd);
+		node->heredoc_fd = -1;
+	}
+	else if (node->input_fd != STDIN_FILENO)
 	{
 		if (dup2(node->input_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on input", strerror(errno));
@@ -69,43 +89,58 @@ static void	set_fd(t_cmd *node)
 	}
 	if (node->output_fd != STDOUT_FILENO)
 	{
+		// printf("node output_fd: %d\n", node->output_fd);
+		// write(1, "hello\n", 6);
+		// write(6, "15e64\n", 6);
+		// printf("STDOUT_FILENO: %d\n", STDOUT_FILENO);
 		if (dup2(node->output_fd, STDOUT_FILENO) == -1)
-			print_error("dup2 failed on output", strerror(errno));
+			print_error("dup2 failed on output22", strerror(errno));
 		close(node->output_fd);
 	}
+	// printf("node output_fd: %d\n", node->output_fd);
+	// printf("final STDOUT_FILENO: %d\n", STDOUT_FILENO);
 }
 
-static void	cleanup(char *exepath, char **argv)
+static void cleanup(char *exepath, char **argv)
 {
-	int i;
-
 	if (exepath)
 		free(exepath);
 	if (argv)
 	{
-		i = 0;
+		int i = 0;
 		while (argv[i])
 			free(argv[i++]);
 		free(argv);
 	}
 }
 
-int	executor(t_shell *store, t_node *start, t_node *end)
+int	executor(t_shell *store, t_cmd *cmd)
 {
 	char	*exepath;
 	char	**argv;
 	
-	if (!(argv = argv_creator(start, end)))
-	{
+	argv = argv_creator(cmd->command, NULL);
+	if (!argv)
 		return (EXIT_FAILURE);
-	}
-	if (!(exepath = findprocesspath(store, argv)))
+	
+	// Check if the command is a local script or contains a path
+	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))
 	{
+		exepath = ft_strdup(argv[0]);
+	}
+	else
+	{
+		exepath = findprocesspath(store, argv);
+	}
+	
+	if (!exepath)
+	{
+		print_erroronly("Command not found", *argv);
 		cleanup(NULL, argv);
-		print_error("Command not found", argv[0]);
-		return (EXIT_FAILURE);
+		// return (EXIT_FAILURE);
+		return (127);
 	}
-	set_fd(store->cmd_head);
+	set_fd(cmd);	
 	if (execve(exepath, argv, store->envp) == -1)
 	{
 		cleanup(exepath, argv);

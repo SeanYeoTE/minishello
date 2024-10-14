@@ -11,10 +11,12 @@ int print_stack(t_node **head)
 	{
 		printf("Node Value: %s\n", start->data);
 		printf("Token Type: %d\n", start->type);
+		// if (start->next)
+		// 	printf("Node Next Value: %s\n", start->next->data);
 		printf("***************\n");
 		start = start->next;
 		count++;
-	}
+	}	
 	printf("Total Nodes: %d\n", count);
 	return (0);
 }
@@ -26,7 +28,7 @@ int print_stack_se(t_node *start, t_node *end)
 	count = 0;
 	while (start != end)
 	{
-		printf("Node Value: %s\n", start->data);
+		printf("Node Value: %s...\n", start->data);
 		printf("Token Type: %d\n", start->type);
 		printf("***************\n");
 		start = start->next;
@@ -73,8 +75,16 @@ int	print_cmd_stack(t_cmd **head)
 int	print_error(char *str, char *arg)
 {
 	if (arg)
-		printf("minishell: %s: %s\n", arg, str);
+		printf("%s: %s\n", arg, str);
 	else
 		printf("minishell: %s\n", str);
 	return (EXIT_FAILURE);  // Changed back to EXIT_FAILURE
+}
+
+void	print_erroronly(char *str, char *arg)
+{
+	if (arg)
+		printf("%s: %s\n", arg, str);
+	else
+		printf("minishell: %s\n", str);
 }
