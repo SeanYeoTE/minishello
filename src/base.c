@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 20:00:39 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/14 20:51:32 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	init_var(store, env_head, var_head, envp);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
-	if (isatty(fileno(stdin)))
-		store->input = readline(prompt);
-	else
-	{
-		char *line = NULL;
-		line = get_next_line(fileno(stdin));
-		store->input = ft_strtrim(line, "\n");
-		free(line);
-	}
+	store->input = readline(prompt);
 	free(prompt);
 	if (store->input == NULL)
 	{

@@ -132,7 +132,7 @@ static int	check_arg(char *arg)
 	{
 		if (arg[i] == '-')
 			return (2);
-		if (ft_isdigit(arg[i]))
+		if (ft_isdigit(arg[i]) || arg[i] == '=')
 			return (1);
 		i++;
 	}
