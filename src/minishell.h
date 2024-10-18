@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <errno.h>
+#include <sys/stat.h>
 
 #define	EXIT_SUCCESS 0
 #define BUILTIN_FAILURE 1

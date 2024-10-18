@@ -1,27 +1,8 @@
-/bin/echo $"HOME"$USER
 
-/bin/echo $"HOM"E$USER
+echo <missing <"./test_files/infile" <missing
 
-/bin/echo $"HOME"
+cat <"1""2""3""4""5"
 
-/bin/echo $"42$"
+cat <"./minishell_tester/test_files/infile" | echo hi
 
-/bin/echo hi >./outfiles/outfile01 | /bin/echo bye
-
-/bin/echo <123 <456 hi | /bin/echo 42
-
-/bin/echo \$USER
-
-/bin/echo \\$USER
-
-/bin/echo \\\$USER
-
-/bin/echo \\\\$USER
-
-/bin/echo \\\\\$USER
-
-/bin/echo \\\\\\\\\$USER
-
-/bin/echo \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\$USER \$PATH \\$PWD
-
-/bin/echo '$USER' "$USER" "text  ' text"
+ls >./minishell_tester/outfiles/outfile01 >./minishell_tester/test_files/invalid_permission

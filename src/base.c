@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/16 18:57:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/18 17:59:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	if (!check_quotes(store->input))
 	{
 		free_nonessential(store);
-		print_erroronly("syntax error", NULL);
+		print_erroronly("syntax error", store->input);
 		return (prompter(store, env_head, var_head, envp));
 	}
 	pre_execution(store);
