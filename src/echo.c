@@ -2,27 +2,27 @@
 
 int	echo_handler(t_node *current, t_node *end)
 {
-	int		option;
+	bool	n_flag;
 	bool	printed;
 
-	option = 0;
+	n_flag = false;
 	current = current->next;
-	if (ft_strncmp(current->data, "-n", 2) == 0)
-		option = 1;
-	if (option == 1)
-		current = current->next;
-	while (current != end)
+	if (current)
 	{
-		printed = true;
+		if (ft_strncmp(current->data, "-n", 2) == 0)
+			n_flag = true;
+	}
+	if (n_flag)
+		current = current->next;
+	while (current != NULL)
+	{
 		ft_putstr_fd(current->data, 1);
-		//printf("%s", current->data);
 		if (current->next)
 			ft_putchar_fd(' ', 1);
-			//printf(" ");
 		current = current->next;  
 	}
-	if (option == 0 || printed == false)
+	printed = false;
+	if (!printed && !n_flag)
 		ft_putchar_fd('\n', 1);
-		//printf("\n");
 	return (EXIT_SUCCESS);
 }
