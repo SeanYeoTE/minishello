@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mem_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/12 14:56:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/20 10:42:07 by melvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,26 @@ static void	free_env(t_env **env)
 	*env = NULL;
 }
 
+static void	free_var(t_var **var)
+{
+	t_var	*tmp;
+	t_var	*current;
+
+	if (NULL == var)
+		return ;
+	current = *var;
+	while (current)
+	{
+		tmp = current->next;
+		free(current->data);
+		free(current->name);
+		free(current->hidden);
+		free(current);
+		current = tmp;
+	}
+	*var = NULL;
+}
+
 void	free_nonessential(t_shell *store)
 {
 	freechararray(store->paths);		
@@ -110,4 +130,5 @@ void	free_all(t_shell *store)
 	free_stack(&(store->head));
 	freechararray(store->envp);
 	free_env(&(store->env));
+	free_var(&(store->var));
 }
