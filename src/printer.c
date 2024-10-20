@@ -83,8 +83,24 @@ int	print_error(char *str, char *arg)
 
 void	print_erroronly(char *str, char *arg)
 {
-	if (arg)
-		printf("%s: %s\n", arg, str);
+	char	*first;
+	char	*print;
+	char	*tmp;
+
+	if (ft_strcmp(str, "Is a directory") == 0)
+		first = ft_strjoin("bash: ", arg);
+	else if (ft_strcmp(str, "command not found") == 0)
+		first = ft_strjoin("bash: ", arg);
+	else if (ft_strcmp(str, "Permission denied") == 0)
+		first = ft_strjoin("bash: ", arg);
+	else if (ft_strcmp(str, "No such file or directory") == 0)
+		first = ft_strjoin("bash: ", arg);
 	else
-		printf("minishell: %s\n", str);
+		return ;
+	tmp = ft_strjoin(first, ": ");
+	print = ft_strjoin(tmp, str);
+	free(tmp);
+	ft_putstr_fd(print, STDERR_FILENO);
+	free(print);
+	ft_putchar_fd('\n', STDERR_FILENO);
 }

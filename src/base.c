@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 21:39:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/18 17:59:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,16 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	}
 	if (store->input[0] == '\0')
 	{
-		// need to rewrite otherwise point to null
 		free_nonessential(store);
 		return (prompter(store, env_head, var_head, envp));
 	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
-		return (print_error("syntax error", NULL));
+	{
+		free_nonessential(store);
+		print_erroronly("syntax error", store->input);
+		return (prompter(store, env_head, var_head, envp));
+	}
 	pre_execution(store);
 	return (EXIT_SUCCESS);
 }
@@ -74,6 +77,7 @@ int		parser(t_shell* store)
 	envp = store->envp;
 	env_head = store->env;
 	var_head = store->var;
+	revert_nodes(store);
 	free_nonessential(store);
 	return (prompter(store, env_head, var_head, envp));
 }

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 20:56:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/18 18:35:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,38 +114,54 @@ static void cleanup(char *exepath, char **argv)
 	}
 }
 
+int is_directory(const char *path)
+{
+	struct stat	path_stat;
+	if (stat(path, &path_stat) != 0)
+		return (-1); // Indicates an error in getting the file status
+	return(S_ISDIR(path_stat.st_mode));
+}
+
 int	executor(t_shell *store, t_cmd *cmd)
 {
 	char	*exepath;
 	char	**argv;
+	int		dir;
 	
 	argv = argv_creator(cmd->command, NULL);
 	if (!argv)
 		return (EXIT_FAILURE);
-	
 	// Check if the command is a local script or contains a path
 	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))
-	{
 		exepath = ft_strdup(argv[0]);
-	}
 	else
-	{
 		exepath = findprocesspath(store, argv);
-	}
-	
 	if (!exepath)
 	{
-		print_erroronly("Command not found", *argv);
+		print_erroronly("command not found", argv[0]);
 		cleanup(NULL, argv);
 		// return (EXIT_FAILURE);
 		return (127);
 	}
-	set_fd(cmd);	
+	set_fd(cmd);
+	dir = is_directory(exepath);
+	if (dir == -1)
+	{
+		print_erroronly(strerror(errno), argv[0]);
+		cleanup(exepath, argv);
+		return (127);
+	}
+	if (dir == 1)
+	{
+		print_erroronly("Is a directory", argv[0]);
+		cleanup(exepath, argv);
+		return (126);
+	}
 	if (execve(exepath, argv, store->envp) == -1)
 	{
+		print_erroronly(strerror(errno), argv[0]);
 		cleanup(exepath, argv);
-		print_error("execve failed", strerror(errno));
-		return (EXIT_FAILURE);
+		return (126);
 	}
 	cleanup(exepath, argv);
 	return (EXIT_SUCCESS);
