@@ -214,7 +214,7 @@ int			unset_handler(t_shell *store);
 int			exit_handler(t_shell *store);
 
 // redir.c
-t_node		*redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
+int			redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
 int			handle_output_redirection(t_cmd *cmd, char *filename);
 int			handle_append_redirection(t_cmd *cmd, char *filename);
 int			handle_input_redirection(t_cmd *cmd, char *filename);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/18 17:34:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/20 16:51:06 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,9 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
-	redir_handler(cmd, cmd->redir, NULL);
-	t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+	t_exit_status = redir_handler(cmd, cmd->redir, NULL);
+	if (t_exit_status == 0)
+		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
 	return (t_exit_status);
 }
 
