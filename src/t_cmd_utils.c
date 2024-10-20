@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/08 16:10:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/20 17:43:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,22 +90,91 @@ int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	}
 }
 
-void	detach_redir(t_cmd *new)
+int is_file(const char *path)
+{
+	struct stat path_stat;
+
+	// Attempt to get the file status
+	if (stat(path, &path_stat) != 0)
+	{
+		// Return 1 even if the file does not exist
+		return 1; // Path doesn't exist, but we're treating it as a valid case
+	}
+
+	// Check if the path is a regular file
+	if (S_ISREG(path_stat.st_mode))
+	{
+		return 1; // It is a regular file
+	}
+	else
+	{
+		return 0; // It is not a regular file
+	}
+}
+
+
+void	set_cmdlinked(t_node *start, t_node *temp)
+{
+	t_node	*curr_last;
+	
+	temp->prev->next = NULL;
+	curr_last = get_last(start);
+	
+	if (temp->next)
+	{
+		curr_last->next = temp->next->next;	
+	}
+	else
+		curr_last->next = temp->next;
+	
+	if (curr_last->next)
+		curr_last->next->prev = curr_last;
+}
+
+void	set_redirlinked(t_node *redir, t_node *temp)
+{
+	t_node	*file;
+	t_node	*last;
+	
+	if (!redir)
+	{
+		redir = temp;
+	}
+	else
+	{
+		last = get_last(redir);
+		last->next = temp;
+	}
+	file = temp->next;
+	if (file)
+	{
+		file->next = NULL; 
+	}
+		
+}
+
+void detach_redir(t_cmd *new)
 {
 	t_node	*temp;
-	
+	t_node	*start;
+	t_node	*last_redir;
+	t_node	*file;
+
 	temp = new->command;
+	start = temp;
+
 	while (temp)
 	{
 		if (redir_checker(temp) == 1)
 		{
-			new->redir = temp;
-			if (temp->prev)
-			{
-				temp->prev->next = NULL;
-			}
-			break;
+			set_cmdlinked(start, temp);
+			
+			set_redirlinked(new->redir, temp);
+			temp = start; // Reset temp to start for the next iteration
 		}
-		temp = temp->next;
+		else
+		{
+			temp = temp->next; // Move to the next node
+		}
 	}
 }
