@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/10/20 10:41:33 by melvin           ###   ########.fr       */
+/*   Updated: 2024/10/14 21:04:38 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,7 @@ int	exit_handler(t_shell *store)
 	status = 0;
 
 	if (!(store->cmd_head->command->next))
-	{
-		free_all(store);
 		exit(status);
-	}
 	arg = store->cmd_head->command->next->data;
 	if (ft_strcmp(arg, "") == 0 || !is_numeric(arg))
 		print_error_msg(arg, store, 2);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/20 10:55:20 by melvin           ###   ########.fr       */
+/*   Updated: 2024/10/14 21:39:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,13 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	}
 	if (store->input[0] == '\0')
 	{
+		// need to rewrite otherwise point to null
 		free_nonessential(store);
 		return (prompter(store, env_head, var_head, envp));
 	}
 	add_history(store->input);
 	if (!check_quotes(store->input))
-	{	
-		free(store->input);
 		return (print_error("syntax error", NULL));
-	}
 	pre_execution(store);
 	return (EXIT_SUCCESS);
 }
