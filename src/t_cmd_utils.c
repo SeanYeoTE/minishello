@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/20 17:43:34 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 13:08:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,91 +90,71 @@ int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	}
 }
 
-int is_file(const char *path)
+void	remove_nodes(t_node **start, t_node *redir, t_node *file)
 {
-	struct stat path_stat;
-
-	// Attempt to get the file status
-	if (stat(path, &path_stat) != 0)
+	if (redir->prev)
 	{
-		// Return 1 even if the file does not exist
-		return 1; // Path doesn't exist, but we're treating it as a valid case
-	}
-
-	// Check if the path is a regular file
-	if (S_ISREG(path_stat.st_mode))
-	{
-		return 1; // It is a regular file
+		if (file)
+			redir->prev->next = file->next;
+		else
+			redir->prev->next = NULL;
 	}
 	else
 	{
-		return 0; // It is not a regular file
+		if (file)
+			*start = file->next;
+		else
+			*start = NULL;
 	}
-}
 
+	if (file && file->next)
+		file->next->prev = redir->prev;
 
-void	set_cmdlinked(t_node *start, t_node *temp)
-{
-	t_node	*curr_last;
-	
-	temp->prev->next = NULL;
-	curr_last = get_last(start);
-	
-	if (temp->next)
-	{
-		curr_last->next = temp->next->next;	
-	}
-	else
-		curr_last->next = temp->next;
-	
-	if (curr_last->next)
-		curr_last->next->prev = curr_last;
-}
-
-void	set_redirlinked(t_node *redir, t_node *temp)
-{
-	t_node	*file;
-	t_node	*last;
-	
-	if (!redir)
-	{
-		redir = temp;
-	}
-	else
-	{
-		last = get_last(redir);
-		last->next = temp;
-	}
-	file = temp->next;
+	redir->prev = NULL;
 	if (file)
+		file->next = NULL;
+}
+
+void	add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file)
+{
+	t_node *last;
+
+	if (!*redir)
 	{
-		file->next = NULL; 
+		*redir = new_redir;
+		if (new_file)
+			new_redir->next = new_file;
 	}
-		
+	else
+	{
+		last = *redir;
+		while (last->next)
+			last = last->next;
+		last->next = new_redir;
+		if (new_file)
+			new_redir->next = new_file;
+	}
 }
 
 void detach_redir(t_cmd *new)
 {
 	t_node	*temp;
-	t_node	*start;
-	t_node	*last_redir;
 	t_node	*file;
 
 	temp = new->command;
-	start = temp;
-
 	while (temp)
 	{
 		if (redir_checker(temp) == 1)
 		{
-			set_cmdlinked(start, temp);
-			
-			set_redirlinked(new->redir, temp);
-			temp = start; // Reset temp to start for the next iteration
+			file = temp->next;
+			remove_nodes(&new->command, temp, file);
+			add_to_redir(&new->redir, temp, file);
+
+			temp = new->command;
 		}
 		else
 		{
-			temp = temp->next; // Move to the next node
+			temp = temp->next;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 21:06:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 13:12:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*create_string(char *first, char *second, char *third)
 	ft_strlcat(ret, second, ft_strlen(first) + ft_strlen(second) + 1);
 	ft_strlcat(ret, ": ", ft_strlen(first) + ft_strlen(second) + 3);
 	ft_strlcat(ret, third, ft_strlen(first) + ft_strlen(second) + ft_strlen(third) + 3);
-	ft_strlcat(ret, "\n", ft_strlen(first) + ft_strlen(second) + ft_strlen(third) + 4);
+	// ft_strlcat(ret, "\n", ft_strlen(first) + ft_strlen(second) + ft_strlen(third) + 4);
 	return (ret);
 }
 
