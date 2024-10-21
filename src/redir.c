@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
 /*   Updated: 2024/10/21 13:12:27 by seayeo           ###   ########.fr       */
@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-t_node	*redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
+int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end) //changed
 {
 	t_node	*temp;
 	int		result;
@@ -24,13 +24,13 @@ t_node	*redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 		{
 			result = handle_input_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (NULL);
+				return (result);
 		}
 		else if (ft_strcmp(loop->data, "<<") == 0)
 		{
 			result = handle_heredoc_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (NULL);
+				return (result);
 		}
 		loop = loop->next;
 	}
@@ -41,17 +41,17 @@ t_node	*redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 		{
 			result = handle_output_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (NULL);
+				return (result);
 		}
 		else if (ft_strcmp(loop->data, ">>") == 0)
 		{
 			result = handle_append_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (NULL);
+				return (result);
 		}
 		loop = loop->next;
 	}
-	return (loop);
+	return (0);
 }
 
 char	*create_string(char *first, char *second, char *third)
