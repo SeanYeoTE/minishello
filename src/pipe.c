@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 21:31:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 16:15:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
 	{
-		t_exit_status = executor(store, cmd);
+		t_exit_status = executor(store, cmd, 0);
 		exit(t_exit_status);
 	}
 	else

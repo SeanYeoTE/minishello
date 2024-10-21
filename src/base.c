@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/20 16:59:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 15:58:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	pre_execution(t_shell *store)
 	full_lexer(store->input, store, 0);
 	// print_stack(&store->head);
 	remove_quote(store->head);
+	// print_stack(&store->head);
 	parser(store);
 	return (EXIT_SUCCESS);
 }
