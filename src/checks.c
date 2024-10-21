@@ -48,23 +48,24 @@ int	redir_checker(t_node *cmd)
 }
 
 int	check_builtin(t_node *loop)
-{	if (loop->next != NULL)
-		return (0);
+{	
+	if (ft_strcmp(loop->data, "export") == 0)
+		return (1);
 	if (ft_strcmp(loop->data, "echo") == 0)
 		return (1);
 	if (ft_strcmp(loop->data, "cd") == 0)
 		return (1);
 	if (ft_strcmp(loop->data, "pwd") == 0)
 		return (1);	
-	if (ft_strcmp(loop->data, "export") == 0)
-		return (1);
 	if (ft_strcmp(loop->data, "unset") == 0)
-		return (1);
-	if (ft_strcmp(loop->data, "env") == 0)
 		return (1);
 	if (ft_strchr(loop->data,  '=') != NULL)
 		return (1);
 	if (ft_strcmp(loop->data, "exit") == 0)
+		return (1);
+	if (loop->next != NULL)
+		return (0);
+	if (ft_strcmp(loop->data, "env") == 0)
 		return (1);
 	else
 		return (0);
