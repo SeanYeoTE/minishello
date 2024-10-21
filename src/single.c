@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/21 16:14:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 19:13:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,12 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
 	// print_cmd_stack(&store->cmd_head);
-	if (check_builtin(store->cmd_head->command) == 0)
+	if (store->cmd_head->command == NULL)
+	{
+		print_erroronly("syntax error", "newline");
+		return (2);
+	}
+	else if (check_builtin(store->cmd_head->command) == 0)
 	{
 		return (execute_external_command(store, store->cmd_head));
 	}

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/21 17:41:29 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 18:45:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ int	executor(t_shell *store, t_cmd *cmd, int index)
 	if (cmd != NULL && cmd->prev != NULL)
 	{
 	}
-	else if (cmd->input_fd == STDIN_FILENO || cmd->output_fd == STDOUT_FILENO)
+	else if (cmd->input_fd == STDIN_FILENO) //|| cmd->output_fd == STDOUT_FILENO)
 	{
 		if (cmd->output_fd != 3 && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
 			temp_filename = handle_cat_without_args(cmd, index);

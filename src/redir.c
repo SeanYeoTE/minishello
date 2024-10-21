@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/21 13:12:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 19:14:23 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end) //changed
+int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 {
 	t_node	*temp;
 	int		result;
-	
+
 	temp = loop;
 	while (loop != end)
 	{
@@ -66,7 +66,6 @@ char	*create_string(char *first, char *second, char *third)
 	ft_strlcat(ret, second, ft_strlen(first) + ft_strlen(second) + 1);
 	ft_strlcat(ret, ": ", ft_strlen(first) + ft_strlen(second) + 3);
 	ft_strlcat(ret, third, ft_strlen(first) + ft_strlen(second) + ft_strlen(third) + 3);
-	// ft_strlcat(ret, "\n", ft_strlen(first) + ft_strlen(second) + ft_strlen(third) + 4);
 	return (ret);
 }
 
