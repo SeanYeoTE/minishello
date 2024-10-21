@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/20 16:51:06 by mchua            ###   ########.fr       */
+/*   Updated: 2024/10/21 13:13:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
+	// print_cmd_stack(&store->cmd_head);
 	if (check_builtin(store->cmd_head->command) == 0)
 	{
 		return (execute_external_command(store, store->cmd_head));

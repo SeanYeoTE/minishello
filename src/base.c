@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/18 17:59:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/20 16:59:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,11 @@ int		parser(t_shell* store)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
 			multiple_function(store, pipe_counter(store->head));
+	}
+	if (store->input[0] == '\0')
+	{
+		free_nonessential(store);
+		return (prompter(store, env_head, var_head, envp));
 	}
 	envp = store->envp;
 	env_head = store->env;

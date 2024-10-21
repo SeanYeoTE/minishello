@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/08 16:10:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/21 13:08:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,22 +90,71 @@ int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	}
 }
 
-void	detach_redir(t_cmd *new)
+void	remove_nodes(t_node **start, t_node *redir, t_node *file)
+{
+	if (redir->prev)
+	{
+		if (file)
+			redir->prev->next = file->next;
+		else
+			redir->prev->next = NULL;
+	}
+	else
+	{
+		if (file)
+			*start = file->next;
+		else
+			*start = NULL;
+	}
+
+	if (file && file->next)
+		file->next->prev = redir->prev;
+
+	redir->prev = NULL;
+	if (file)
+		file->next = NULL;
+}
+
+void	add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file)
+{
+	t_node *last;
+
+	if (!*redir)
+	{
+		*redir = new_redir;
+		if (new_file)
+			new_redir->next = new_file;
+	}
+	else
+	{
+		last = *redir;
+		while (last->next)
+			last = last->next;
+		last->next = new_redir;
+		if (new_file)
+			new_redir->next = new_file;
+	}
+}
+
+void detach_redir(t_cmd *new)
 {
 	t_node	*temp;
-	
+	t_node	*file;
+
 	temp = new->command;
 	while (temp)
 	{
 		if (redir_checker(temp) == 1)
 		{
-			new->redir = temp;
-			if (temp->prev)
-			{
-				temp->prev->next = NULL;
-			}
-			break;
+			file = temp->next;
+			remove_nodes(&new->command, temp, file);
+			add_to_redir(&new->redir, temp, file);
+
+			temp = new->command;
 		}
-		temp = temp->next;
+		else
+		{
+			temp = temp->next;
+		}
 	}
 }
