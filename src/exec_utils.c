@@ -192,10 +192,13 @@ int	executor(t_shell *store, t_cmd *cmd, int index)
 	argv = argv_creator(cmd->command, NULL);
 	if (!argv)
 		return (EXIT_FAILURE);
-
-	if (ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL  && cmd->input_fd == STDIN_FILENO)
+	if (cmd != NULL && cmd->prev != NULL)
 	{
-		printf("cat without args\n");
+	}
+	else if (cmd->input_fd == STDIN_FILENO && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
+	{
+		printf("cat without args and index %d\n", index);
+		printf("cat in %d and out %d\n", cmd->input_fd, cmd->output_fd);
 		temp_filename = handle_cat_without_args(cmd, index);
 	}
 	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))

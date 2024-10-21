@@ -48,7 +48,8 @@ int	redir_checker(t_node *cmd)
 }
 
 int	check_builtin(t_node *loop)
-{
+{	if (loop->next != NULL)
+		return (0);
 	if (ft_strcmp(loop->data, "echo") == 0)
 		return (1);
 	if (ft_strcmp(loop->data, "cd") == 0)

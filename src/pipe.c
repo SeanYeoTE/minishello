@@ -141,10 +141,10 @@ int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int is_l
 	last_pid = execute_command(store, cmd, in_fd, out_fd);
 	if (last_pid == -1)
 		return EXIT_FAILURE;
-	if (is_last_cmd)
-		wait_for_command(last_pid);
-	else
-		waitpid(last_pid, NULL, 0);
+	// if (is_last_cmd)
+	// 	wait_for_command(last_pid);
+	// else
+	// 	waitpid(last_pid, NULL, 0);
 	return EXIT_SUCCESS;
 }
 
@@ -184,5 +184,11 @@ int	multi_executor(t_shell *store, int num_pipes)
 			return EXIT_FAILURE;
 		cmd = cmd->next;
 	}
-	return EXIT_SUCCESS;
+	int res;
+	while ((waitpid(-1, &res, WNOHANG)) != -1)
+	{
+		if (WIFEXITED(res) == true)
+			res = WEXITSTATUS(res);
+	}
+	return res;
 }
