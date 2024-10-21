@@ -195,11 +195,10 @@ int	executor(t_shell *store, t_cmd *cmd, int index)
 	if (cmd != NULL && cmd->prev != NULL)
 	{
 	}
-	else if (cmd->input_fd == STDIN_FILENO && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
+	else if (cmd->input_fd == STDIN_FILENO || cmd->output_fd == STDOUT_FILENO)
 	{
-		printf("cat without args and index %d\n", index);
-		printf("cat in %d and out %d\n", cmd->input_fd, cmd->output_fd);
-		temp_filename = handle_cat_without_args(cmd, index);
+		if (cmd->output_fd != 3 && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
+			temp_filename = handle_cat_without_args(cmd, index);
 	}
 	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))
 		exepath = ft_strdup(argv[0]);

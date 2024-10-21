@@ -42,6 +42,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 		return (prompter(store, env_head, var_head, envp));
 	}
 	pre_execution(store);
+	free_all(store);
 	return (EXIT_SUCCESS);
 }
 
