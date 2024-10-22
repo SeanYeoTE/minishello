@@ -30,6 +30,7 @@ typedef struct s_node
 
 	char 	*data;
 
+	struct s_cmd	*parent;
 	struct s_node	*next;
 	struct s_node	*prev;
 } t_node;
@@ -43,6 +44,7 @@ typedef struct s_cmd
 	
 	t_node 	*command;
 	t_node	*redir;
+	bool	input_changed;
 
 	int		input_fd;
 	int		output_fd;

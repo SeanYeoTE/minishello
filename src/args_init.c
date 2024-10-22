@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/15 14:53:49 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/22 09:25:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	init_node(char *value, t_node **head)
 		return (-1);
 	new_node->next = NULL;
 	new_node->data = value;
+	new_node->parent = NULL;
 	if (*head == NULL)
 	{
 		new_node->prev = NULL;

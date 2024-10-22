@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/21 19:14:23 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/22 09:50:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,10 @@ int	handle_input_redirection(t_cmd *cmd, char *filename)
 	int	inputfd;
 	
 	inputfd = open(filename, O_RDONLY);
+	cmd->input_changed = true;
 	if (inputfd == -1)
 	{
-		ft_putstr_fd(create_string("bash: ", filename, strerror(errno)), 2);
+		print_erroronly("No such file or directory", filename);
 		return (1);
 	}
 	if (cmd->input_fd != STDIN_FILENO)

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/21 13:08:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/22 09:35:02 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,15 @@ int	count_cmds(t_shell *store)
 		iter = iter->next;
 	}
 	return (count);
+}
+
+void	set_parent(t_node *node, t_cmd *cmd)
+{
+	while (node)
+	{
+		node->parent = cmd;
+		node = node->next;
+	}
 }
 
 t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
@@ -60,7 +69,8 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 		last->next = cmd;
 	}
 	cmd->command = start;
-	
+	cmd->input_changed = false;
+	set_parent(cmd->command, cmd);
 	if (end->next)
 		end->next = NULL;
 	detach_redir(cmd);
