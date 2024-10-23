@@ -68,25 +68,25 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 	{
 		if (dup2(in_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on input", strerror(errno));
-		// close(in_fd);
+		close(in_fd);
 	}
 	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{
 		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on redirected input", strerror(errno));
-		// close(cmd->input_fd);
+		close(cmd->input_fd);
 	}
 	if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
 	{
 		if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on redirected output", strerror(errno));
-		// close(cmd->output_fd);
+		close(cmd->output_fd);
 	}
 	else if (out_fd != STDOUT_FILENO)
 	{
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on output", strerror(errno));
-		// close(out_fd);
+		close(out_fd);
 	}
 	// print_stack(&cmd->command);
 	// printf("after in_fd: %d\n", in_fd);
@@ -106,6 +106,7 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	if (pid == 0)
 	{
 		setup_pipes(in_fd, out_fd, cmd);
+		close(3);
 		run_cmd(cmd, store);
 		revert_nodes(store);
 		free_all(store);
@@ -123,15 +124,25 @@ int	setup_pipe(int pipe_fds[2])
 	return EXIT_SUCCESS;
 }
 
-void	handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd)
+void handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd)
 {
-	if (*in_fd != STDIN_FILENO)
-		close(*in_fd);
-	if (!is_last_cmd)
-	{
-		close(pipe_fds[1]);
-		*in_fd = pipe_fds[0];
-	}
+    if (*in_fd != STDIN_FILENO)
+    {
+        close(*in_fd);
+        *in_fd = STDIN_FILENO;
+    }
+    if (!is_last_cmd)
+    {
+        close(pipe_fds[1]);
+        *in_fd = pipe_fds[0]; 
+    }
+    else
+    {
+        if (pipe_fds[0] != -1)
+            close(pipe_fds[0]);
+        if (pipe_fds[1] != -1)
+            close(pipe_fds[1]);
+    }
 }
 
 int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int is_last_cmd)
@@ -184,11 +195,14 @@ int	multi_executor(t_shell *store, int num_pipes)
 			return EXIT_FAILURE;
 		cmd = cmd->next;
 	}
-	int res;
-	while ((waitpid(-1, &res, WNOHANG)) != -1)
-	{
-		if (WIFEXITED(res) == true)
-			res = WEXITSTATUS(res);
-	}
-	return res;
+    int status;
+    pid_t pid;
+    while ((pid = waitpid(-1, &status, 0)) > 0)  // Remove WNOHANG
+    {
+        if (WIFEXITED(status))
+            t_exit_status = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+            t_exit_status = WTERMSIG(status) + 128;
+    }
+    return t_exit_status;
 }
