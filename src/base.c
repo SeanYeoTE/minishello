@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/21 19:12:45 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/23 07:24:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,9 @@ int		parser(t_shell* store)
 	t_var	*var_head;
 	char 	**envp;
 
+	envp = store->envp;
+	env_head = store->env;
+	var_head = store->var;
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -76,15 +79,11 @@ int		parser(t_shell* store)
 		else if (pipe_counter(store->head) > 0)
 			multiple_function(store, pipe_counter(store->head));
 	}
-	if (store->input[0] == '\0')
+	else if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
 		return (prompter(store, env_head, var_head, envp));
 	}
-	envp = store->envp;
-	env_head = store->env;
-	var_head = store->var;
-	revert_nodes(store);
 	free_nonessential(store);
 	return (prompter(store, env_head, var_head, envp));
 }
@@ -107,6 +106,8 @@ int	multiple_function(t_shell *store, int count)
 			temp = back->next;
 			create_cmd(store, front, back->prev, create);
 			create = false;
+			free(back->data);
+			free(back);
 			front = temp;
 			back = temp;
 		}
@@ -116,6 +117,5 @@ int	multiple_function(t_shell *store, int count)
 	create_cmd(store, front, back, create);
 	multi_executor(store, count_cmds(store) - 1);
 	free(store->pid);
-	revert_nodes(store);
 	return (0);
 }

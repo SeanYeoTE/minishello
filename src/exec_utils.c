@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/22 09:59:12 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/23 12:00:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ static int handle_execution_errors(char *exepath, char **argv, char *temp_filena
 	return (0);
 }
 
-int	executor(t_shell *store, t_cmd *cmd, int index)
+int		executor(t_shell *store, t_cmd *cmd, int index)
 {
 	char	*exepath;
 	char	**argv;

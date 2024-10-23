@@ -98,6 +98,7 @@ void	print_erroronly(char *str, char *arg)
 	else
 		return ;
 	tmp = ft_strjoin(first, ": ");
+	free(first);
 	print = ft_strjoin(tmp, str);
 	free(tmp);
 	ft_putstr_fd(print, STDERR_FILENO);

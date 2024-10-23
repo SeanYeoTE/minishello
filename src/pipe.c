@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/22 14:08:58 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/23 07:21:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,6 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	{
 		setup_pipes(in_fd, out_fd, cmd);
 		run_cmd(cmd, store);
-		revert_nodes(store);
 		free_all(store);
 	}
 	return pid;

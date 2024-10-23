@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/22 09:25:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/23 07:21:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,4 @@ t_node	*get_node(t_node *ret, int num)
 		x++;
 	}
 	return (ret);
-}
-
-void	revert_nodes(t_shell *store)
-{
-	t_node *iter;
-	
-	iter = store->tail;
-	while (iter->prev != NULL)
-	{
-		iter->prev->next = iter;
-		iter = iter->prev;
-	}
 }

@@ -139,7 +139,6 @@ int 		scanner_word(char *str, int start, t_shell *store);
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
-void		revert_nodes(t_shell *store);
 
 // base.c
 int			prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
