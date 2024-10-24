@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/23 07:24:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/24 05:09:29 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ int	multiple_function(t_shell *store, int count)
 			create = false;
 			free(back->data);
 			free(back);
+			if (temp)
+				temp->prev = NULL;
 			front = temp;
 			back = temp;
 		}
@@ -115,6 +117,7 @@ int	multiple_function(t_shell *store, int count)
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
+	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
 	free(store->pid);
 	return (0);

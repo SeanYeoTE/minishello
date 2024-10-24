@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/22 09:35:02 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/24 05:02:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,12 @@ void	add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file)
 			last = last->next;
 		last->next = new_redir;
 		if (new_file)
+		{
 			new_redir->next = new_file;
+			new_file->next = NULL;
+		}
+		else
+			new_redir->next = NULL;
 	}
 }
 
@@ -157,9 +162,10 @@ void detach_redir(t_cmd *new)
 		if (redir_checker(temp) == 1)
 		{
 			file = temp->next;
+			
 			remove_nodes(&new->command, temp, file);
 			add_to_redir(&new->redir, temp, file);
-
+			// print_stack(&new->redir);
 			temp = new->command;
 		}
 		else
