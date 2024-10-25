@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/25 06:07:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/25 14:44:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 		return (prompter(store, env_head, var_head, envp));
 	}
 	add_history(store->input);
-	if (!check_quotes(store->input))
+	if (check_error(store->input))
 	{
-		free_nonessential(store);
 		print_erroronly("syntax error", store->input);
+		free_nonessential(store);
 		return (prompter(store, env_head, var_head, envp));
 	}
 	pre_execution(store);

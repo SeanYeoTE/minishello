@@ -112,11 +112,14 @@ char		*input_spacer(char *input);
 char		*form_prompt(char *cwd);
 
 // checks.c
-int			check_quotes(char *line);
 int 		redir_checker(t_node *cmd);
 int			check_builtin(t_node *loop);
 int			is_operator(char c);
 int			is_double_operator(const char *input, int i);
+
+// checks2.c
+int			check_quotes(char *line);
+int			check_error(char *input);
 
 // expansions.c
 char		*expansions(char *input);

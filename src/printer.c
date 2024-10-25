@@ -95,6 +95,8 @@ void	print_erroronly(char *str, char *arg)
 		first = ft_strjoin("bash: ", arg);
 	else if (ft_strcmp(str, "No such file or directory") == 0)
 		first = ft_strjoin("bash: ", arg);
+	else if (ft_strcmp(str, "syntax error") == 0)
+		first = ft_strjoin("bash: ", arg);
 	else
 		return ;
 	tmp = ft_strjoin(first, ": ");

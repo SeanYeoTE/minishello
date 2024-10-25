@@ -6,33 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 12:54:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/09/29 17:03:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/25 14:41:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// 34 is double quote, 39 is single quote
-// returns 1 if all quotes are closed, 0 if not
-int	check_quotes(char *line)
-{
-	int	i;
-	int	sml;
-	int	dbl;
 
-	sml = 0;
-	dbl = 0;
-	i = 0;
-	while (line[i])
-	{
-		if (line[i] == 34 && sml != 1)
-			dbl = !dbl;
-		if (line[i] == 39 && dbl != 1)
-			sml = !sml;
-		i++;
-	}
-	return (!(sml || dbl));
-}
 
 int	redir_checker(t_node *cmd)
 {
