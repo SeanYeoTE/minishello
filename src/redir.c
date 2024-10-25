@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/22 09:50:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/25 05:52:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,12 @@ char	*create_string(char *first, char *second, char *third)
 int	handle_output_redirection(t_cmd *cmd, char *filename)
 {
 	int	outputfd;
+	int	flags;
 	
-	outputfd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (access(filename, F_OK) == 0)
+		outputfd = open(filename, O_WRONLY | O_TRUNC);
+	else
+		outputfd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outputfd == -1)
 	{
 		ft_putstr_fd(create_string("bash: ", filename, strerror(errno)), 2);
@@ -89,7 +93,10 @@ int	handle_append_redirection(t_cmd *cmd, char *filename)
 {
 	int	outputfd;
 	
-	outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	if (access(filename, F_OK) == 0)
+		outputfd = open(filename, O_WRONLY | O_APPEND);
+	else
+		outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (outputfd == -1)
 	{
 		ft_putstr_fd(create_string("bash: ", filename, strerror(errno)), 2);
