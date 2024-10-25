@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/24 04:32:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/25 06:01:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,7 @@ int	multi_executor(t_shell *store, int num_pipes)
 
 	in_fd = STDIN_FILENO;
 	cmd = store->cmd_head;
+	// print_cmd_stack(&cmd);
 	while (cmd)
 	{
 		if (handle_command(store, cmd, &in_fd, &out_fd) == EXIT_FAILURE)
