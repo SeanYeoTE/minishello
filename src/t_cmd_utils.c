@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/21 13:08:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/24 05:02:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,15 @@ int	count_cmds(t_shell *store)
 		iter = iter->next;
 	}
 	return (count);
+}
+
+void	set_parent(t_node *node, t_cmd *cmd)
+{
+	while (node)
+	{
+		node->parent = cmd;
+		node = node->next;
+	}
 }
 
 t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
@@ -60,7 +69,8 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 		last->next = cmd;
 	}
 	cmd->command = start;
-	
+	cmd->input_changed = false;
+	set_parent(cmd->command, cmd);
 	if (end->next)
 		end->next = NULL;
 	detach_redir(cmd);
@@ -132,7 +142,12 @@ void	add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file)
 			last = last->next;
 		last->next = new_redir;
 		if (new_file)
+		{
 			new_redir->next = new_file;
+			new_file->next = NULL;
+		}
+		else
+			new_redir->next = NULL;
 	}
 }
 
@@ -147,9 +162,10 @@ void detach_redir(t_cmd *new)
 		if (redir_checker(temp) == 1)
 		{
 			file = temp->next;
+			
 			remove_nodes(&new->command, temp, file);
 			add_to_redir(&new->redir, temp, file);
-
+			// print_stack(&new->redir);
 			temp = new->command;
 		}
 		else

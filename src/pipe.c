@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 21:31:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/25 06:01:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
 	{
-		t_exit_status = executor(store, cmd);
+		t_exit_status = executor(store, cmd, 0);
 		exit(t_exit_status);
 	}
 	else
@@ -106,8 +106,8 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	if (pid == 0)
 	{
 		setup_pipes(in_fd, out_fd, cmd);
+		close(3);
 		run_cmd(cmd, store);
-		revert_nodes(store);
 		free_all(store);
 	}
 	return pid;
@@ -141,10 +141,10 @@ int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int is_l
 	last_pid = execute_command(store, cmd, in_fd, out_fd);
 	if (last_pid == -1)
 		return EXIT_FAILURE;
-	if (is_last_cmd)
-		wait_for_command(last_pid);
-	else
-		waitpid(last_pid, NULL, 0);
+	// if (is_last_cmd)
+	// 	wait_for_command(last_pid);
+	// else
+	// 	waitpid(last_pid, NULL, 0);
 	return EXIT_SUCCESS;
 }
 
@@ -178,11 +178,18 @@ int	multi_executor(t_shell *store, int num_pipes)
 
 	in_fd = STDIN_FILENO;
 	cmd = store->cmd_head;
+	// print_cmd_stack(&cmd);
 	while (cmd)
 	{
 		if (handle_command(store, cmd, &in_fd, &out_fd) == EXIT_FAILURE)
 			return EXIT_FAILURE;
 		cmd = cmd->next;
 	}
-	return EXIT_SUCCESS;
+	int res;
+	while ((waitpid(-1, &res, WNOHANG)) != -1)
+	{
+		if (WIFEXITED(res) == true)
+			res = WEXITSTATUS(res);
+	}
+	return res;
 }

@@ -15,3 +15,12 @@ tmp_err_bash
 tmp_err_minishell
 tmp_out_bash
 tmp_out_minishell
+
+# Ignore the .devcontainer directory
+.devcontainer/
+
+# Ignore other common files and directories
+node_modules/
+*.log
+*.tmp
+.DS_Store

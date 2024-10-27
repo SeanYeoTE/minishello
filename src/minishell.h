@@ -30,6 +30,7 @@ typedef struct s_node
 
 	char 	*data;
 
+	struct s_cmd	*parent;
 	struct s_node	*next;
 	struct s_node	*prev;
 } t_node;
@@ -43,6 +44,7 @@ typedef struct s_cmd
 	
 	t_node 	*command;
 	t_node	*redir;
+	bool	input_changed;
 
 	int		input_fd;
 	int		output_fd;
@@ -110,11 +112,14 @@ char		*input_spacer(char *input);
 char		*form_prompt(char *cwd);
 
 // checks.c
-int			check_quotes(char *line);
 int 		redir_checker(t_node *cmd);
 int			check_builtin(t_node *loop);
 int			is_operator(char c);
 int			is_double_operator(const char *input, int i);
+
+// checks2.c
+int			check_quotes(char *line);
+int			check_error(char *input);
 
 // expansions.c
 char		*expansions(char *input);
@@ -137,7 +142,6 @@ int 		scanner_word(char *str, int start, t_shell *store);
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
-void		revert_nodes(t_shell *store);
 
 // base.c
 int			prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
@@ -155,7 +159,7 @@ void		detach_redir(t_cmd *new);
 int			count_cmds(t_shell *store);
 
 // exec_utils.c
-int			executor(t_shell *store, t_cmd *cmd);
+int			executor(t_shell *store, t_cmd *cmd, int index);
 
 // printer.c
 int 		print_stack(t_node **head);

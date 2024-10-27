@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mem_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/20 11:06:26 by melvin           ###   ########.fr       */
+/*   Updated: 2024/10/23 07:28:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ static void	free_cmd(t_cmd **cmd)
 	while (current)
 	{
 		tmp = current->next;
-		// free_stack(&current->command);
-		// if (current->redir)
-		// 	free_stack(&current->redir);
+		free_stack(&current->command);
+		if (current->redir)
+			free_stack(&current->redir);
 		if (current->heredoc_delimiter)
 			free(current->heredoc_delimiter);
 		free(current);
@@ -114,7 +114,8 @@ void	free_nonessential(t_shell *store)
 	free(store->input);
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
-	free_stack(&(store->head));
+	else
+		free_stack(&(store->head));
 	
 }
 
@@ -127,7 +128,8 @@ void	free_all(t_shell *store)
 	free(store->input);
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
-	free_stack(&(store->head));
+	else
+		free_stack(&(store->head));
 	freechararray(store->envp);
 	free_env(&(store->env));
 	free_var(&(store->var));

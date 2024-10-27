@@ -11,8 +11,8 @@ int print_stack(t_node **head)
 	{
 		printf("Node Value: %s\n", start->data);
 		printf("Token Type: %d\n", start->type);
-		// if (start->next)
-		// 	printf("Node Next Value: %s\n", start->next->data);
+		printf("Node Prev Value: %p\n", start->prev);
+		printf("Node Next Value: %p\n", start->next);
 		printf("***************\n");
 		start = start->next;
 		count++;
@@ -95,9 +95,12 @@ void	print_erroronly(char *str, char *arg)
 		first = ft_strjoin("bash: ", arg);
 	else if (ft_strcmp(str, "No such file or directory") == 0)
 		first = ft_strjoin("bash: ", arg);
+	else if (ft_strcmp(str, "syntax error") == 0)
+		first = ft_strjoin("bash: ", arg);
 	else
 		return ;
 	tmp = ft_strjoin(first, ": ");
+	free(first);
 	print = ft_strjoin(tmp, str);
 	free(tmp);
 	ft_putstr_fd(print, STDERR_FILENO);
