@@ -6,11 +6,36 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/25 05:52:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/29 04:51:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	reset_fds(t_cmd *cmd)
+{
+	if (cmd->input_fd != STDIN_FILENO)
+	{
+		close(cmd->input_fd);
+		cmd->input_fd = STDIN_FILENO;
+	}
+	if (cmd->output_fd != STDOUT_FILENO)
+	{
+		close(cmd->output_fd);
+		cmd->output_fd = STDOUT_FILENO;
+	}
+	if (cmd->heredoc_fd > 2)
+	{
+		close(cmd->heredoc_fd);
+		cmd->heredoc_fd = -1;
+	}
+	if (cmd->heredoc_delimiter)
+	{
+		free(cmd->heredoc_delimiter);
+		cmd->heredoc_delimiter = NULL;
+	}
+	cmd->input_changed = false;
+}
 
 int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 {
@@ -72,15 +97,11 @@ char	*create_string(char *first, char *second, char *third)
 int	handle_output_redirection(t_cmd *cmd, char *filename)
 {
 	int	outputfd;
-	int	flags;
-	
-	if (access(filename, F_OK) == 0)
-		outputfd = open(filename, O_WRONLY | O_TRUNC);
-	else
-		outputfd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+	outputfd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outputfd == -1)
 	{
-		ft_putstr_fd(create_string("bash: ", filename, strerror(errno)), 2);
+		print_erroronly(strerror(errno), filename);
 		return (1);
 	}
 	if (cmd->output_fd != STDOUT_FILENO)
