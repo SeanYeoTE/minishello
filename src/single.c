@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/29 09:03:20 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/29 21:43:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 	t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 	if (t_exit_status == 0)
 	{
-		// set_fd(cmd);
+		set_fd(cmd);
 		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
-		// reset_fds(cmd);
+		reset_fds(store, cmd);
 	}
 	return (t_exit_status);
 }

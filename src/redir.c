@@ -6,23 +6,42 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/29 04:51:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/29 22:33:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	reset_fds(t_cmd *cmd)
+int are_same_resource(int fd1, int fd2) {
+    struct stat stat1, stat2;
+
+    // Get stats for the first file descriptor
+    if (fstat(fd1, &stat1) == -1) {
+        perror("fstat fd1");
+        return 0;  // Error occurred
+    }
+
+    // Get stats for the second file descriptor
+    if (fstat(fd2, &stat2) == -1) {
+        perror("fstat fd2");
+        return 0;  // Error occurred
+    }
+
+    // Compare device and inode numbers
+    return (stat1.st_dev == stat2.st_dev) && (stat1.st_ino == stat2.st_ino);
+}
+
+void	reset_fds(t_shell *store, t_cmd *cmd)
 {
-	if (cmd->input_fd != STDIN_FILENO)
+	if (!are_same_resource(store->input_fd, STDIN_FILENO))
 	{
-		close(cmd->input_fd);
-		cmd->input_fd = STDIN_FILENO;
+		if (dup2(store->input_fd, STDIN_FILENO) == -1)
+			perror("dup2");
 	}
-	if (cmd->output_fd != STDOUT_FILENO)
+	if (!are_same_resource(store->output_fd, STDOUT_FILENO))
 	{
-		close(cmd->output_fd);
-		cmd->output_fd = STDOUT_FILENO;
+		if (dup2(store->output_fd, STDOUT_FILENO) == -1)
+			perror("dup2");
 	}
 	if (cmd->heredoc_fd > 2)
 	{

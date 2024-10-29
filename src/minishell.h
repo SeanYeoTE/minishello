@@ -218,7 +218,8 @@ int			unset_handler(t_shell *store);
 int			exit_handler(t_shell *store);
 
 // redir.c
-void		reset_fds(t_cmd *cmd);
+int 		are_same_resource(int fd1, int fd2);
+void		reset_fds(t_shell *store, t_cmd *cmd);
 int			redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
 int			handle_output_redirection(t_cmd *cmd, char *filename);
 int			handle_append_redirection(t_cmd *cmd, char *filename);
