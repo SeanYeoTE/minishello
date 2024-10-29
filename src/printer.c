@@ -98,7 +98,7 @@ void	print_erroronly(char *str, char *arg)
 	else if (ft_strcmp(str, "syntax error") == 0)
 		first = ft_strjoin("bash: ", arg);
 	else
-		return ;
+		first = ft_strjoin("bash: ", arg);
 	tmp = ft_strjoin(first, ": ");
 	free(first);
 	print = ft_strjoin(tmp, str);

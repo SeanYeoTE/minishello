@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/23 15:12:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/29 09:03:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,31 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 	return (wait_for_command(pid));
 }
 
+static void	set_fd(t_cmd *cmd)
+{
+	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
+	{
+		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
+			perror("dup2 input");
+		close(cmd->input_fd);
+	}
+	if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
+	{
+		if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
+			perror("dup2 output");
+		close(cmd->output_fd);
+	}
+}
+
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
 	t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 	if (t_exit_status == 0)
+	{
+		// set_fd(cmd);
 		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+		// reset_fds(cmd);
+	}
 	return (t_exit_status);
 }
 
