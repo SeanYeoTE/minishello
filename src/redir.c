@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 04:57:43 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 07:39:16 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,11 +121,8 @@ int	handle_output_redirection(t_cmd *cmd, char *filename)
 int	handle_append_redirection(t_cmd *cmd, char *filename)
 {
 	int	outputfd;
-	
-	if (access(filename, F_OK) == 0)
-		outputfd = open(filename, O_WRONLY | O_APPEND);
-	else
-		outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+
+	outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (outputfd == -1)
 	{
 		ft_putstr_fd(create_string("bash: ", filename, strerror(errno)), 2);

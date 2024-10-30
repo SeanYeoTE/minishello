@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 07:11:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 08:01:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 
 void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 {
-	// printf("before in_fd: %d\n", in_fd);
-	// printf("before out_fd: %d\n", out_fd);
 	if (cmd->heredoc_fd != -1)
 	{
 		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
@@ -88,9 +86,6 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 			print_error("dup2 failed on output", strerror(errno));
 		// close(out_fd);
 	}
-	// print_stack(&cmd->command);
-	// printf("after in_fd: %d\n", in_fd);
-	// printf("after out_fd: %d\n", out_fd);
 }
 
 int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
