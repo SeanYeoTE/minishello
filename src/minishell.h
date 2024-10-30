@@ -74,8 +74,8 @@ typedef struct s_var
 typedef struct s_shell
 {
 	char	**envp;
-	int		input_fd;
-	int		output_fd;
+	int		input_reset;
+	int		output_reset;
 
 	int		fd_in;
 
@@ -218,7 +218,7 @@ int			unset_handler(t_shell *store);
 int			exit_handler(t_shell *store);
 
 // redir.c
-void		reset_fds(t_cmd *cmd);
+void		reset_fds(t_shell *store, t_cmd *cmd);
 int			redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
 int			handle_output_redirection(t_cmd *cmd, char *filename);
 int			handle_append_redirection(t_cmd *cmd, char *filename);

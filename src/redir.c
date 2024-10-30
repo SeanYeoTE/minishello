@@ -6,35 +6,24 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/29 04:51:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 04:43:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	reset_fds(t_cmd *cmd)
+void	reset_fds(t_shell *store, t_cmd *cmd)
 {
-	if (cmd->input_fd != STDIN_FILENO)
+	if (store->input_reset != 0)
 	{
-		close(cmd->input_fd);
-		cmd->input_fd = STDIN_FILENO;
+		if (dup2(0, STDIN_FILENO) == -1)
+			print_erroronly("dup2 failed on input reset", strerror(errno));
 	}
-	if (cmd->output_fd != STDOUT_FILENO)
+	if (store->output_reset != 1)
 	{
-		close(cmd->output_fd);
-		cmd->output_fd = STDOUT_FILENO;
+		if (dup2(1, STDOUT_FILENO) == -1)
+			print_erroronly("dup2 failed on output reset", strerror(errno));
 	}
-	if (cmd->heredoc_fd > 2)
-	{
-		close(cmd->heredoc_fd);
-		cmd->heredoc_fd = -1;
-	}
-	if (cmd->heredoc_delimiter)
-	{
-		free(cmd->heredoc_delimiter);
-		cmd->heredoc_delimiter = NULL;
-	}
-	cmd->input_changed = false;
 }
 
 int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
