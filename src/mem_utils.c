@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/23 07:28:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 07:02:28 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ static void	free_var(t_var **var)
 	*var = NULL;
 }
 
+
+
 void	free_nonessential(t_shell *store)
 {
 	freechararray(store->paths);		
@@ -116,7 +118,6 @@ void	free_nonessential(t_shell *store)
 		free_cmd(&(store->cmd_head));
 	else
 		free_stack(&(store->head));
-	
 }
 
 void	free_all(t_shell *store)

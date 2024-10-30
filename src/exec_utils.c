@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 04:54:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 07:11:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,18 @@ static int handle_execution_errors(char *exepath, char **argv, char *temp_filena
 	return (0);
 }
 
+void check_open_fds(int max_fd)
+{
+    for (int fd = 3; fd <= max_fd; fd++)
+    {
+        if (fcntl(fd, F_GETFD) != -1 || errno != EBADF)
+        {
+   			close(fd);
+            // printf("File descriptor %d is open\n", fd);
+        }
+    }
+}
+
 int		executor(t_shell *store, t_cmd *cmd, int index)
 {
 	char	*exepath;
@@ -210,7 +222,7 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 		return error_code;
 
 	set_fd(cmd, temp_filename);
-
+	check_open_fds(100);
 	if (execve(exepath, argv, store->envp) == -1)
 	{
 		print_erroronly(strerror(errno), argv[0]);
