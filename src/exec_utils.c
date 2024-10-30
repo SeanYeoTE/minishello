@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/29 22:26:05 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 04:51:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,7 @@ static void	set_fd(t_cmd *node, char *temp_filename)
 		close(node->heredoc_fd);
 		node->heredoc_fd = -1;
 	}
-	else if (!are_same_resource(node->input_fd, STDIN_FILENO))
-	// else if (node->input_fd != STDIN_FILENO)
+	else if (node->input_fd != STDIN_FILENO)
 	{
 		if (dup2(node->input_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on input", strerror(errno));
@@ -95,8 +94,7 @@ static void	set_fd(t_cmd *node, char *temp_filename)
 			print_error("dup2 failed on temporary input", strerror(errno));
 		close(node->input_fd);
 	}
-	if (!are_same_resource(node->output_fd, STDOUT_FILENO))
-	// if (node->output_fd != STDOUT_FILENO)
+	if (node->output_fd != STDOUT_FILENO)
 	{
 		if (dup2(node->output_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on output", strerror(errno));

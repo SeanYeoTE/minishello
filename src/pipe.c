@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/29 22:27:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 04:51:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,29 +64,25 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 		close(cmd->heredoc_fd);
 		cmd->heredoc_fd = -1;
 	}
-	else if (!are_same_resource(in_fd, STDIN_FILENO))
-	// else if (in_fd != STDIN_FILENO)
+	else if (in_fd != STDIN_FILENO)
 	{
 		if (dup2(in_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on input", strerror(errno));
 		// close(in_fd);
 	}
-	if (cmd->redir && !are_same_resource(cmd->input_fd, STDIN_FILENO))
-	// if (cmd->redir && cmd->input_fd != STDIN_FILENO)
+	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{
 		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on redirected input", strerror(errno));
 		// close(cmd->input_fd);
 	}
-	if (cmd->redir && !are_same_resource(cmd->output_fd, STDOUT_FILENO))
-	// if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
+	if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
 	{
 		if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on redirected output", strerror(errno));
 		// close(cmd->output_fd);
 	}
-	else if (!are_same_resource(out_fd, STDOUT_FILENO))
-	// else if (out_fd != STDOUT_FILENO)
+	else if (out_fd != STDOUT_FILENO)
 	{
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on output", strerror(errno));
