@@ -6,22 +6,41 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 04:48:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 04:57:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+bool are_same_resource(int fd1, int fd2) {
+    struct stat stat1, stat2;
+
+    // Get file status for fd1
+    if (fstat(fd1, &stat1) == -1) {
+        perror("fstat");
+        return false;
+    }
+
+    // Get file status for fd2
+    if (fstat(fd2, &stat2) == -1) {
+        perror("fstat");
+        return false;
+    }
+
+    // Compare device and inode
+    return (stat1.st_dev == stat2.st_dev) && (stat1.st_ino == stat2.st_ino);
+}
+
 void	reset_fds(t_shell *store, t_cmd *cmd)
 {
-	if (store->input_reset != 0)
+	if (!are_same_resource(store->input_reset, STDIN_FILENO))
 	{
-		if (dup2(0, STDIN_FILENO) == -1)
+		if (dup2(store->input_reset, STDIN_FILENO) == -1)
 			print_erroronly("dup2 failed on input reset", strerror(errno));
 	}
-	if (store->output_reset != 1)
+	if (!are_same_resource(store->output_reset, STDOUT_FILENO))
 	{
-		if (dup2(1, STDOUT_FILENO) == -1)
+		if (dup2(store->output_reset, STDOUT_FILENO) == -1)
 			print_erroronly("dup2 failed on output reset", strerror(errno));
 	}
 }
