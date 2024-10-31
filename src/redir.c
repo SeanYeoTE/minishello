@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 07:39:16 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/01 00:41:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 	t_node	*temp;
 	int		result;
 
+	result = 0;
 	temp = loop;
 	while (loop != end)
 	{
@@ -57,13 +58,13 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 		{
 			result = handle_input_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
 		else if (ft_strcmp(loop->data, "<<") == 0)
 		{
 			result = handle_heredoc_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
 		loop = loop->next;
 	}
@@ -74,17 +75,17 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 		{
 			result = handle_output_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
 		else if (ft_strcmp(loop->data, ">>") == 0)
 		{
 			result = handle_append_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
 		loop = loop->next;
 	}
-	return (0);
+	return (result);
 }
 
 char	*create_string(char *first, char *second, char *third)
@@ -110,6 +111,7 @@ int	handle_output_redirection(t_cmd *cmd, char *filename)
 	if (outputfd == -1)
 	{
 		print_erroronly(strerror(errno), filename);
+		cmd->output_fd = 1;
 		return (1);
 	}
 	if (cmd->output_fd != STDOUT_FILENO)
@@ -126,6 +128,7 @@ int	handle_append_redirection(t_cmd *cmd, char *filename)
 	if (outputfd == -1)
 	{
 		ft_putstr_fd(create_string("bash: ", filename, strerror(errno)), 2);
+		cmd->output_fd = 1;
 		return (1);
 	}
 	if (cmd->output_fd != STDOUT_FILENO)

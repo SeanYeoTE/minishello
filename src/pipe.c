@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 08:01:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/31 23:27:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,9 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	}
 	if (pid == 0)
 	{
+		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
+		if (t_exit_status != 0)
+			exit(t_exit_status);
 		setup_pipes(in_fd, out_fd, cmd);
 		// close(3);
 		run_cmd(cmd, store);
@@ -162,8 +165,6 @@ int	handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd)
 	}
 	else
 		*out_fd = 1;
-	if (cmd->redir)
-		redir_handler(cmd, cmd->redir, NULL);
 	if (execute_and_wait(store, cmd, *in_fd, *out_fd, is_last_cmd) == EXIT_FAILURE)
 		return EXIT_FAILURE;
 	handle_pipe_fds(in_fd, pipe_fds, is_last_cmd);
@@ -183,7 +184,10 @@ int	multi_executor(t_shell *store, int num_pipes)
 	while (cmd)
 	{
 		if (handle_command(store, cmd, &in_fd, &out_fd) == EXIT_FAILURE)
-			return EXIT_FAILURE;
+		{
+			if (!cmd->next)
+				return EXIT_FAILURE;
+		}
 		cmd = cmd->next;
 	}
 	int res;
