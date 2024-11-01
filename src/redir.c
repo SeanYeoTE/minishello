@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/01 00:41:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/01 12:36:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,7 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 			if (result != 0)
 				break ;
 		}
-		loop = loop->next;
-	}
-	loop = temp;
-	while (loop != end)
-	{
-		if (ft_strcmp(loop->data, ">") == 0)
+		else if (ft_strcmp(loop->data, ">") == 0)
 		{
 			result = handle_output_redirection(cmd, loop->next->data);
 			if (result != 0)
@@ -85,6 +80,23 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 		}
 		loop = loop->next;
 	}
+	// loop = temp;
+	// while (loop != end)
+	// {
+	// 	if (ft_strcmp(loop->data, ">") == 0)
+	// 	{
+	// 		result = handle_output_redirection(cmd, loop->next->data);
+	// 		if (result != 0)
+	// 			break ;
+	// 	}
+	// 	else if (ft_strcmp(loop->data, ">>") == 0)
+	// 	{
+	// 		result = handle_append_redirection(cmd, loop->next->data);
+	// 		if (result != 0)
+	// 			break ;
+	// 	}
+	// 	loop = loop->next;
+	// }
 	return (result);
 }
 
