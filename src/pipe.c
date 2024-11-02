@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 16:11:25 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/02 17:56:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 {
 	pid_t	pid;
-
+	
 	pid = fork();
 	if (pid < 0)
 	{
@@ -108,6 +108,7 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 		run_cmd(cmd, store);
 		// free_all(store);
 	}
+	cmd->pid = pid;
 	return pid;
 }
 
@@ -144,10 +145,6 @@ int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int is_l
 	last_pid = execute_command(store, cmd, in_fd, out_fd);
 	if (last_pid == -1)
 		return EXIT_FAILURE;
-	// if (is_last_cmd)
-	// 	wait_for_command(last_pid);
-	// else
-	// 	waitpid(last_pid, NULL, 0);
 	return EXIT_SUCCESS;
 }
 
@@ -190,11 +187,20 @@ int	multi_executor(t_shell *store, int num_pipes)
 		}
 		cmd = cmd->next;
 	}
-	int res;
-	while ((waitpid(-1, &res, WNOHANG)) != -1)
+	int	res;
+	
+	res = 0;
+	cmd = store->cmd_head;
+	while ((waitpid(cmd->pid, &res, 0)) != -1)
 	{
 		if (WIFEXITED(res) == true)
 			t_exit_status = WEXITSTATUS(res);
+		else if (WIFSIGNALED(res))
+			t_exit_status = WTERMSIG(res) + 128;
+		if (cmd->next)
+			cmd = cmd->next;
+		// cmd = cmd->next;
 	}
-	return res;
+	// return res;
+	return (0);
 }
