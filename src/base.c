@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/25 15:06:52 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/02 16:57:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int		parser(t_shell* store)
 	envp = store->envp;
 	env_head = store->env;
 	var_head = store->var;
+	t_exit_status = 0;
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 04:48:56 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/02 17:10:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	env_head = env_init(&store, envp);
 	envp1 = init_environment(envp);
+	t_exit_status = 0;
 	return (prompter(&store, env_head, NULL, envp1));
 }
