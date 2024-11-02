@@ -73,9 +73,12 @@ int	scanner_quote(char *str, int start, t_shell *store)
 	init_node(data, &store->head);
 	store->tail = get_last(store->head);
 	get_last(store->head)->type = type;
-	if (str[start + i + 1])
-		return (start + i);
-	return (start + i + 1);
+
+	// printf("quote_char: .%c.\n", str[start + i - 1]);
+	// printf("curr char: .%c.\n", str[start + i]);
+	// printf("next char: .%c.\n", str[start + i + 1]);
+	
+	return (start + i);
 }
 
 int	scanner_operator(char *str, int start, t_shell *store)
@@ -131,5 +134,9 @@ int	scanner_word(char *str, int start, t_shell *store)
 	init_node(data, &store->head);
 	store->tail = get_last(store->head);
 	get_last(store->head)->type = 5;
+
+	// printf("prev char: .%c.\n", str[start + i - 1]);
+	// printf("curr char: .%c.\n", str[start + i]);
+	// printf("next char: .%c.\n", str[start + i + 1]);
 	return (start + i);
 }

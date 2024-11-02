@@ -11,7 +11,7 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 
 # Source files
 SRC_PATH = src/
-SRC =	main.c prompt.c checks.c input_utils.c parse_detection.c scanner.c \
+SRC =	main.c prompt.c checks.c checks2.c input_utils.c parse_detection.c scanner.c \
 		exec_utils.c args_init.c base.c t_cmd_utils.c printer.c mem_utils.c \
 		builtin_main.c cd.c echo.c env.c export.c export_utils.c pwd.c unset.c \
 		exit.c var_handler.c var_utils.c redir.c sig_handler.c pipe.c single.c \

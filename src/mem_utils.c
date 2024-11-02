@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/12 14:56:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/30 07:02:28 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ static void	free_cmd(t_cmd **cmd)
 	while (current)
 	{
 		tmp = current->next;
-		// free_stack(&current->command);
-		// if (current->redir)
-		// 	free_stack(&current->redir);
+		free_stack(&current->command);
+		if (current->redir)
+			free_stack(&current->redir);
 		if (current->heredoc_delimiter)
 			free(current->heredoc_delimiter);
 		free(current);
@@ -85,6 +85,28 @@ static void	free_env(t_env **env)
 	*env = NULL;
 }
 
+static void	free_var(t_var **var)
+{
+	t_var	*tmp;
+	t_var	*current;
+
+	if (NULL == var)
+		return ;
+	current = *var;
+	while (current)
+	{
+		tmp = current->next;
+		free(current->data);
+		free(current->name);
+		free(current->hidden);
+		free(current);
+		current = tmp;
+	}
+	*var = NULL;
+}
+
+
+
 void	free_nonessential(t_shell *store)
 {
 	freechararray(store->paths);		
@@ -94,8 +116,8 @@ void	free_nonessential(t_shell *store)
 	free(store->input);
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
-	free_stack(&(store->head));
-	
+	else
+		free_stack(&(store->head));
 }
 
 void	free_all(t_shell *store)
@@ -107,7 +129,9 @@ void	free_all(t_shell *store)
 	free(store->input);
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
-	free_stack(&(store->head));
+	else
+		free_stack(&(store->head));
 	freechararray(store->envp);
 	free_env(&(store->env));
+	free_var(&(store->var));
 }

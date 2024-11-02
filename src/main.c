@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/11 16:18:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/02 17:10:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ static char	**init_environment(char **envp)
 
 void	init_var(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 {		
-	store->input_fd = STDIN_FILENO;
-	store->output_fd = STDOUT_FILENO;
+	store->input_reset = dup(STDIN_FILENO);
+	store->output_reset = dup(STDOUT_FILENO);
 	store->head = NULL;
 	store->tail = NULL;
 	store->fd_in = STDIN_FILENO;
@@ -84,5 +84,6 @@ int	main(int argc, char **argv, char **envp)
 	}
 	env_head = env_init(&store, envp);
 	envp1 = init_environment(envp);
+	t_exit_status = 0;
 	return (prompter(&store, env_head, NULL, envp1));
 }

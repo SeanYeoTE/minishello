@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/12 14:52:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/25 06:06:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,17 @@ static int needs_spacing(const char *input, int i)
 		return 0;
 	if (!is_operator(input[i]))
 		return 0;
+	if (is_double_operator(input, i))
+	{
+		if (i > 0 && input[i - 1] != ' ' && !is_operator(input[i - 1]))
+			return 2;
+		if (input[i + 2] && input[i + 2] != ' ' && !is_operator(input[i + 2]))
+			return 2;
+		return 0;
+	}
 	if (i > 0 && input[i - 1] != ' ' && !is_operator(input[i - 1]))
 		return 1;
-	if (input[i + 1] && input[i + 1] != ' ' && 
-		!is_operator(input[i + 1]))
+	if (input[i + 1] && input[i + 1] != ' ' && !is_operator(input[i + 1]))
 		return 1;
 	return 0;
 }
@@ -81,18 +88,17 @@ static char	*add_space_after(char *str, int i, int len)
 	return (result);
 }
 
-// introduces spaces between operators and strings
 char	*input_spacer(char *input)
 {
 	int		i;
 	char	*ret;
-	int		double_op;
+	int		spacing_type;
 
 	i = 0;
 	while (input[i])
 	{
-		double_op = is_double_operator(input, i);
-		if (needs_spacing(input, i))
+		spacing_type = needs_spacing(input, i);
+		if (spacing_type)
 		{
 			if (i == 0 || input[i - 1] != ' ')
 			{
@@ -101,14 +107,14 @@ char	*input_spacer(char *input)
 				input = ret;
 				i++;
 			}
-			if (input[i + 1 + double_op] && input[i + 1 + double_op] != ' ')
+			if (input[i + spacing_type] && input[i + spacing_type] != ' ')
 			{
-				ret = add_space_after(input, i, 1 + double_op);
+				ret = add_space_after(input, i, spacing_type);
 				free(input);
 				input = ret;
 				i++;
 			}
-			i += 1 + double_op;
+			i += spacing_type;
 		}
 		else
 			i++;

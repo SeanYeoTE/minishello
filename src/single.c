@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 21:13:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/10/31 23:23:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,40 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		return (perror("fork"), EXIT_FAILURE);
 	if (pid == 0)
 	{
-		redir_handler(cmd, cmd->redir, NULL);
-		t_exit_status = executor(store, cmd);
+		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
+		if (t_exit_status != 0)
+			exit(t_exit_status);
+		t_exit_status = executor(store, cmd, 0);
 		exit(t_exit_status);
 	}
 	return (wait_for_command(pid));
 }
 
+static void	set_fd(t_cmd *cmd)
+{
+	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
+	{
+		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
+			perror("dup2 input");
+		close(cmd->input_fd);
+	}
+	if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
+	{
+		if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
+			perror("dup2 output");
+		close(cmd->output_fd);
+	}
+}
+
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
-	redir_handler(cmd, cmd->redir, NULL);
-	t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+	t_exit_status = redir_handler(cmd, cmd->redir, NULL);
+	if (t_exit_status == 0)
+	{
+		set_fd(cmd);
+		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+		reset_fds(store, cmd);
+	}
 	return (t_exit_status);
 }
 
@@ -39,7 +62,12 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
 	// print_cmd_stack(&store->cmd_head);
-	if (check_builtin(store->cmd_head->command) == 0)
+	if (store->cmd_head->command == NULL)
+	{
+		print_erroronly("syntax error", "newline");
+		return (2);
+	}
+	else if (check_builtin(store->cmd_head->command) == 0)
 	{
 		return (execute_external_command(store, store->cmd_head));
 	}
@@ -47,7 +75,5 @@ int	single_function(t_shell *store, t_node *head, t_node *tail)
 	{
 		return (execute_builtin_command(store, store->cmd_head));
 	}
-	revert_nodes(store);
-	print_stack(&store->head);
 	return (0);
 }
