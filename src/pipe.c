@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 16:45:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/02 17:13:32 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,25 +41,14 @@ int	wait_for_command(pid_t pid)
 
 void	run_cmd(t_cmd *cmd, t_shell *store)
 {
-	// int	temp;
-
-	// temp = 0;
 	if (check_builtin(cmd->command) == 0)
 	{
 		t_exit_status = executor(store, cmd, 0);
-		// if (cmd->prev == NULL)
-		// 	t_exit_status = temp;
-		// else if (t_exit_status == 0 && temp != 0)
-		// 	t_exit_status = temp;
 		exit(t_exit_status);
 	}
 	else
 	{
 		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
-		// if (cmd->prev == NULL)
-		// 	t_exit_status = temp;
-		// else if (t_exit_status == 0 && temp != 0)
-		// 	t_exit_status = temp;
 		exit(t_exit_status);
 	}
 }
@@ -102,9 +91,7 @@ void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 {
 	pid_t	pid;
-	int		temp;
-
-	temp = 0;
+	
 	pid = fork();
 	if (pid < 0)
 	{
@@ -113,12 +100,7 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	}
 	if (pid == 0)
 	{
-		temp = redir_handler(cmd, cmd->redir, NULL);
-		// if (cmd->prev == NULL)
-		t_exit_status = temp;
-		// else if (t_exit_status == 0 && temp != 0)
-		// 	t_exit_status = temp;
-		
+		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 		if (t_exit_status != 0)
 			exit(t_exit_status);
 		setup_pipes(in_fd, out_fd, cmd);
@@ -162,10 +144,6 @@ int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int is_l
 	last_pid = execute_command(store, cmd, in_fd, out_fd);
 	if (last_pid == -1)
 		return EXIT_FAILURE;
-	// if (is_last_cmd)
-	// 	wait_for_command(last_pid);
-	// else
-	// 	waitpid(last_pid, NULL, 0);
 	return EXIT_SUCCESS;
 }
 
