@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 17:13:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/02 17:56:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 		run_cmd(cmd, store);
 		// free_all(store);
 	}
+	cmd->pid = pid;
 	return pid;
 }
 
@@ -186,12 +187,20 @@ int	multi_executor(t_shell *store, int num_pipes)
 		}
 		cmd = cmd->next;
 	}
-	int res;
+	int	res;
+	
 	res = 0;
-	while ((waitpid(-1, &res, WNOHANG)) != -1)
+	cmd = store->cmd_head;
+	while ((waitpid(cmd->pid, &res, 0)) != -1)
 	{
 		if (WIFEXITED(res) == true)
 			t_exit_status = WEXITSTATUS(res);
+		else if (WIFSIGNALED(res))
+			t_exit_status = WTERMSIG(res) + 128;
+		if (cmd->next)
+			cmd = cmd->next;
+		// cmd = cmd->next;
 	}
-	return res;
+	// return res;
+	return (0);
 }

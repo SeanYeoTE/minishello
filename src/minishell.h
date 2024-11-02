@@ -46,6 +46,7 @@ typedef struct s_cmd
 	t_node	*redir;
 	bool	input_changed;
 
+	pid_t	pid;
 	int		input_fd;
 	int		output_fd;
 	int		heredoc_fd;
