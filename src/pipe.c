@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/01 12:38:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/02 16:11:25 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ int	multi_executor(t_shell *store, int num_pipes)
 	while ((waitpid(-1, &res, WNOHANG)) != -1)
 	{
 		if (WIFEXITED(res) == true)
-			res = WEXITSTATUS(res);
+			t_exit_status = WEXITSTATUS(res);
 	}
 	return res;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 16:08:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/02 16:12:27 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 	char	**argv;
 	char    *temp_filename = NULL;
 	int     error_code;
-	
+
 	argv = argv_creator(cmd->command, NULL);
 	if (!argv)
 		return (EXIT_FAILURE);
