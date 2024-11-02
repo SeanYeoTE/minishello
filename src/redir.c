@@ -6,35 +6,43 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/29 04:51:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/01 12:36:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	reset_fds(t_cmd *cmd)
+bool are_same_resource(int fd1, int fd2) {
+    struct stat stat1, stat2;
+
+    // Get file status for fd1
+    if (fstat(fd1, &stat1) == -1) {
+        perror("fstat");
+        return false;
+    }
+
+    // Get file status for fd2
+    if (fstat(fd2, &stat2) == -1) {
+        perror("fstat");
+        return false;
+    }
+
+    // Compare device and inode
+    return (stat1.st_dev == stat2.st_dev) && (stat1.st_ino == stat2.st_ino);
+}
+
+void	reset_fds(t_shell *store, t_cmd *cmd)
 {
-	if (cmd->input_fd != STDIN_FILENO)
+	if (!are_same_resource(store->input_reset, STDIN_FILENO))
 	{
-		close(cmd->input_fd);
-		cmd->input_fd = STDIN_FILENO;
+		if (dup2(store->input_reset, STDIN_FILENO) == -1)
+			print_erroronly("dup2 failed on input reset", strerror(errno));
 	}
-	if (cmd->output_fd != STDOUT_FILENO)
+	if (!are_same_resource(store->output_reset, STDOUT_FILENO))
 	{
-		close(cmd->output_fd);
-		cmd->output_fd = STDOUT_FILENO;
+		if (dup2(store->output_reset, STDOUT_FILENO) == -1)
+			print_erroronly("dup2 failed on output reset", strerror(errno));
 	}
-	if (cmd->heredoc_fd > 2)
-	{
-		close(cmd->heredoc_fd);
-		cmd->heredoc_fd = -1;
-	}
-	if (cmd->heredoc_delimiter)
-	{
-		free(cmd->heredoc_delimiter);
-		cmd->heredoc_delimiter = NULL;
-	}
-	cmd->input_changed = false;
 }
 
 int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
@@ -42,6 +50,7 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 	t_node	*temp;
 	int		result;
 
+	result = 0;
 	temp = loop;
 	while (loop != end)
 	{
@@ -49,34 +58,46 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 		{
 			result = handle_input_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
 		else if (ft_strcmp(loop->data, "<<") == 0)
 		{
 			result = handle_heredoc_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
-		loop = loop->next;
-	}
-	loop = temp;
-	while (loop != end)
-	{
-		if (ft_strcmp(loop->data, ">") == 0)
+		else if (ft_strcmp(loop->data, ">") == 0)
 		{
 			result = handle_output_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
 		else if (ft_strcmp(loop->data, ">>") == 0)
 		{
 			result = handle_append_redirection(cmd, loop->next->data);
 			if (result != 0)
-				return (result);
+				break ;
 		}
 		loop = loop->next;
 	}
-	return (0);
+	// loop = temp;
+	// while (loop != end)
+	// {
+	// 	if (ft_strcmp(loop->data, ">") == 0)
+	// 	{
+	// 		result = handle_output_redirection(cmd, loop->next->data);
+	// 		if (result != 0)
+	// 			break ;
+	// 	}
+	// 	else if (ft_strcmp(loop->data, ">>") == 0)
+	// 	{
+	// 		result = handle_append_redirection(cmd, loop->next->data);
+	// 		if (result != 0)
+	// 			break ;
+	// 	}
+	// 	loop = loop->next;
+	// }
+	return (result);
 }
 
 char	*create_string(char *first, char *second, char *third)
@@ -102,6 +123,7 @@ int	handle_output_redirection(t_cmd *cmd, char *filename)
 	if (outputfd == -1)
 	{
 		print_erroronly(strerror(errno), filename);
+		cmd->output_fd = 1;
 		return (1);
 	}
 	if (cmd->output_fd != STDOUT_FILENO)
@@ -113,14 +135,12 @@ int	handle_output_redirection(t_cmd *cmd, char *filename)
 int	handle_append_redirection(t_cmd *cmd, char *filename)
 {
 	int	outputfd;
-	
-	if (access(filename, F_OK) == 0)
-		outputfd = open(filename, O_WRONLY | O_APPEND);
-	else
-		outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
+
+	outputfd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (outputfd == -1)
 	{
 		ft_putstr_fd(create_string("bash: ", filename, strerror(errno)), 2);
+		cmd->output_fd = 1;
 		return (1);
 	}
 	if (cmd->output_fd != STDOUT_FILENO)
