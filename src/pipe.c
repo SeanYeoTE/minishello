@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 17:56:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 20:34:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int	wait_for_command(pid_t pid)
 		t_exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 		t_exit_status = WTERMSIG(status) + 128;
+	signal(SIGINT, ctrl_c_handler);
 	return (EXIT_SUCCESS);
 }
 
@@ -100,6 +101,7 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	}
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
 		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 		if (t_exit_status != 0)
 			exit(t_exit_status);
@@ -108,6 +110,7 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 		run_cmd(cmd, store);
 		// free_all(store);
 	}
+	signal(SIGINT, SIG_IGN);
 	cmd->pid = pid;
 	return pid;
 }
@@ -133,8 +136,8 @@ void	handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd)
 	}
 	else
 	{
-		close(pipe_fds[0]);
-		close(pipe_fds[1]);
+		// close(pipe_fds[0]);
+		// close(pipe_fds[1]);
 	}
 }
 
@@ -201,6 +204,7 @@ int	multi_executor(t_shell *store, int num_pipes)
 			cmd = cmd->next;
 		// cmd = cmd->next;
 	}
+	signal(SIGINT, ctrl_c_handler);
 	// return res;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/04 13:26:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 20:29:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,6 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
 	free(prompt);
-	// printf("\033[1;32m minishell \033[0m\n");
-	// printf("\033[1;34m$ %s \033[0m\n", store->path);
-	// print_argv(store->paths);
 	if (store->input == NULL)
 	{
 		free_all(store);
