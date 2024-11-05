@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 23:35:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:55:35 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->paths = ft_split(store->path, ':');
 	store->envp = ccreatearray(env_head);
 
-	cprintvar(store->var);
+	// cprintvar(store->var);
 }
 
 int	main(int argc, char **argv, char **envp)
