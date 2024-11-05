@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 20:34:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:28:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 	else
 	{
 		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+		free_all(store);
 		exit(t_exit_status);
 	}
 }

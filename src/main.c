@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/04 13:26:33 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:35:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,22 @@ char *	cgetenv(char *var, t_env *env)
 	return (NULL);
 }
 
+char*	cprintvar(t_var *var)
+{
+	t_var	*current;
+
+	current = var;
+	while (current)
+	{
+		// printf("current->var: %s\n", current->var);
+		printf("name: %s\n", current->name);
+		printf("data: %s\n", current->data);
+		printf("hidden: %s\n", current->hidden);
+		current = current->next;
+	}
+	return (NULL);
+}
+
 char **ccreatearray(t_env *env)
 {
 	t_env	*current;
@@ -110,13 +126,14 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->cmd_head = NULL;
 	store->cmd_tail = NULL;
 	
-	store->pid = NULL;
 	store->env = env_head;
 	store->var = var_head;
 
 	store->path = ft_strdup(cgetenv("PATH", env_head));
 	store->paths = ft_split(store->path, ':');
 	store->envp = ccreatearray(env_head);
+
+	cprintvar(store->var);
 }
 
 int	main(int argc, char **argv, char **envp)

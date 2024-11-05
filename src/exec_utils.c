@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 22:09:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:24:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,11 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 
 	error_code = handle_execution_errors(exepath, argv, temp_filename);
 	if (error_code != 0)
+	{
+		free_all(store);
 		return error_code;
+	}
+		// return error_code;
 
 	set_fd(cmd, temp_filename);
 	check_open_fds(100);
