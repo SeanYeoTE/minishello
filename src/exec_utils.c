@@ -223,8 +223,6 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 		free_all(store);
 		return error_code;
 	}
-		// return error_code;
-
 	set_fd(cmd, temp_filename);
 	check_open_fds(100);
 	if (execve(exepath, argv, store->envp) == -1)

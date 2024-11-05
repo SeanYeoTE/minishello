@@ -204,7 +204,7 @@ int	export_handler(t_shell *store)
 	arg = store->cmd_head->command->next->data;
 	ret_value = check_arg(arg);
 	print_error_msg(arg, ret_value);
-	if (ret_value == 0)
+	if (ret_value == 0 && ft_strchr(arg, '='))
 		set_export(store, arg);
 	return (ret_value);
 }
