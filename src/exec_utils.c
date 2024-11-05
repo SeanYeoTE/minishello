@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 16:12:27 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/05 23:36:11 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,14 +204,14 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 	argv = argv_creator(cmd->command, NULL);
 	if (!argv)
 		return (EXIT_FAILURE);
-	if (cmd != NULL && cmd->prev != NULL)
-	{
-	}
-	else if (cmd->input_fd == STDIN_FILENO) //cmd->input_changed == false) //|| cmd->output_fd == STDOUT_FILENO)
-	{
-		if (cmd->output_fd != 3 && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
-			temp_filename = handle_cat_without_args(cmd, index);
-	}
+	// if (cmd != NULL && cmd->prev != NULL)
+	// {
+	// }
+	// else if (cmd->input_fd == STDIN_FILENO) //cmd->input_changed == false) //|| cmd->output_fd == STDOUT_FILENO)
+	// {
+	// 	if (cmd->output_fd != 3 && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
+	// 		temp_filename = handle_cat_without_args(cmd, index);
+	// }
 	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))
 		exepath = ft_strdup(argv[0]);
 	else
@@ -219,8 +219,10 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 
 	error_code = handle_execution_errors(exepath, argv, temp_filename);
 	if (error_code != 0)
+	{
+		free_all(store);
 		return error_code;
-
+	}
 	set_fd(cmd, temp_filename);
 	check_open_fds(100);
 	if (execve(exepath, argv, store->envp) == -1)

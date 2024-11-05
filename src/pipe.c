@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 17:56:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:33:34 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 	else
 	{
 		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+		free_all(store);
 		exit(t_exit_status);
 	}
 }
@@ -133,8 +134,8 @@ void	handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd)
 	}
 	else
 	{
-		close(pipe_fds[0]);
-		close(pipe_fds[1]);
+		// close(pipe_fds[0]);
+		// close(pipe_fds[1]);
 	}
 }
 

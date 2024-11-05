@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/04 13:26:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:32:11 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ int		parser(t_shell* store)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
 			multiple_function(store, pipe_counter(store->head));
+		env_head = store->env;
+		var_head = store->var;
 	}
 	else if (store->input[0] == '\0')
 	{
@@ -102,7 +104,7 @@ int	multiple_function(t_shell *store, int count)
 	front = store->head;
 	back = store->head;
 	create = true;
-	store->pid = ft_calloc(count + 2, sizeof(int));
+	// store->pid = ft_calloc(count + 2, sizeof(int));
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)
@@ -123,6 +125,6 @@ int	multiple_function(t_shell *store, int count)
 	create_cmd(store, front, back, create);
 	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
-	free(store->pid);
+	// free(store->pid);
 	return (0);
 }
