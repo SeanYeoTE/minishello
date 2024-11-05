@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 16:08:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:24:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ static void	set_fd(t_cmd *node, char *temp_filename)
 			print_error("Failed to open temporary file", strerror(errno));
 		else if (dup2(node->input_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on temporary input", strerror(errno));
-		close(node->input_fd);
+		// close(node->input_fd);
 	}
 	if (node->output_fd != STDOUT_FILENO)
 	{
@@ -115,8 +115,8 @@ static void cleanup(char *exepath, char **argv, char *temp_filename)
 	}
 	if (temp_filename)
 	{
-		unlink(temp_filename);
-		free(temp_filename);
+		// unlink(temp_filename);
+		// free(temp_filename);
 	}
 }
 
@@ -200,18 +200,18 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 	char	**argv;
 	char    *temp_filename = NULL;
 	int     error_code;
-	
+
 	argv = argv_creator(cmd->command, NULL);
 	if (!argv)
 		return (EXIT_FAILURE);
-	if (cmd != NULL && cmd->prev != NULL)
-	{
-	}
-	else if (cmd->input_fd == STDIN_FILENO) //cmd->input_changed == false) //|| cmd->output_fd == STDOUT_FILENO)
-	{
-		if (cmd->output_fd != 3 && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
-			temp_filename = handle_cat_without_args(cmd, index);
-	}
+	// if (cmd != NULL && cmd->prev != NULL)
+	// {
+	// }
+	// else if (cmd->input_fd == STDIN_FILENO) //cmd->input_changed == false) //|| cmd->output_fd == STDOUT_FILENO)
+	// {
+		// if (cmd->output_fd != 3 && ft_strcmp(argv[0], "cat") == 0 && argv[1] == NULL)
+		// 	temp_filename = handle_cat_without_args(cmd, index);
+	// }
 	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))
 		exepath = ft_strdup(argv[0]);
 	else
@@ -219,7 +219,11 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 
 	error_code = handle_execution_errors(exepath, argv, temp_filename);
 	if (error_code != 0)
+	{
+		free_all(store);
 		return error_code;
+	}
+		// return error_code;
 
 	set_fd(cmd, temp_filename);
 	check_open_fds(100);
@@ -229,6 +233,5 @@ int		executor(t_shell *store, t_cmd *cmd, int index)
 		cleanup(exepath, argv, temp_filename);
 		return (126);
 	}
-	cleanup(exepath, argv, temp_filename);
 	return (EXIT_SUCCESS);
 }

@@ -90,7 +90,6 @@ typedef struct s_shell
 
 	t_cmd	*cmd_head;
 	t_cmd	*cmd_tail;
-	int		*pid;
 	int		pipes;
 
 	t_node	*head;
@@ -103,7 +102,7 @@ typedef struct s_shell
 
 // main.c
 
-void		init_var(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
+void		init_var(t_shell *store, t_env *env_head, t_var *var_head);
 int			main(int argc, char **argv, char **envp);
 
 // input_utils.c
@@ -145,7 +144,7 @@ t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
 
 // base.c
-int			prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp);
+int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
 int			pre_execution(t_shell *store);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
@@ -160,6 +159,7 @@ void		detach_redir(t_cmd *new);
 int			count_cmds(t_shell *store);
 
 // exec_utils.c
+void 		check_open_fds(int max_fd);
 int			executor(t_shell *store, t_cmd *cmd, int index);
 
 // printer.c

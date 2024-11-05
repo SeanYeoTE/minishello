@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/31 23:23:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 20:13:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,15 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		return (perror("fork"), EXIT_FAILURE);
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		
 		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 		if (t_exit_status != 0)
 			exit(t_exit_status);
 		t_exit_status = executor(store, cmd, 0);
 		exit(t_exit_status);
 	}
+	signal(SIGINT, SIG_IGN);
 	return (wait_for_command(pid));
 }
 

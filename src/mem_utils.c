@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/30 07:02:28 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 22:09:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,15 +105,29 @@ static void	free_var(t_var **var)
 	*var = NULL;
 }
 
+void	freepointer(char **ptr)
+{
+	char	**tmp;
 
+	if (!ptr)
+		return ;
+	tmp = ptr;
+	while (*tmp)
+	{
+		free(*tmp);
+		tmp++;
+	}
+	free(ptr);
+}
 
 void	free_nonessential(t_shell *store)
 {
-	freechararray(store->paths);		
-	// if (store->head != NULL)
-	// 	free_stack(&(store->head));
-	// if (store->expanded)
+	check_open_fds(256);
+	freechararray(store->paths);
+	free(store->path);
+	free(store->envp);
 	free(store->input);
+	
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
 	else
@@ -122,16 +136,16 @@ void	free_nonessential(t_shell *store)
 
 void	free_all(t_shell *store)
 {
-	freechararray(store->paths);		
-	// if (store->head != NULL)
-	// 	free_stack(&(store->head));
-	// if (store->expanded)
+	check_open_fds(256);
+	freechararray(store->paths);
+	free(store->path);
 	free(store->input);
+	// if (store->envp)
+	free(store->envp);
 	if (store->cmd_head != NULL)
 		free_cmd(&(store->cmd_head));
 	else
 		free_stack(&(store->head));
-	freechararray(store->envp);
 	free_env(&(store->env));
 	free_var(&(store->var));
 }

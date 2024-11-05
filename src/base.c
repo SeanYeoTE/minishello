@@ -6,20 +6,22 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 18:02:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/05 23:34:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
+int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 {
 	char 	cwd[1024];
 	char	*prompt;
 	
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, SIG_IGN);
-	init_var(store, env_head, var_head, envp);
+	init_var(store, env_head, var_head);
+	
+	// print_argv(store->envp);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
@@ -32,14 +34,14 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head, envp));
+		return (prompter(store, env_head, var_head));
 	}
 	add_history(store->input);
 	if (check_error(store->input))
 	{
 		print_erroronly("syntax error", store->input);
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head, envp));
+		return (prompter(store, env_head, var_head));
 	}
 	pre_execution(store);
 	free_all(store);
@@ -67,9 +69,7 @@ int		parser(t_shell* store)
 {
 	t_env	*env_head;
 	t_var	*var_head;
-	char 	**envp;
 
-	envp = store->envp;
 	env_head = store->env;
 	var_head = store->var;
 	t_exit_status = 0;
@@ -79,14 +79,17 @@ int		parser(t_shell* store)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
 			multiple_function(store, pipe_counter(store->head));
+		env_head = store->env;
+		var_head = store->var;
 	}
+	
 	else if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head, envp));
+		return (prompter(store, env_head, var_head));
 	}
 	free_nonessential(store);
-	return (prompter(store, env_head, var_head, envp));
+	return (prompter(store, env_head, var_head));
 }
 
 int	multiple_function(t_shell *store, int count)
@@ -99,7 +102,6 @@ int	multiple_function(t_shell *store, int count)
 	front = store->head;
 	back = store->head;
 	create = true;
-	store->pid = ft_calloc(count + 2, sizeof(int));
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)
@@ -118,8 +120,6 @@ int	multiple_function(t_shell *store, int count)
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
-	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
-	free(store->pid);
 	return (0);
 }
