@@ -90,7 +90,6 @@ typedef struct s_shell
 
 	t_cmd	*cmd_head;
 	t_cmd	*cmd_tail;
-	int		*pid;
 	int		pipes;
 
 	t_node	*head;

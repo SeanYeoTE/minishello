@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 23:32:11 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/05 23:34:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,6 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
 	free(prompt);
-	// printf("\033[1;32m minishell \033[0m\n");
-	// printf("\033[1;34m$ %s \033[0m\n", store->path);
-	// print_argv(store->paths);
 	if (store->input == NULL)
 	{
 		free_all(store);
@@ -85,6 +82,7 @@ int		parser(t_shell* store)
 		env_head = store->env;
 		var_head = store->var;
 	}
+	
 	else if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
@@ -104,7 +102,6 @@ int	multiple_function(t_shell *store, int count)
 	front = store->head;
 	back = store->head;
 	create = true;
-	// store->pid = ft_calloc(count + 2, sizeof(int));
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)
@@ -123,8 +120,6 @@ int	multiple_function(t_shell *store, int count)
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
-	// print_cmd_stack(&store->cmd_head);
 	multi_executor(store, count_cmds(store) - 1);
-	// free(store->pid);
 	return (0);
 }
