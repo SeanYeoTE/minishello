@@ -6,24 +6,29 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/02 18:02:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/04 13:26:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
+int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 {
 	char 	cwd[1024];
 	char	*prompt;
 	
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, SIG_IGN);
-	init_var(store, env_head, var_head, envp);
+	init_var(store, env_head, var_head);
+	
+	// print_argv(store->envp);
 	getcwd(cwd, sizeof(cwd));
 	prompt = form_prompt(cwd);
 	store->input = readline(prompt);
 	free(prompt);
+	// printf("\033[1;32m minishell \033[0m\n");
+	// printf("\033[1;34m$ %s \033[0m\n", store->path);
+	// print_argv(store->paths);
 	if (store->input == NULL)
 	{
 		free_all(store);
@@ -32,14 +37,14 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, char **envp)
 	if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head, envp));
+		return (prompter(store, env_head, var_head));
 	}
 	add_history(store->input);
 	if (check_error(store->input))
 	{
 		print_erroronly("syntax error", store->input);
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head, envp));
+		return (prompter(store, env_head, var_head));
 	}
 	pre_execution(store);
 	free_all(store);
@@ -67,9 +72,7 @@ int		parser(t_shell* store)
 {
 	t_env	*env_head;
 	t_var	*var_head;
-	char 	**envp;
 
-	envp = store->envp;
 	env_head = store->env;
 	var_head = store->var;
 	t_exit_status = 0;
@@ -83,10 +86,10 @@ int		parser(t_shell* store)
 	else if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head, envp));
+		return (prompter(store, env_head, var_head));
 	}
 	free_nonessential(store);
-	return (prompter(store, env_head, var_head, envp));
+	return (prompter(store, env_head, var_head));
 }
 
 int	multiple_function(t_shell *store, int count)
