@@ -9,23 +9,38 @@ LIBFT_PATH	= libft/
 LIBFT_NAME	= libft.a
 LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 
-# Source files
+# Source directories
 SRC_PATH = src/
-SRC =	main.c prompt.c checks.c checks2.c input_utils.c parse_detection.c scanner.c \
-		exec_utils.c args_init.c base.c t_cmd_utils.c printer.c mem_utils.c \
-		builtin_main.c cd.c echo.c env.c export.c export_utils.c pwd.c unset.c \
-		exit.c var_handler.c var_utils.c redir.c sig_handler.c pipe.c single.c \
-		expansions.c remove_quote.c heredoc.c
+CORE_DIR = core/
+PARSER_DIR = parser/
+EXEC_DIR = execution/
+BUILTIN_DIR = builtins/
+UTILS_DIR = utils/
+VAR_DIR = variables/
 
-SRCS		= $(addprefix $(SRC_PATH), $(SRC))
+# Source files by directory
+CORE_SRC = main.c prompt.c sig_handler.c
+PARSER_SRC = scanner.c parse_detection.c checks.c checks2.c input_utils.c
+EXEC_SRC = exec_utils.c pipe.c single.c redir.c heredoc.c
+BUILTIN_SRC = builtin_main.c cd.c echo.c env.c export.c export_utils.c pwd.c unset.c exit.c
+UTILS_SRC = args_init.c base.c t_cmd_utils.c printer.c mem_utils.c
+VAR_SRC = var_handler.c var_utils.c expansions.c remove_quote.c
+
+# Combine all sources with their directories
+SRCS =	$(addprefix $(SRC_PATH)$(CORE_DIR), $(CORE_SRC)) \
+		$(addprefix $(SRC_PATH)$(PARSER_DIR), $(PARSER_SRC)) \
+		$(addprefix $(SRC_PATH)$(EXEC_DIR), $(EXEC_SRC)) \
+		$(addprefix $(SRC_PATH)$(BUILTIN_DIR), $(BUILTIN_SRC)) \
+		$(addprefix $(SRC_PATH)$(UTILS_DIR), $(UTILS_SRC)) \
+		$(addprefix $(SRC_PATH)$(VAR_DIR), $(VAR_SRC))
 
 # Object files
-OBJ_PATH	= obj/
-OBJ			= $(SRC:.c=.o)
-OBJS		= $(addprefix $(OBJ_PATH), $(OBJ))
+OBJ_PATH = obj/
+OBJ_DIRS = $(CORE_DIR) $(PARSER_DIR) $(EXEC_DIR) $(BUILTIN_DIR) $(UTILS_DIR) $(VAR_DIR)
+OBJS = $(SRCS:$(SRC_PATH)%.c=$(OBJ_PATH)%.o)
 
 # Header file
-HEADER		= $(SRC_PATH)minishell.h
+HEADER = $(SRC_PATH)$(CORE_DIR)minishell.h
 
 # Target executable
 NAME = minishell
@@ -36,12 +51,13 @@ all: $(LIBFT) $(NAME)
 # Other Prototypes
 RM = rm -rf
 
-# Create object directory
-$(OBJ_PATH):
-	@mkdir -p $(OBJ_PATH)
+# Create object directories
+$(OBJ_PATH)%/:
+	@mkdir -p $@
 
 # Compile source files into object files
-$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(HEADER) | $(OBJ_PATH)
+$(OBJ_PATH)%.o: $(SRC_PATH)%.c $(HEADER)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Build libft
