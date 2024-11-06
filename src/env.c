@@ -12,7 +12,7 @@ t_env	*create_env_node(char *var)
 	return (new_env);
 }
 
-t_env	*env_init(t_shell *store, char **envp)
+t_env	*env_init(char **envp)
 {
 	t_env	*current;
 	t_env	*head;

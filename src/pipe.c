@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 23:28:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 13:11:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
 	{
-		t_exit_status = executor(store, cmd, 0);
+		t_exit_status = executor(store, cmd);
 		exit(t_exit_status);
 	}
 	else
 	{
-		t_exit_status = builtin_main(store, cmd->command, cmd->redir);
+		t_exit_status = builtin_main(store, cmd->command);
 		free_all(store);
 		exit(t_exit_status);
 	}
@@ -142,7 +142,7 @@ void	handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd)
 	}
 }
 
-int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd, int is_last_cmd)
+int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 {
 	pid_t	last_pid;
 
@@ -166,13 +166,13 @@ int	handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd)
 	}
 	else
 		*out_fd = 1;
-	if (execute_and_wait(store, cmd, *in_fd, *out_fd, is_last_cmd) == EXIT_FAILURE)
+	if (execute_and_wait(store, cmd, *in_fd, *out_fd) == EXIT_FAILURE)
 		return EXIT_FAILURE;
 	handle_pipe_fds(in_fd, pipe_fds, is_last_cmd);
 	return EXIT_SUCCESS;
 }
 
-int	multi_executor(t_shell *store, int num_pipes)
+int	multi_executor(t_shell *store)
 {
 	int		in_fd;
 	t_cmd	*cmd;

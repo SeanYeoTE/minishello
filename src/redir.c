@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/01 12:36:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 13:10:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool are_same_resource(int fd1, int fd2) {
     return (stat1.st_dev == stat2.st_dev) && (stat1.st_ino == stat2.st_ino);
 }
 
-void	reset_fds(t_shell *store, t_cmd *cmd)
+void	reset_fds(t_shell *store)
 {
 	if (!are_same_resource(store->input_reset, STDIN_FILENO))
 	{
@@ -47,11 +47,9 @@ void	reset_fds(t_shell *store, t_cmd *cmd)
 
 int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 {
-	t_node	*temp;
 	int		result;
 
 	result = 0;
-	temp = loop;
 	while (loop != end)
 	{
 		if (ft_strcmp(loop->data, "<") == 0)

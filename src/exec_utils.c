@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 23:24:14 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 12:56:16 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,31 +128,31 @@ int is_directory(const char *path)
 	return(S_ISDIR(path_stat.st_mode));
 }
 
-static char	*get_temp_filename(int index)
-{
-	char	*filename;
-	char	*index_str;
-	index_str = ft_itoa(index);
-	filename = ft_strjoin("/tmp/tmp_", index_str);
-	free(index_str);
-	return (filename);
-}
+// static char	*get_temp_filename(int index)
+// {
+// 	char	*filename;
+// 	char	*index_str;
+// 	index_str = ft_itoa(index);
+// 	filename = ft_strjoin("/tmp/tmp_", index_str);
+// 	free(index_str);
+// 	return (filename);
+// }
 
-static char *handle_cat_without_args(t_cmd *cmd, int index)
-{
-	char *temp_filename;
-	int fd;
-	temp_filename = get_temp_filename(index);
-	fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
-	if (fd == -1)
-	{
-		print_error("Failed to create temporary file", strerror(errno));
-		free(temp_filename);
-		return NULL;
-	}
-	cmd->input_fd = STDIN_FILENO;
-	return temp_filename;
-}
+// static char *handle_cat_without_args(t_cmd *cmd, int index)
+// {
+// 	char *temp_filename;
+// 	int fd;
+// 	temp_filename = get_temp_filename(index);
+// 	fd = open(temp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+// 	if (fd == -1)
+// 	{
+// 		print_error("Failed to create temporary file", strerror(errno));
+// 		free(temp_filename);
+// 		return NULL;
+// 	}
+// 	cmd->input_fd = STDIN_FILENO;
+// 	return temp_filename;
+// }
 
 static int handle_execution_errors(char *exepath, char **argv, char *temp_filename)
 {
@@ -194,7 +194,7 @@ void check_open_fds(int max_fd)
     }
 }
 
-int		executor(t_shell *store, t_cmd *cmd, int index)
+int		executor(t_shell *store, t_cmd *cmd)
 {
 	char	*exepath;
 	char	**argv;

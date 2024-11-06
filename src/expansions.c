@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 21:21:54 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 13:12:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	update_quote_state(char c, bool *in_single_quotes, bool *in_double_q
 		*in_double_quotes = !*in_double_quotes;
 }
 
-static bool	should_expand(bool in_single_quotes, bool in_double_quotes)
+static bool	should_expand(bool in_single_quotes)
 {
 	return (!in_single_quotes);
 }
@@ -173,7 +173,7 @@ char	*expansions(char *input)
 			in_double_quotes = false;
 			continue;
 		}
-		if (input[i] == '$' && input[i + 1] == '?' && should_expand(in_single_quotes, in_double_quotes))
+		if (input[i] == '$' && input[i + 1] == '?' && should_expand(in_single_quotes))
 		{
 			new_input = replace_exit_status(input, i);
 			free(input);
@@ -182,7 +182,7 @@ char	*expansions(char *input)
 			in_single_quotes = false;
 			in_double_quotes = false;
 		}
-		else if (input[i] == '$' && should_expand(in_single_quotes, in_double_quotes))
+		else if (input[i] == '$' && should_expand(in_single_quotes))
 		{
 			var = extract_var_name(input, i, &end);
 			if (var == NULL)

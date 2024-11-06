@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	echo_handler(t_node *current, t_node *end)
+int	echo_handler(t_node *current)
 {
 	bool	n_flag;
 	bool	printed;

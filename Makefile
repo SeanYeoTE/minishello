@@ -2,7 +2,7 @@
 CC = cc
 
 # Compiler flags
-CFLAGS = -g
+CFLAGS = -g -Wall -Wextra -Werror
 
 # Libft
 LIBFT_PATH	= libft/

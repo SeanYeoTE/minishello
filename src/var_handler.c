@@ -41,7 +41,7 @@ static int	count_src(char *src, int flag)
 	return (i);
 }
 
-t_var	*split_var(char *src, t_var *var)
+t_var	*split_var(char *src)
 {
 	int	i;
 	int	j;
@@ -95,7 +95,7 @@ int	var_handler(char *src, t_shell *store)
 
 	new_var = NULL;
 	if (!same_env(src, store) || !same_var(src, store))
-		new_var = split_var(src, store->var);
+		new_var = split_var(src);
 	if (store->var == NULL)
 		store->var = new_var;
 	else

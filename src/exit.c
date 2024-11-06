@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/10/20 11:06:45 by melvin           ###   ########.fr       */
+/*   Updated: 2024/11/06 13:08:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static bool	one_cmd(t_node *args)
-{
-	if (args->next == NULL)
-		return true;
-	else
-		return false;
-}
+// static bool	one_cmd(t_node *args)
+// {
+// 	if (args->next == NULL)
+// 		return true;
+// 	else
+// 		return false;
+// }
 
 static bool	is_numeric(char *arg)
 {
@@ -34,7 +34,7 @@ static bool	is_numeric(char *arg)
 	return true;
 }
 
-static void	print_error_msg(char *arg, t_shell *store, int fd)
+static void	print_error_msg(t_shell *store, int fd)
 {
 	if (fd == 2)
 	{
@@ -66,9 +66,9 @@ int	exit_handler(t_shell *store)
 	}
 	arg = store->cmd_head->command->next->data;
 	if (ft_strcmp(arg, "") == 0 || !is_numeric(arg))
-		print_error_msg(arg, store, 2);
+		print_error_msg(store, 2);
 	else if (store->cmd_head->command->next->next != NULL)
-		print_error_msg(arg, store, 1);
+		print_error_msg(store, 1);
 	else
 		status = ft_atoi(arg);
 	if (status < 0)

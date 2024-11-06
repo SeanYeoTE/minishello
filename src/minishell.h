@@ -148,7 +148,7 @@ int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
 int			pre_execution(t_shell *store);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
-int			multiple_function(t_shell *store, int count);
+int			multiple_function(t_shell *store);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // t_cmd_utils.c
@@ -159,8 +159,8 @@ void		detach_redir(t_cmd *new);
 int			count_cmds(t_shell *store);
 
 // exec_utils.c
-void 		check_open_fds(int max_fd);
-int			executor(t_shell *store, t_cmd *cmd, int index);
+void		check_open_fds(int max_fd);
+int			executor(t_shell *store, t_cmd *cmd);
 
 // printer.c
 int 		print_stack(t_node **head);
@@ -175,20 +175,20 @@ void		free_nonessential(t_shell *store);
 void		free_all(t_shell *store);
 
 // builtin_main.c
-int			builtin_main(t_shell *store, t_node *current, t_node *end);
+int			builtin_main(t_shell *store, t_node *current);
 
 // cd.c
 int			cd_handler(t_node *current);
 
 // echo.c
-int			echo_handler(t_node *current, t_node *end);
+int			echo_handler(t_node *current);
 
 // pwd.c
-int			pwd_handler(t_node *current);
+int			pwd_handler(void);
 
 // env.c
 t_env		*create_env_node(char *var);
-t_env		*env_init(t_shell *store, char **envp);
+t_env		*env_init(char **envp);
 int			env_handler(t_shell *store);
 
 // export.c
@@ -198,12 +198,12 @@ int			export_handler(t_shell *store);
 
 // export_utils.c
 int			args_key_counter(char *src);
-bool		is_in_env(t_env *env_list, char *arg, t_shell*store);
+bool		is_in_env(t_env *env_list, char *arg);
 t_env		*get_last_env(t_env *current_env);
 
 // var_handler.c
 t_var		*create_var_node(char *var, char *data);
-t_var		*split_var(char *src, t_var *var);
+t_var		*split_var(char *src);
 int			var_handler(char *src, t_shell *store);
 
 // var_utils.c
@@ -219,7 +219,7 @@ int			unset_handler(t_shell *store);
 int			exit_handler(t_shell *store);
 
 // redir.c
-void		reset_fds(t_shell *store, t_cmd *cmd);
+void		reset_fds(t_shell *store);
 int			redir_handler(t_cmd *cmd, t_node *loop, t_node *end);
 int			handle_output_redirection(t_cmd *cmd, char *filename);
 int			handle_append_redirection(t_cmd *cmd, char *filename);
@@ -229,7 +229,7 @@ int			handle_heredoc_redirection(t_cmd *cmd, char *delimiter);
 // pipe.c
 int			wait_for_command(pid_t pid);
 int 		pipe_counter(t_node *loop);
-int			multi_executor(t_shell *store, int	num_pipes);
+int			multi_executor(t_shell *store);
 
 // sig_handler.c
 void		ctrl_c_handler(int signum);

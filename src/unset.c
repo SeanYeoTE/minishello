@@ -1,21 +1,22 @@
 #include "minishell.h"
 
-static bool	is_valid_var_name(char *arg)
-{
-	int	i;
+// static bool	is_valid_var_name(char *arg)
+// {
+// 	int	i;
 
-	i = 0;
-	if (!arg || !ft_isalpha(arg[i]))
-		return (false);
-	while (arg[i])
-	{
-		if (!ft_isalnum(arg[i]) && arg[i] != '_' && arg[i] != ';')
-			return (false);
-		i++;
-	}
-	return (true);
-}
-static bool	got_equal(t_env *current_env, char *arg)
+// 	i = 0;
+// 	if (!arg || !ft_isalpha(arg[i]))
+// 		return (false);
+// 	while (arg[i])
+// 	{
+// 		if (!ft_isalnum(arg[i]) && arg[i] != '_' && arg[i] != ';')
+// 			return (false);
+// 		i++;
+// 	}
+// 	return (true);
+// }
+
+static bool	got_equal(char *arg)
 {
 	if (ft_strchr(arg, '=') != NULL)
 		return true;
@@ -24,7 +25,6 @@ static bool	got_equal(t_env *current_env, char *arg)
 
 static t_env	*get_target_loc(t_env *env_list, char *arg)
 {
-	char	*env_data;
 	int	count;
 	int	i;
 
@@ -37,7 +37,6 @@ static t_env	*get_target_loc(t_env *env_list, char *arg)
 	}
 	while (env_list)
 	{
-		env_data = env_list->var;
 		if (ft_strncmp(env_list->var, arg, count) == 0)
 				return (env_list);
 		env_list = env_list->next;
@@ -72,7 +71,7 @@ static bool	perform_unset(char *arg, t_shell *store)
 	return (true);
 }
 
-static	void	print_error_msg(int	flag, char *arg)
+static	void	print_error_msg(char *arg)
 {
 		ft_putstr_fd("unset: ", 1);
 		ft_putstr_fd(arg, 1);
@@ -81,16 +80,14 @@ static	void	print_error_msg(int	flag, char *arg)
 
 int	unset_handler(t_shell *store)
 {
-	t_env	*current_env;
 	char	*arg;
 
-	current_env = store->env;
 	if (!(store->cmd_head->command->next))
 		return (EXIT_SUCCESS);
 	arg = store->cmd_head->command->next->data;
-	if (got_equal(current_env, arg))
+	if (got_equal(arg))
 	{
-		print_error_msg(3, arg);
+		print_error_msg(arg);
 		return (BUILTIN_FAILURE);
 	}
 	if (!perform_unset(arg, store))

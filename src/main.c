@@ -3,54 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 23:55:35 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/06 13:00:12 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		t_exit_status;
-
-static int	count_env(char **envp)
-{
-	int	count;
-
-	count = 0;
-	while (envp[count])
-		count++;
-	return (count);
-}
-
-static char	**init_environment(char **envp)
-{
-	char	**new_env;
-	int		i;
-	int		env_count;
-
-	env_count = count_env(envp);
-	new_env = (char **)malloc(sizeof(char *) * (env_count + 1));
-	if (!new_env)
-	{
-		perror("Failed to allocate memory for environment");
-		exit(1);
-	}
-	i = 0;
-	while (i < env_count)
-	{
-		new_env[i] = ft_strdup(envp[i]);
-		if (!new_env[i])
-		{
-			perror("Failed to copy environment variable");
-			exit(1);
-		}
-		i++;
-	}
-	new_env[env_count] = NULL;
-	return (new_env);
-}
+int	t_exit_status;
 
 char *	cgetenv(char *var, t_env *env)
 {
@@ -62,22 +24,6 @@ char *	cgetenv(char *var, t_env *env)
 		// printf("current->var: %s\n", current->var);
 		if (ft_strncmp(var, current->var, ft_strlen(var)) == 0)
 			return (current->var + ft_strlen(var) + 1);
-		current = current->next;
-	}
-	return (NULL);
-}
-
-char*	cprintvar(t_var *var)
-{
-	t_var	*current;
-
-	current = var;
-	while (current)
-	{
-		// printf("current->var: %s\n", current->var);
-		printf("name: %s\n", current->name);
-		printf("data: %s\n", current->data);
-		printf("hidden: %s\n", current->hidden);
 		current = current->next;
 	}
 	return (NULL);
@@ -132,22 +78,19 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->path = ft_strdup(cgetenv("PATH", env_head));
 	store->paths = ft_split(store->path, ':');
 	store->envp = ccreatearray(env_head);
-
-	// cprintvar(store->var);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	store;
 	t_env	*env_head;
-	char	**envp1;
 	
 	if (argc != 1 || argv[1])
 	{
 		perror("run without args");
 		return (0);
 	}
-	env_head = env_init(&store, envp);
+	env_head = env_init(envp);
 	t_exit_status = 0;
 	return (prompter(&store, env_head, NULL));
 }

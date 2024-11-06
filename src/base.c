@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/05 23:34:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 13:11:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int		parser(t_shell* store)
 		if (pipe_counter(store->head) == 0)
 			single_function(store, store->head, store->tail);
 		else if (pipe_counter(store->head) > 0)
-			multiple_function(store, pipe_counter(store->head));
+			multiple_function(store);
 		env_head = store->env;
 		var_head = store->var;
 	}
@@ -92,7 +92,7 @@ int		parser(t_shell* store)
 	return (prompter(store, env_head, var_head));
 }
 
-int	multiple_function(t_shell *store, int count)
+int	multiple_function(t_shell *store)
 {
 	t_node	*front;
 	t_node 	*back;
@@ -120,6 +120,6 @@ int	multiple_function(t_shell *store, int count)
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
-	multi_executor(store, count_cmds(store) - 1);
+	multi_executor(store);
 	return (0);
 }

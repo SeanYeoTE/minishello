@@ -13,7 +13,7 @@ int	args_key_counter(char *src)
 	return (i);
 }
 
-bool	is_in_env(t_env *env_list, char *arg, t_shell *store)
+bool	is_in_env(t_env *env_list, char *arg)
 {
 	t_env	*current_env;
 

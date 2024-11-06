@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	pwd_handler(t_node *current)
+int	pwd_handler(void)
 {
 	char	*cwd;
 	size_t	cwd_buf;

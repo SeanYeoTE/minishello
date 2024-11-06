@@ -2,7 +2,6 @@
 
 t_env	*get_env_loc(t_env *env_list, char *arg)
 {
-	char	*env_data;
 	int	count;
 	int	i;
 
@@ -15,7 +14,6 @@ t_env	*get_env_loc(t_env *env_list, char *arg)
 	}
 	while (env_list)
 	{
-		env_data = env_list->var;
 		if ((ft_strncmp(env_list->var, arg, count) == 0) && (ft_strncmp(env_list->var, arg, count + 1) == 0))
 				return (env_list);
 		env_list = env_list->next;
@@ -25,11 +23,9 @@ t_env	*get_env_loc(t_env *env_list, char *arg)
 
 t_var	*get_var_loc(char *arg, t_var *var_list, t_env *current_env)
 {
-	int	i;
 	int	count;
 	char	*var_data;
 	
-	i = 0;
 	count = 0;
 	if (!var_list)
 		return (NULL);
@@ -163,7 +159,6 @@ static void	print_error_msg(char *arg, int ret_value)
 
 static void	set_export(t_shell *store, char *arg)
 {
-	t_env	*new_env;
 	t_env	*current_env;
 	t_var	*current_var;
 
@@ -171,7 +166,7 @@ static void	set_export(t_shell *store, char *arg)
 	current_var = NULL;
 	if (store->var)
 		current_var = get_var_loc(arg, store->var, current_env);
-	if (is_in_env(current_env, arg, store))
+	if (is_in_env(current_env, arg))
 		{
 			current_env = get_env_loc(store->env, arg);
 			free (current_env->var);
