@@ -149,6 +149,10 @@ int			pre_execution(t_shell *store);
 int			parser(t_shell *store);
 void		interpreter(t_shell *store, t_node *start, t_node *end);
 int			multiple_function(t_shell *store);
+
+
+// single.c
+int			heredoc_finisher(t_cmd *cmd);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // t_cmd_utils.c

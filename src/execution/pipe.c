@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/06 17:20:18 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 00:02:38 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,15 @@ int	wait_for_command(pid_t pid)
 static int	handle_all_heredocs(t_shell *store)
 {
 	t_cmd	*cmd;
+	int		result;
 
+	result = 0;
 	cmd = store->cmd_head;
 	while (cmd)
 	{
-		if (cmd->heredoc_delimiter)
-		{
-			if (handle_heredoc(cmd) != 0)
-				return EXIT_FAILURE;
-		}
+		result = heredoc_finisher(cmd);
+		if (result != 0)
+			return (EXIT_FAILURE);
 		cmd = cmd->next;
 	}
 	return EXIT_SUCCESS;
@@ -59,9 +59,6 @@ static int	handle_all_heredocs(t_shell *store)
 
 void	run_cmd(t_cmd *cmd, t_shell *store)
 {
-	// Handle all heredocs first
-	if (handle_all_heredocs(store) == EXIT_FAILURE)
-		return ;
 	if (check_builtin(cmd->command) == 0)
 	{
 		t_exit_status = executor(store, cmd);
@@ -132,6 +129,12 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 		if (t_exit_status != 0)
 			exit(t_exit_status);
+		if (cmd->prev == NULL)
+		{
+			t_exit_status = handle_all_heredocs(store);
+			if (t_exit_status != 0)
+				exit(t_exit_status);
+		}
 		setup_pipes(in_fd, out_fd, cmd);
 		run_cmd(cmd, store);
 	}
