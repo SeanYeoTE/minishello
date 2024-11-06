@@ -6,11 +6,32 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/06 13:12:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 23:49:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
+
+int	heredoc_finisher(t_cmd *cmd)
+{
+	t_node	*tmp;
+	int 	result;
+
+	result = 0;
+	tmp = cmd->redir;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->data, "<<") == 0)
+		{
+			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
+			if (cmd->heredoc_delimiter == NULL)
+				return (1);
+			result = handle_heredoc(cmd);
+		}
+		tmp = tmp->next;
+	}
+	return (result);
+}
 
 int	execute_external_command(t_shell *store, t_cmd *cmd)
 {
@@ -26,6 +47,7 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 		if (t_exit_status != 0)
 			exit(t_exit_status);
+		heredoc_finisher(cmd);
 		t_exit_status = executor(store, cmd);
 		exit(t_exit_status);
 	}
@@ -54,6 +76,7 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 	t_exit_status = redir_handler(cmd, cmd->redir, NULL);
 	if (t_exit_status == 0)
 	{
+		heredoc_finisher(cmd);
 		set_fd(cmd);
 		t_exit_status = builtin_main(store, cmd->command);
 		reset_fds(store);

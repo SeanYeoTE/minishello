@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 14:56:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/06 13:10:47 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 23:51:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 			if (result != 0)
 				break ;
 		}
-		else if (ft_strcmp(loop->data, "<<") == 0)
-		{
-			result = handle_heredoc_redirection(cmd, loop->next->data);
-			if (result != 0)
-				break ;
-		}
+		// else if (ft_strcmp(loop->data, "<<") == 0)
+		// {
+		// 	result = handle_heredoc_redirection(cmd, loop->next->data);
+		// 	if (result != 0)
+		// 		break ;
+		// }
 		else if (ft_strcmp(loop->data, ">") == 0)
 		{
 			result = handle_output_redirection(cmd, loop->next->data);
@@ -78,23 +78,6 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 		}
 		loop = loop->next;
 	}
-	// loop = temp;
-	// while (loop != end)
-	// {
-	// 	if (ft_strcmp(loop->data, ">") == 0)
-	// 	{
-	// 		result = handle_output_redirection(cmd, loop->next->data);
-	// 		if (result != 0)
-	// 			break ;
-	// 	}
-	// 	else if (ft_strcmp(loop->data, ">>") == 0)
-	// 	{
-	// 		result = handle_append_redirection(cmd, loop->next->data);
-	// 		if (result != 0)
-	// 			break ;
-	// 	}
-	// 	loop = loop->next;
-	// }
 	return (result);
 }
 
@@ -164,13 +147,13 @@ int	handle_input_redirection(t_cmd *cmd, char *filename)
 	return (0);
 }
 
-int	handle_heredoc_redirection(t_cmd *cmd, char *delimiter)
-{
-	cmd->heredoc_delimiter = ft_strdup(delimiter);
-	if (!cmd->heredoc_delimiter)
-	{
-		ft_putstr_fd("Error: Memory allocation failed for heredoc delimiter\n", 2);
-		return (1);
-	}
-	return (handle_heredoc(cmd));
-}
+// int	handle_heredoc_redirection(t_cmd *cmd, char *delimiter)
+// {
+// 	cmd->heredoc_delimiter = ft_strdup(delimiter);
+// 	if (!cmd->heredoc_delimiter)
+// 	{
+// 		ft_putstr_fd("Error: Memory allocation failed for heredoc delimiter\n", 2);
+// 		return (1);
+// 	}
+// 	return (0); // Just set up the delimiter, actual heredoc handling happens later
+// }

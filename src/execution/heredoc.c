@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 12:40:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/06 18:16:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,43 +60,12 @@ static int	read_heredoc_input(int fd, char *delimiter)
 	return (0);
 }
 
-static int	handle_nested_heredoc(t_cmd *cmd, int *index)
-{
-	char	*filename;
-	int		fd;
-
-	filename = get_heredoc_filename(*index);
-	fd = open_heredoc_file(filename, O_CREAT | O_WRONLY | O_TRUNC);
-	if (fd == -1)
-	{
-		free(filename);
-		return (1);
-	}
-	if (read_heredoc_input(fd, cmd->heredoc_delimiter) != 0)
-	{
-		close(fd);
-		free(filename);
-		return (1);
-	}
-	close(fd);
-	cmd->heredoc_fd = open_heredoc_file(filename, O_RDONLY);
-	if (cmd->heredoc_fd == -1)
-	{
-		free(filename);
-		return (1);
-	}
-	free(filename);
-	return (0);
-}
-
 int	handle_heredoc(t_cmd *cmd)
 {
 	static int	index = 0;
 	char		*filename;
 	int			fd;
 
-	if (cmd->next && cmd->next->heredoc_delimiter)
-		return (handle_nested_heredoc(cmd, &index));
 	filename = get_heredoc_filename(index);
 	fd = open_heredoc_file(filename, O_CREAT | O_WRONLY | O_TRUNC);
 	if (fd == -1)
@@ -139,4 +108,3 @@ int	handle_heredoc_pipe(t_cmd *cmd)
 	cmd->pipe_out = pipefd[1];
 	return (0);
 }
-
