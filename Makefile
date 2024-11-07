@@ -19,11 +19,11 @@ UTILS_DIR = utils/
 VAR_DIR = variables/
 
 # Source files by directory
-CORE_SRC = main.c prompt.c sig_handler.c
+CORE_SRC = main.c sig_handler.c base.c setup_utils.c
 PARSER_SRC = scanner.c parse_detection.c checks.c checks2.c input_utils.c
 EXEC_SRC = exec_utils.c pipe.c single.c redir.c heredoc.c
 BUILTIN_SRC = builtin_main.c cd.c echo.c env.c export.c export_utils.c pwd.c unset.c exit.c
-UTILS_SRC = args_init.c base.c t_cmd_utils.c printer.c mem_utils.c
+UTILS_SRC = args_init.c t_cmd_utils.c printer.c mem_utils.c
 VAR_SRC = var_handler.c var_utils.c expansions.c remove_quote.c
 
 # Combine all sources with their directories

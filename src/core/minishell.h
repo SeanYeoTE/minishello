@@ -1,58 +1,68 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
+/*   Updated: 2024/11/07 16:28:32 by seayeo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
-#include <stdio.h>
-#include <stdbool.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include "../../libft/libft.h"
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <errno.h>
-#include <sys/stat.h>
+# include <stdio.h>
+# include <stdbool.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdbool.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "../../libft/libft.h"
+# include <sys/wait.h>
+# include <fcntl.h>
+# include <signal.h>
+# include <errno.h>
+# include <sys/stat.h>
 
-#define	EXIT_SUCCESS 0
-#define BUILTIN_FAILURE 1
-#define BADCMD_FAILURE 126
-#define	NO_PERMISSION_FAILURE 127
+# define EXIT_SUCCESS 0
+# define BUILTIN_FAILURE 1
+# define BADCMD_FAILURE 126
+# define NO_PERMISSION_FAILURE 127
 
 // global variable
-extern	sig_atomic_t	t_exit_status;
+extern sig_atomic_t	g_exit_status;
 
 typedef struct s_node
-{	
-	int 	type;
-	int		opprio;
+{
+	int				type;
+	int				opprio;
 
-	char 	*data;
+	char			*data;
 
 	struct s_cmd	*parent;
 	struct s_node	*next;
 	struct s_node	*prev;
-} t_node;
+}	t_node;
 
 // struct points to command and redirection, each is a linked list
 // struct points to next command as itself is a linked list
 typedef struct s_cmd
 {
+	char			*data;
+	t_node			*command;
+	t_node			*redir;
+	bool			input_changed;
 
-	char	*data;
-	
-	t_node 	*command;
-	t_node	*redir;
-	bool	input_changed;
+	pid_t			pid;
+	int				input_fd;
+	int				output_fd;
+	int				heredoc_fd;
+	char			*heredoc_delimiter;
+	int				pipe_out;
 
-	pid_t	pid;
-	int		input_fd;
-	int		output_fd;
-	int		heredoc_fd;
-	char	*heredoc_delimiter;
-	int		pipe_out;
-	
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 
@@ -60,15 +70,15 @@ typedef struct s_cmd
 
 typedef struct s_env
 {
-	char	*var;
+	char			*var;
 	struct s_env	*next;
 }	t_env;
 
 typedef struct s_var
 {
-	char	*name;
-	char	*data;
-	char	*hidden;
+	char			*name;
+	char			*data;
+	char			*hidden;
 	struct s_var	*next;
 }	t_var;
 
@@ -101,18 +111,19 @@ typedef struct s_shell
 // Function prototypes
 
 // main.c
-
-void		init_var(t_shell *store, t_env *env_head, t_var *var_head);
 int			main(int argc, char **argv, char **envp);
 
-// input_utils.c
-char		*input_spacer(char *input);
-
-// prompt.c
+// setup_utils.c
+void		init_var(t_shell *store, t_env *env_head, t_var *var_head);
+char		*cgetenv(char *var, t_env *env);
+char		**ccreatearray(t_env *env);
 char		*form_prompt(char *cwd);
 
+// base.c
+int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
+
 // checks.c
-int 		redir_checker(t_node *cmd);
+int			redir_checker(t_node *cmd);
 int			check_builtin(t_node *loop);
 int			is_operator(char c);
 int			is_double_operator(const char *input, int i);
@@ -128,28 +139,23 @@ char		*expansions(char *input);
 void		remove_quote(t_node *token);
 
 // parse_detection.c
-bool 		is_space(char c);
-int 		full_lexer(char *str, t_shell *store, int index);
+bool		is_space(char c);
+int			full_lexer(char *str, t_shell *store, int index);
 
-// scanner.c
-int			scanner_comment(char *str, int start, t_shell *store);
-int			scanner_quote(char *str, int start, t_shell *store);
-int			scanner_operator(char *str, int start, t_shell *store);
-int			scanner_space(char *str, int start);
-int 		scanner_word(char *str, int start, t_shell *store);
+// input_utils.c
+char		*input_spacer(char *input);
+
 
 // args_init.c
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
 
-// base.c
-int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
-int			pre_execution(t_shell *store);
-int			parser(t_shell *store);
-void		interpreter(t_shell *store, t_node *start, t_node *end);
+// pipe.c
+int			wait_for_command(pid_t pid);
+int			pipe_counter(t_node *loop);
+int			multi_executor(t_shell *store);
 int			multiple_function(t_shell *store);
-
 
 // single.c
 int			heredoc_finisher(t_cmd *cmd);
@@ -162,13 +168,20 @@ int			create_cmd(t_shell *store, t_node *start, t_node *end, bool create);
 void		detach_redir(t_cmd *new);
 int			count_cmds(t_shell *store);
 
+// scanner.c
+int			scanner_comment(char *str, int start, t_shell *store);
+int			scanner_quote(char *str, int start, t_shell *store);
+int			scanner_operator(char *str, int start, t_shell *store);
+int			scanner_space(char *str, int start);
+int			scanner_word(char *str, int start, t_shell *store);
+
 // exec_utils.c
 void		check_open_fds(int max_fd);
 int			executor(t_shell *store, t_cmd *cmd);
 
 // printer.c
-int 		print_stack(t_node **head);
-int 		print_stack_se(t_node *start, t_node *end);
+int			print_stack(t_node **head);
+int			print_stack_se(t_node *start, t_node *end);
 int			print_argv(char **argv);
 int			print_cmd_stack(t_cmd **head);
 int			print_error(char *str, char *arg);
@@ -230,16 +243,10 @@ int			handle_append_redirection(t_cmd *cmd, char *filename);
 int			handle_input_redirection(t_cmd *cmd, char *filename);
 int			handle_heredoc_redirection(t_cmd *cmd, char *delimiter);
 
-// pipe.c
-int			wait_for_command(pid_t pid);
-int 		pipe_counter(t_node *loop);
-int			multi_executor(t_shell *store);
-
 // sig_handler.c
 void		ctrl_c_handler(int signum);
 
 // heredoc.c
 int			handle_heredoc(t_cmd *cmd);
-int			handle_heredoc_pipe(t_cmd *cmd);
 
 #endif

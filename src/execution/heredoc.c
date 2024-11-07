@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/06 18:16:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 16:28:23 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,24 +87,5 @@ int	handle_heredoc(t_cmd *cmd)
 		return (1);
 	}
 	free(filename);
-	return (0);
-}
-
-int	handle_heredoc_pipe(t_cmd *cmd)
-
-{
-	int	pipefd[2];
-
-	if (pipe(pipefd) == -1)
-	{
-		perror("pipe");
-		return (1);
-	}
-	if (handle_heredoc(cmd) != 0)
-		return (1);
-	dup2(cmd->heredoc_fd, pipefd[0]);
-	close(cmd->heredoc_fd);
-	cmd->heredoc_fd = pipefd[0];
-	cmd->pipe_out = pipefd[1];
 	return (0);
 }

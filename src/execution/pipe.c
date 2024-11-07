@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 17:05:29 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 00:02:38 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 16:26:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ int	wait_for_command(pid_t pid)
 	status = 0;
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
-		t_exit_status = WEXITSTATUS(status);
+		g_exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		t_exit_status = WTERMSIG(status) + 128;
+		g_exit_status = WTERMSIG(status) + 128;
 	signal(SIGINT, ctrl_c_handler);
 	return (EXIT_SUCCESS);
 }
@@ -61,14 +61,14 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
 	{
-		t_exit_status = executor(store, cmd);
-		exit(t_exit_status);
+		g_exit_status = executor(store, cmd);
+		exit(g_exit_status);
 	}
 	else
 	{
-		t_exit_status = builtin_main(store, cmd->command);
+		g_exit_status = builtin_main(store, cmd->command);
 		free_all(store);
-		exit(t_exit_status);
+		exit(g_exit_status);
 	}
 }
 
@@ -126,14 +126,14 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
-		if (t_exit_status != 0)
-			exit(t_exit_status);
+		g_exit_status = redir_handler(cmd, cmd->redir, NULL);
+		if (g_exit_status != 0)
+			exit(g_exit_status);
 		if (cmd->prev == NULL)
 		{
-			t_exit_status = handle_all_heredocs(store);
-			if (t_exit_status != 0)
-				exit(t_exit_status);
+			g_exit_status = handle_all_heredocs(store);
+			if (g_exit_status != 0)
+				exit(g_exit_status);
 		}
 		setup_pipes(in_fd, out_fd, cmd);
 		run_cmd(cmd, store);
@@ -225,12 +225,44 @@ int	multi_executor(t_shell *store)
 	while ((waitpid(cmd->pid, &res, 0)) != -1)
 	{
 		if (WIFEXITED(res))
-			t_exit_status = WEXITSTATUS(res);
+			g_exit_status = WEXITSTATUS(res);
 		else if (WIFSIGNALED(res))
-			t_exit_status = WTERMSIG(res) + 128;
+			g_exit_status = WTERMSIG(res) + 128;
 		if (cmd->next)
 			cmd = cmd->next;
 	}
 	signal(SIGINT, ctrl_c_handler);
+	return (0);
+}
+
+int	multiple_function(t_shell *store)
+{
+	t_node	*front;
+	t_node	*back;
+	t_node	*temp;
+	bool	create;
+
+	front = store->head;
+	back = store->head;
+	create = true;
+	while (back->next)
+	{
+		if (ft_strcmp(back->data, "|") == 0)
+		{
+			temp = back->next;
+			create_cmd(store, front, back->prev, create);
+			create = false;
+			free(back->data);
+			free(back);
+			if (temp)
+				temp->prev = NULL;
+			front = temp;
+			back = temp;
+		}
+		else
+			back = back->next;
+	}
+	create_cmd(store, front, back, create);
+	multi_executor(store);
 	return (0);
 }
