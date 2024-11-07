@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 08:48:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 16:50:28 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	prompter(t_shell *store, t_env *env_head, t_var *var_head);
 int	pre_execution(t_shell *store);
 int	parser(t_shell *store);
-
 
 static void	prompter_init(t_shell *store, t_env *env_head, t_var *var_head,
 		char **prompt)

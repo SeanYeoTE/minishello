@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 16:28:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 16:54:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,6 @@ int			full_lexer(char *str, t_shell *store, int index);
 
 // input_utils.c
 char		*input_spacer(char *input);
-
 
 // args_init.c
 int			init_node(char *value, t_node **head);
