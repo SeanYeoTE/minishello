@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 16:28:23 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 21:50:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*get_heredoc_filename(int index)
 static int	open_heredoc_file(char *filename, int flags)
 {
 	int	fd;
-	
+
 	fd = open(filename, flags, 0600);
 	if (fd == -1)
 	{
@@ -52,7 +52,7 @@ static int	read_heredoc_input(int fd, char *delimiter)
 		if (line == NULL || ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		write_heredoc_line(fd, line);
 		free(line);
@@ -69,15 +69,11 @@ int	handle_heredoc(t_cmd *cmd)
 	filename = get_heredoc_filename(index);
 	fd = open_heredoc_file(filename, O_CREAT | O_WRONLY | O_TRUNC);
 	if (fd == -1)
-	{
-		free(filename);
-		return (1);
-	}
+		return (free(filename), 1);
 	if (read_heredoc_input(fd, cmd->heredoc_delimiter) != 0)
 	{
 		close(fd);
-		free(filename);
-		return (1);
+		return (free(filename), 1);
 	}
 	close(fd);
 	cmd->heredoc_fd = open_heredoc_file(filename, O_RDONLY);

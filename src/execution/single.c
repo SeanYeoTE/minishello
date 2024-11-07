@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 16:20:28 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 22:54:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	heredoc_finisher(t_cmd *cmd)
 {
 	t_node	*tmp;
-	int 	result;
+	int		result;
 
 	result = 0;
 	tmp = cmd->redir;
@@ -43,7 +43,6 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		
 		g_exit_status = redir_handler(cmd, cmd->redir, NULL);
 		if (g_exit_status != 0)
 			exit(g_exit_status);
@@ -55,7 +54,7 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 	return (wait_for_command(pid));
 }
 
-static void	set_fd(t_cmd *cmd)
+static void	set_builtin_fd(t_cmd *cmd)
 {
 	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{
@@ -77,7 +76,7 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 	if (g_exit_status == 0)
 	{
 		heredoc_finisher(cmd);
-		set_fd(cmd);
+		set_builtin_fd(cmd);
 		g_exit_status = builtin_main(store, cmd->command);
 		reset_fds(store);
 	}
@@ -87,7 +86,6 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
-	// print_cmd_stack(&store->cmd_head);
 	if (store->cmd_head->command == NULL)
 	{
 		print_erroronly("syntax error", "newline");
