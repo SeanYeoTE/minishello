@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 16:26:58 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 08:48:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,22 @@
 int	prompter(t_shell *store, t_env *env_head, t_var *var_head);
 int	pre_execution(t_shell *store);
 int	parser(t_shell *store);
-int	multiple_function(t_shell *store);
 
-int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
+
+static void	prompter_init(t_shell *store, t_env *env_head, t_var *var_head,
+		char **prompt)
 {
 	char	cwd[1024];
-	char	*prompt;
 
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, SIG_IGN);
 	init_var(store, env_head, var_head);
 	getcwd(cwd, sizeof(cwd));
-	prompt = form_prompt(cwd);
+	*prompt = form_prompt(cwd);
+}
+
+static int	prompter_input(t_shell *store, char *prompt)
+{
 	store->input = readline(prompt);
 	free(prompt);
 	if (store->input == NULL)
@@ -35,14 +39,23 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 		exit(EXIT_SUCCESS);
 	}
 	if (store->input[0] == '\0')
-	{
-		free_nonessential(store);
-		return (prompter(store, env_head, var_head));
-	}
+		return (0);
 	add_history(store->input);
 	if (check_error(store->input))
 	{
 		print_erroronly("syntax error", store->input);
+		return (0);
+	}
+	return (1);
+}
+
+int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
+{
+	char	*prompt;
+
+	prompter_init(store, env_head, var_head, &prompt);
+	if (!prompter_input(store, prompt))
+	{
 		free_nonessential(store);
 		return (prompter(store, env_head, var_head));
 	}
