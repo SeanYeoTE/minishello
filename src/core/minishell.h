@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 13:51:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 14:18:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,16 @@ int			full_lexer(char *str, t_shell *store, int index);
 
 // input_utils.c
 char		*input_spacer(char *input);
+
+// input_quote.c
+bool		within_quote(const char *input, int index);
+
+// scanner.c
+int			scanner_comment(char *str, int start, t_shell *store);
+int			scanner_quote(char *str, int start, t_shell *store);
+int			scanner_operator(char *str, int start, t_shell *store);
+int			scanner_space(char *str, int start);
+int			scanner_word(char *str, int start, t_shell *store);
 
 // args_init.c
 int			init_node(char *value, t_node **head);
