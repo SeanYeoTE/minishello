@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 03:03:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 05:14:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*extract_var_name(const char *input, int start, int *end)
 {
-	int	j;
+	int		j;
 	char	*var_name;
 
 	j = start + 1;
@@ -30,7 +30,8 @@ char	*extract_var_name(const char *input, int start, int *end)
 	return (var_name);
 }
 
-void	update_quote_state(char c, bool *in_single_quotes, bool *in_double_quotes)
+void	update_quote_state(char c, bool *in_single_quotes,
+	bool *in_double_quotes)
 {
 	if (c == '\'' && !*in_double_quotes)
 		*in_single_quotes = !*in_single_quotes;
