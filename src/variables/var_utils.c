@@ -1,12 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   var_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 23:47:14 by mchua             #+#    #+#             */
+/*   Updated: 2024/11/08 23:47:14 by mchua            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../core/minishell.h" //to add into header file
 
 int	name_counter(char *src)
 {
-	int	n;
-	bool checker;
+	int		n;
+	bool	checker;
 
 	checker = false;
-
 	n = 0;
 	while (*src != '\0')
 	{

@@ -29,7 +29,7 @@ t_var	*create_var_node(char *var, char *data)
 bool	same_var(char *src, t_shell *store)
 {
 	t_var	*current;
-	int	count;
+	int		count;
 
 	count = name_counter(src);
 	current = store->var;
@@ -40,23 +40,24 @@ bool	same_var(char *src, t_shell *store)
 		while (current)
 		{
 			if (ft_strcmp(src, current->hidden) == 0)
-				return true;
-			else if (ft_strncmp(src, current->hidden, count) == 0 && ft_strcmp(src, current->hidden) != 0)
+				return (true);
+			else if (ft_strncmp(src, current->hidden, count) == 0
+				&& ft_strcmp(src, current->hidden) != 0)
 			{
 				free (current->hidden);
 				current->hidden = ft_strdup(src);
-				return true;
+				return (true);
 			}
 			current = current->next;
 		}
 	}
-	return false;
+	return (false);
 }
 
 bool	same_env(char *src, t_shell *store)
 {
 	t_env	*current;
-	int	count;
+	int		count;
 
 	count = name_counter(src);
 	current = store->env;
@@ -64,7 +65,8 @@ bool	same_env(char *src, t_shell *store)
 	{
 		if (ft_strcmp(src, current->var) == 0)
 			return (false);
-		else if (ft_strncmp(src, current->var, count) == 0 && ft_strcmp(src, current->var) != 0)
+		else if (ft_strncmp(src, current->var, count) == 0
+			&& ft_strcmp(src, current->var) != 0)
 		{
 			free (current->var);
 			current->var = ft_strdup(src);
