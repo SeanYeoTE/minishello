@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 16:45:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 02:05:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,10 @@ char	*expansions(char *input)
 		}
 		if (input[i] == '"' || input[i] == '\'')
 			if (input[i] == input[i + 1])
-				break;
+			{
+				i++;
+				continue;
+			}
 		if (input[i] == '$' && input[i + 1] == '"' && !in_double_quotes)
 		{
 			input = remove_dollar_quotes(input, i);
