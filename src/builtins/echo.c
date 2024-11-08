@@ -21,7 +21,7 @@ int	echo_handler(t_node *current)
 	current = current->next;
 	if (current)
 	{
-		if (ft_strncmp(current->data, "-n", 2) == 0)
+		if (ft_strcmp(current->data, "-n") == 0)
 			n_flag = true;
 	}
 	if (n_flag)

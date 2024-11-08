@@ -28,7 +28,8 @@ EXEC_SRC =		pipe_exec.c pipe_fd.c pipe_process.c pipe_setup.c \
 BUILTIN_SRC =	builtin_main.c cd.c echo.c env.c export.c export_utils.c pwd.c unset.c exit.c
 UTILS_SRC =		args_init.c t_cmd_utils.c t_cmd_utils_extra.c printer.c printer_error.c \
 				mem_utils.c mem_utils_extra.c
-VAR_SRC =		var_handler.c var_utils.c expansions.c remove_quote.c
+VAR_SRC =		var_handler.c var_utils.c expansions.c expansions_utils.c expansions_replace.c \
+				expansions_state.c remove_quote.c
 
 # Combine all sources with their directories
 SRCS =	$(addprefix $(SRC_PATH)$(CORE_DIR), $(CORE_SRC)) \
