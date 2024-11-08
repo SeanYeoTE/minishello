@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/06 13:12:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 16:45:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ static char	*replace_exit_status(char *input, int start)
 	result_len = 0;
 	front = ft_strndup(input, start);
 	back = ft_strdup(input + start + 2);
-	result_len = ft_strlen(ft_itoa(t_exit_status)) + 1;
+	result_len = ft_strlen(ft_itoa(g_exit_status)) + 1;
 	if (front)
 		result_len += ft_strlen(front);
 	if (back)
@@ -96,7 +96,7 @@ static char	*replace_exit_status(char *input, int start)
 	{
 		if (front != NULL)
 			ft_strlcpy(result, front, ft_strlen(front) + 1);
-		ft_strlcat(result, ft_itoa(t_exit_status), result_len);
+		ft_strlcat(result, ft_itoa(g_exit_status), result_len);
 		if (back != NULL)
 			ft_strlcat(result, back, result_len);
 	}

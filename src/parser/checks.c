@@ -6,13 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 12:54:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/25 14:41:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 13:55:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
-
-
 
 int	redir_checker(t_node *cmd)
 {
@@ -28,7 +26,7 @@ int	redir_checker(t_node *cmd)
 }
 
 int	check_builtin(t_node *loop)
-{	
+{
 	if (ft_strcmp(loop->data, "export") == 0)
 		return (1);
 	if (ft_strcmp(loop->data, "echo") == 0)
@@ -36,10 +34,10 @@ int	check_builtin(t_node *loop)
 	if (ft_strcmp(loop->data, "cd") == 0)
 		return (1);
 	if (ft_strcmp(loop->data, "pwd") == 0)
-		return (1);	
+		return (1);
 	if (ft_strcmp(loop->data, "unset") == 0)
 		return (1);
-	if (ft_strchr(loop->data,  '=') != NULL)
+	if (ft_strchr(loop->data, '=') != NULL)
 		return (1);
 	if (ft_strcmp(loop->data, "exit") == 0)
 		return (1);
@@ -59,8 +57,8 @@ int	is_operator(char c)
 int	is_double_operator(const char *input, int i)
 {
 	if (input[i] == '>' && input[i + 1] == '>')
-		return 1;
+		return (1);
 	if (input[i] == '<' && input[i + 1] == '<')
-		return 1;
-	return 0;
+		return (1);
+	return (0);
 }

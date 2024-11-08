@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/10/14 17:33:55 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 14:03:18 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static int	detect_operator(char *str)
 	return (0);
 }
 
-bool is_space(char c)
+bool	is_space(char c)
 {
 	if (c == 32 || c == 9 || c == 10 || c == 11 || c == 12 || c == 13)
 		return (true);
@@ -39,10 +39,12 @@ int	full_lexer(char *str, t_shell *store, int index)
 	{
 		if (str[index] == '#')
 			return (full_lexer(str, store, scanner_comment(str, index, store)));
-		else if (store->quotes == true || (str[index] == '"' || str[index] == '\''))
+		else if (store->quotes == true || (str[index] == '"'
+				|| str[index] == '\''))
 			return (full_lexer(str, store, scanner_quote(str, index, store)));
 		else if (detect_operator(&str[index]) == 1)
-			return (full_lexer(str, store, scanner_operator(str, index, store)));
+			return (full_lexer(str, store, scanner_operator(str, index,
+						store)));
 		else if (is_space(str[index]))
 			return (full_lexer(str, store, scanner_space(str, index)));
 		else

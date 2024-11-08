@@ -6,11 +6,32 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/06 13:12:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/07 22:54:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
+
+int	heredoc_finisher(t_cmd *cmd)
+{
+	t_node	*tmp;
+	int		result;
+
+	result = 0;
+	tmp = cmd->redir;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->data, "<<") == 0)
+		{
+			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
+			if (cmd->heredoc_delimiter == NULL)
+				return (1);
+			result = handle_heredoc(cmd);
+		}
+		tmp = tmp->next;
+	}
+	return (result);
+}
 
 int	execute_external_command(t_shell *store, t_cmd *cmd)
 {
@@ -22,18 +43,18 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 	if (pid == 0)
 	{
 		signal(SIGINT, SIG_DFL);
-		
-		t_exit_status = redir_handler(cmd, cmd->redir, NULL);
-		if (t_exit_status != 0)
-			exit(t_exit_status);
-		t_exit_status = executor(store, cmd);
-		exit(t_exit_status);
+		g_exit_status = redir_handler(cmd, cmd->redir, NULL);
+		if (g_exit_status != 0)
+			exit(g_exit_status);
+		heredoc_finisher(cmd);
+		g_exit_status = executor(store, cmd);
+		exit(g_exit_status);
 	}
 	signal(SIGINT, SIG_IGN);
 	return (wait_for_command(pid));
 }
 
-static void	set_fd(t_cmd *cmd)
+static void	set_builtin_fd(t_cmd *cmd)
 {
 	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{
@@ -51,20 +72,20 @@ static void	set_fd(t_cmd *cmd)
 
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
-	t_exit_status = redir_handler(cmd, cmd->redir, NULL);
-	if (t_exit_status == 0)
+	g_exit_status = redir_handler(cmd, cmd->redir, NULL);
+	if (g_exit_status == 0)
 	{
-		set_fd(cmd);
-		t_exit_status = builtin_main(store, cmd->command);
+		heredoc_finisher(cmd);
+		set_builtin_fd(cmd);
+		g_exit_status = builtin_main(store, cmd->command);
 		reset_fds(store);
 	}
-	return (t_exit_status);
+	return (g_exit_status);
 }
 
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
-	// print_cmd_stack(&store->cmd_head);
 	if (store->cmd_head->command == NULL)
 	{
 		print_erroronly("syntax error", "newline");

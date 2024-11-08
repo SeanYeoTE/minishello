@@ -1,6 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printer.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 15:01:20 by seayeo            #+#    #+#             */
+/*   Updated: 2024/11/08 15:00:37 by seayeo           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../core/minishell.h"
 
-int print_stack(t_node **head)
+static void	print_node_info(t_node *node)
+{
+	printf("Node Value: %s\n", node->data);
+	printf("Token Type: %d\n", node->type);
+	printf("Node Prev Value: %p\n", node->prev);
+	printf("Node Next Value: %p\n", node->next);
+	printf("***************\n");
+}
+
+int	print_stack(t_node **head)
 {
 	t_node	*start;
 	int		count;
@@ -9,19 +30,15 @@ int print_stack(t_node **head)
 	start = *head;
 	while (start)
 	{
-		printf("Node Value: %s\n", start->data);
-		printf("Token Type: %d\n", start->type);
-		printf("Node Prev Value: %p\n", start->prev);
-		printf("Node Next Value: %p\n", start->next);
-		printf("***************\n");
+		print_node_info(start);
 		start = start->next;
 		count++;
-	}	
+	}
 	printf("Total Nodes: %d\n", count);
 	return (0);
 }
 
-int print_stack_se(t_node *start, t_node *end)
+int	print_stack_se(t_node *start, t_node *end)
 {
 	int		count;
 
@@ -40,10 +57,13 @@ int print_stack_se(t_node *start, t_node *end)
 
 int	print_argv(char **argv)
 {
-	while (*argv)
+	char	**current;
+
+	current = argv;
+	while (*current)
 	{
-		printf("%s\n", *argv);
-		argv++;
+		printf("%s\n", *current);
+		current++;
 	}
 	return (0);
 }
@@ -70,40 +90,4 @@ int	print_cmd_stack(t_cmd **head)
 	}
 	printf("Total Commands: %d\n", count);
 	return (0);
-}
-
-int	print_error(char *str, char *arg)
-{
-	if (arg)
-		printf("%s: %s\n", arg, str);
-	else
-		printf("minishell: %s\n", str);
-	return (EXIT_FAILURE);  // Changed back to EXIT_FAILURE
-}
-
-void	print_erroronly(char *str, char *arg)
-{
-	char	*first;
-	char	*print;
-	char	*tmp;
-
-	if (ft_strcmp(str, "Is a directory") == 0)
-		first = ft_strjoin("bash: ", arg);
-	else if (ft_strcmp(str, "command not found") == 0)
-		first = ft_strjoin("bash: ", arg);
-	else if (ft_strcmp(str, "Permission denied") == 0)
-		first = ft_strjoin("bash: ", arg);
-	else if (ft_strcmp(str, "No such file or directory") == 0)
-		first = ft_strjoin("bash: ", arg);
-	else if (ft_strcmp(str, "syntax error") == 0)
-		first = ft_strjoin("bash: ", arg);
-	else
-		first = ft_strjoin("bash: ", arg);
-	tmp = ft_strjoin(first, ": ");
-	free(first);
-	print = ft_strjoin(tmp, str);
-	free(tmp);
-	ft_putstr_fd(print, STDERR_FILENO);
-	free(print);
-	ft_putchar_fd('\n', STDERR_FILENO);
 }
