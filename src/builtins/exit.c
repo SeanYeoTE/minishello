@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/11/06 13:08:57 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 21:19:44 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,12 @@ static bool	is_numeric(char *arg)
 		if (ft_isdigit(*arg))
 			arg++;
 		else
-			return false;
+			return (false);
 	}
-	return true;
+	return (true);
 }
 
-static void	print_error_msg(t_shell *store, int fd)
+static void	print_exit_error(t_shell *store, int fd)
 {
 	if (fd == 2)
 	{
@@ -58,7 +58,6 @@ int	exit_handler(t_shell *store)
 	int		status;
 
 	status = 0;
-
 	if (!(store->cmd_head->command->next))
 	{
 		free_all(store);
@@ -66,9 +65,9 @@ int	exit_handler(t_shell *store)
 	}
 	arg = store->cmd_head->command->next->data;
 	if (ft_strcmp(arg, "") == 0 || !is_numeric(arg))
-		print_error_msg(store, 2);
+		print_exit_error(store, 2);
 	else if (store->cmd_head->command->next->next != NULL)
-		print_error_msg(store, 1);
+		print_exit_error(store, 1);
 	else
 		status = ft_atoi(arg);
 	if (status < 0)

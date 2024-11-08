@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
 /*   Updated: 2024/11/08 21:07:25 by seayeo           ###   ########.fr       */
@@ -17,7 +17,7 @@ int	builtin_main(t_shell *store, t_node *current)
 	int		exit_status;
 
 	exit_status = 0;
-	(void)store;	
+	(void)store;
 	if (ft_strcmp(current->data, "cd") == 0)
 		exit_status = cd_handler(current);
 	else if (!ft_strcmp(current->data, "echo"))
