@@ -26,7 +26,8 @@ EXEC_SRC =		pipe_exec.c pipe_fd.c pipe_process.c pipe_setup.c \
 				single.c exec_argv.c exec_fd.c exec_main.c exec_path.c \
 				redir_handler.c redir_utils.c redir_io.c heredoc.c
 BUILTIN_SRC =	builtin_main.c cd.c echo.c env.c export.c export_utils.c pwd.c unset.c exit.c
-UTILS_SRC =		args_init.c t_cmd_utils.c printer.c mem_utils.c
+UTILS_SRC =		args_init.c t_cmd_utils.c t_cmd_utils_extra.c printer.c printer_error.c \
+				mem_utils.c mem_utils_extra.c
 VAR_SRC =		var_handler.c var_utils.c expansions.c remove_quote.c
 
 # Combine all sources with their directories

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 14:18:39 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 15:21:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,33 +39,26 @@ typedef struct s_node
 {
 	int				type;
 	int				opprio;
-
 	char			*data;
-
 	struct s_cmd	*parent;
 	struct s_node	*next;
 	struct s_node	*prev;
 }	t_node;
 
-// struct points to command and redirection, each is a linked list
-// struct points to next command as itself is a linked list
 typedef struct s_cmd
 {
 	char			*data;
 	t_node			*command;
 	t_node			*redir;
 	bool			input_changed;
-
 	pid_t			pid;
 	int				input_fd;
 	int				output_fd;
 	int				heredoc_fd;
 	char			*heredoc_delimiter;
 	int				pipe_out;
-
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
-
 }	t_cmd;
 
 typedef struct s_env
@@ -87,21 +80,15 @@ typedef struct s_shell
 	char	**envp;
 	int		input_reset;
 	int		output_reset;
-
 	int		fd_in;
-
 	bool	quotes;
 	bool	expanded;
-
 	char	*input;
-
 	char	*path;
 	char	**paths;
-
 	t_cmd	*cmd_head;
 	t_cmd	*cmd_tail;
 	int		pipes;
-
 	t_node	*head;
 	t_node	*tail;
 	t_env	*env;
@@ -185,10 +172,15 @@ int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // t_cmd_utils.c
 t_cmd		*get_last_cmd(t_cmd *cmd);
+int			count_cmds(t_shell *store);
 t_cmd		*init_cmd(t_shell *store, t_node *start, t_node *end, bool create);
+
+// t_cmd_utils_extra.c
+void		set_parent(t_node *node, t_cmd *cmd);
+void		remove_nodes(t_node **start, t_node *redir, t_node *file);
+void		add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file);
 int			create_cmd(t_shell *store, t_node *start, t_node *end, bool create);
 void		detach_redir(t_cmd *new);
-int			count_cmds(t_shell *store);
 
 // scanner.c
 int			scanner_comment(char *str, int start, t_shell *store);
@@ -217,10 +209,19 @@ int			print_stack(t_node **head);
 int			print_stack_se(t_node *start, t_node *end);
 int			print_argv(char **argv);
 int			print_cmd_stack(t_cmd **head);
+
+// printer_error.c
 int			print_error(char *str, char *arg);
 void		print_erroronly(char *str, char *arg);
 
 // mem_utils.c
+void		freechararray(char **v);
+void		free_stack(t_node **stack);
+void		free_cmd(t_cmd **cmd);
+
+// mem_utils_extra.c
+void		free_env(t_env **env);
+void		free_var(t_var **var);
 void		free_nonessential(t_shell *store);
 void		free_all(t_shell *store);
 
