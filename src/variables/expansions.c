@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 02:05:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 02:40:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ static char	*remove_dollar_quotes(char *input, int start)
 }
 
 // Main function to expand variables
-char	*expansions(char *input)
+char	*expansions(t_shell *store, char *input)
 {
 	int		i;
 	int		end;
@@ -193,7 +193,7 @@ char	*expansions(char *input)
 				i++;
 				continue;
 			}
-			temp = getenv(var); // need to write a custom getenv to search the struct env list
+			temp = cgetenv(var, store->env); // need to write a custom getenv to search the struct env list
 			if (temp == NULL)
 				temp = "";
 			new_input = replace_var(input, i, end, temp);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 23:42:01 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/09 02:40:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ int			check_quotes(char *line);
 int			check_error(char *input);
 
 // expansions.c
-char		*expansions(char *input);
+char		*expansions(t_shell *store, char *input);
 
 // remove_quote.c
 void		remove_quote(t_node *token);
