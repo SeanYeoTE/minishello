@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 02:40:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 02:51:28 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 	size_t	result_len;
 	char	*result;
 
-	// printf("replace_var: %s\n", value);
 	result_len = 0;
 	front = ft_strndup(input, start);
 	back = ft_strdup(input + end);
@@ -58,9 +57,7 @@ static char	*replace_var(char *input, int start, int end, const char *value)
 		result_len += ft_strlen(front);
 	if (back)
 		result_len += ft_strlen(back);
-	// result = (char *)malloc(result_len);
 	result = (char *)ft_calloc(result_len, sizeof(char));
-	// result[0] = '\0';
 	if (result)
 	{
 		if (front != NULL)
@@ -118,24 +115,18 @@ static char	*remove_dollar_quotes(char *input, int start)
 	while (input[end] && input[end] != '"')
 		end++;
 	if (input[end] != '"')
-		return (input);  // No closing quote found, return original input
-
+		return (input);
 	front = ft_strndup(input, start);
 	content = ft_strndup(input + start + 2, end - start - 2);
-	// printf("content: .%s.\n", content);
 	back = ft_strdup(input + end + 1);
-
-
 	result = ft_strjoin(front, content);
 	free(front);
 	free(content);
 	front = result;
 	result = ft_strjoin(front, back);
-
 	free(front);
 	free(back);
 	free(input);
-	
 	return (result);
 }
 
