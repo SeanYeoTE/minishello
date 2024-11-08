@@ -61,7 +61,7 @@ static int	check_arg(char *arg)
 	int	i;
 
 	i = 0;
-	if (!ft_isalpha(arg[i]) || arg[i] != '_')
+	if (!ft_isalpha(arg[i]) && arg[i] != '_')
 	{
 		if (arg[i] == '-')
 			return (2);
@@ -120,7 +120,7 @@ int	export_handler(t_shell *store)
 	arg = store->cmd_head->command->next->data;
 	ret_value = check_arg(arg);
 	print_error_msg(arg, ret_value);
-	if (ret_value == 0 && ft_strchr(arg, '='))
+	if (ret_value == 0)
 		set_export(store, arg);
 	return (ret_value);
 }

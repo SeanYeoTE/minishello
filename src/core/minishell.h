@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 21:28:16 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/08 23:42:01 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,14 +256,14 @@ t_env		*get_last_env(t_env *current_env);
 
 // var_handler.c
 t_var		*create_var_node(char *var, char *data);
+bool		same_env(char *src, t_shell *store);
+bool		same_var(char *src, t_shell *store);
 t_var		*split_var(char *src);
 int			var_handler(char *src, t_shell *store);
 
 // var_utils.c
-int			print_var(t_var *var);
 int			name_counter(char *src);
-bool		same_env(char *src, t_shell *store);
-bool		same_var(char *src, t_shell *store);
+char		**ft_split_var(char const *str, char c);
 
 // unset.c
 int			unset_handler(t_shell *store);
