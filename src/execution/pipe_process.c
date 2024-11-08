@@ -6,25 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 22:43:55 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 13:50:22 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
-
-int	wait_for_command(pid_t pid)
-{
-	int	status;
-
-	status = 0;
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		g_exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		g_exit_status = WTERMSIG(status) + 128;
-	signal(SIGINT, ctrl_c_handler);
-	return (EXIT_SUCCESS);
-}
 
 static int	handle_all_heredocs(t_shell *store)
 {
@@ -90,4 +76,14 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	signal(SIGINT, SIG_IGN);
 	cmd->pid = pid;
 	return (pid);
+}
+
+int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
+{
+	pid_t	last_pid;
+
+	last_pid = execute_command(store, cmd, in_fd, out_fd);
+	if (last_pid == -1)
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }

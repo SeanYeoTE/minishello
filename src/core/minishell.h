@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 22:38:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 13:51:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,18 +154,18 @@ t_node		*get_node(t_node *ret, int num);
 int			pipe_counter(t_node *loop);
 int			setup_pipe(int pipe_fds[2]);
 void		handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd);
+int			handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd);
 
 // pipe_fd.c
+int			wait_for_command(pid_t pid);
 void		setup_pipes(int in_fd, int out_fd, t_cmd *cmd);
 
 // pipe_process.c
-int			wait_for_command(pid_t pid);
 void		run_cmd(t_cmd *cmd, t_shell *store);
 int			execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd);
+int			execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd);
 
 // pipe_exec.c
-int			execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd);
-int			handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd);
 int			multi_executor(t_shell *store);
 int			multiple_function(t_shell *store);
 

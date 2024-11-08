@@ -6,41 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 22:50:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 13:52:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
-
-int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
-{
-	pid_t	last_pid;
-
-	last_pid = execute_command(store, cmd, in_fd, out_fd);
-	if (last_pid == -1)
-		return (EXIT_FAILURE);
-	return (EXIT_SUCCESS);
-}
-
-int	handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd)
-{
-	int		pipe_fds[2];
-	int		is_last_cmd;
-
-	is_last_cmd = (cmd->next == NULL);
-	if (!is_last_cmd)
-	{
-		if (setup_pipe(pipe_fds) == EXIT_FAILURE)
-			return (EXIT_FAILURE);
-		*out_fd = pipe_fds[1];
-	}
-	else
-		*out_fd = STDOUT_FILENO;
-	if (execute_and_wait(store, cmd, *in_fd, *out_fd) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
-	handle_pipe_fds(in_fd, pipe_fds, is_last_cmd);
-	return (EXIT_SUCCESS);
-}
 
 static void	update_exit_status(int res)
 {
