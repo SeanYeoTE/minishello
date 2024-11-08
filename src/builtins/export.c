@@ -109,6 +109,7 @@ static void	set_export(t_shell *store, char *arg)
 int	export_handler(t_shell *store)
 {
 	char	*arg;
+	t_node	*array;
 	int		ret_value;
 
 	ret_value = 0;
@@ -118,9 +119,16 @@ int	export_handler(t_shell *store)
 		return (0);
 	}
 	arg = store->cmd_head->command->next->data;
+	array = store->cmd_head->command->next;
 	ret_value = check_arg(arg);
 	print_error_msg(arg, ret_value);
-	if (ret_value == 0)
-		set_export(store, arg);
+	while (array)
+	{
+		if (ret_value == 0)
+			set_export(store, arg);
+		array = array->next;
+		if (array)
+			arg = array->data;
+	}
 	return (ret_value);
 }
