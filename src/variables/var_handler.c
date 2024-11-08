@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   var_handler.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 21:40:48 by mchua             #+#    #+#             */
+/*   Updated: 2024/11/08 21:40:48 by mchua            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../core/minishell.h"
 
 t_var	*create_var_node(char *var, char *data)
@@ -14,77 +26,70 @@ t_var	*create_var_node(char *var, char *data)
 	return (new_var);
 }
 
-static int	count_src(char *src, int flag)
+bool	same_var(char *src, t_shell *store)
 {
-	int		i;
-	char	*temp;
+	t_var	*current;
+	int		count;
 
-	i = 0;
-	temp = NULL;
-	if (flag == 1)
-	{
-		while (*src != '=')
-		{
-			src++;
-			i++;
-		}
-	}
+	count = name_counter(src);
+	current = store->var;
+	if (!current)
+		return (false);
 	else
 	{
-		temp = ft_strchr(src, '=');
-		while (*temp != '\0')
+		while (current)
 		{
-			temp++;
-			i++;
+			if (ft_strcmp(src, current->hidden) == 0)
+				return (true);
+			else if (ft_strncmp(src, current->hidden, count) == 0
+				&& ft_strcmp(src, current->hidden) != 0)
+			{
+				free (current->hidden);
+				current->hidden = ft_strdup(src);
+				return (true);
+			}
+			current = current->next;
 		}
 	}
-	return (i);
+	return (false);
+}
+
+bool	same_env(char *src, t_shell *store)
+{
+	t_env	*current;
+	int		count;
+
+	count = name_counter(src);
+	current = store->env;
+	while (current)
+	{
+		if (ft_strcmp(src, current->var) == 0)
+			return (false);
+		else if (ft_strncmp(src, current->var, count) == 0
+			&& ft_strcmp(src, current->var) != 0)
+		{
+			free (current->var);
+			current->var = ft_strdup(src);
+			return (false);
+		}
+		current = current->next;
+	}
+	return (true);
 }
 
 t_var	*split_var(char *src)
 {
-	int	i;
-	int	j;
 	t_var	*new_var;
 	char	*name;
 	char	*value;
+	char	**split_array;
 
-
-	i = 0;
-	j = 0;
-	name = malloc(sizeof(char) * (count_src(src, 1) + 1));
-	value = malloc(sizeof(char) * (count_src(src, 2) + 1));
-	while (src[i] != '=')
-	{
-		name[i] = src[j];
-		i++;
-		j++;
-	}
-	name[i] = '\0';
-	i = 0;
-	while (src[j] != '\0')
-	{
-		j++;
-		value[i] = src[j];
-		i++;
-	}
-	value[i] = '\0';
-	// while ((src[i] != '=') && src[i])
-	// {
-	// 	name[i] = src[i];
-	// 	i++;
-	// }
-	// name[i] = '\0';
-	// while (src[i])
-	// {
-	// 	i++;
-	// 	value[j] = src[i];
-	// 	j++;
-	// }
+	split_array = ft_split_var(src, '=');
+	name = split_array[0];
+	value = split_array[1];
 	new_var = create_var_node(name, value);
 	new_var->hidden = ft_strdup(src);
-	free (name);
-	free (value);
+	freechararray(split_array);
 	return (new_var);
 }
 
@@ -96,6 +101,8 @@ int	var_handler(char *src, t_shell *store)
 	new_var = NULL;
 	if (!same_env(src, store) || !same_var(src, store))
 		new_var = split_var(src);
+	if (!new_var)
+		return (EXIT_FAILURE);
 	if (store->var == NULL)
 		store->var = new_var;
 	else

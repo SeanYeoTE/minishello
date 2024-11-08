@@ -1,4 +1,58 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 20:55:35 by mchua             #+#    #+#             */
+/*   Updated: 2024/11/08 20:55:35 by mchua            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../core/minishell.h"
+
+t_env	*get_env_loc(t_env *env_list, char *arg)
+{
+	int	count;
+	int	i;
+
+	count = -1;
+	i = 0;
+	while (arg[i] && arg[i] != '=')
+	{
+		count++;
+		i++;
+	}
+	while (env_list)
+	{
+		if ((ft_strncmp(env_list->var, arg, count) == 0)
+			&& (ft_strncmp(env_list->var, arg, count + 1) == 0))
+			return (env_list);
+		env_list = env_list->next;
+	}
+	return (NULL);
+}
+
+t_var	*get_var_loc(char *arg, t_var *var_list, t_env *current_env)
+{
+	int		count;
+	char	*var_data;
+
+	count = 0;
+	if (!var_list)
+		return (NULL);
+	count = ft_strlen(arg);
+	while (var_list)
+	{
+		var_data = var_list->name;
+		if (ft_strncmp(var_data, arg, count) == 0
+			&& ft_strcmp(arg, current_env->var) != 0)
+			return (var_list);
+		var_list = var_list->next;
+	}
+	return (NULL);
+}
 
 t_env	*create_env_node(char *var)
 {
@@ -17,14 +71,13 @@ t_env	*env_init(char **envp)
 	t_env	*current;
 	t_env	*head;
 	t_env	*new_node;
-	int	i;
+	int		i;
 
 	head = NULL;
 	i = 0;
 	while (envp[i])
 	{
 		new_node = create_env_node(envp[i]);
-
 		if (head == NULL)
 		{
 			head = new_node;

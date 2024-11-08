@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   echo.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 20:54:34 by mchua             #+#    #+#             */
+/*   Updated: 2024/11/08 20:54:34 by mchua            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../core/minishell.h"
 
 int	echo_handler(t_node *current)
@@ -19,7 +31,7 @@ int	echo_handler(t_node *current)
 		ft_putstr_fd(current->data, 1);
 		if (current->next)
 			ft_putchar_fd(' ', 1);
-		current = current->next;  
+		current = current->next;
 	}
 	printed = false;
 	if (!printed && !n_flag)

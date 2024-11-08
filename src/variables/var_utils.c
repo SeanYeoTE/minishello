@@ -1,30 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   var_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 23:47:14 by mchua             #+#    #+#             */
+/*   Updated: 2024/11/08 23:47:14 by mchua            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../core/minishell.h" //to add into header file
-
-int print_var(t_var *var)
-{
-	t_var	*start;
-	int		count;
-
-	count = 0;
-	start = var;
-	while (start)
-	{
-		printf("Var: %s\n", start->hidden);
-		printf("***************\n");
-		start = start->next;
-		count++;
-	}
-	printf("Total Nodes: %d\n", count);
-	return (0);
-}
 
 int	name_counter(char *src)
 {
-	int	n;
-	bool checker;
+	int		n;
+	bool	checker;
 
 	checker = false;
-
 	n = 0;
 	while (*src != '\0')
 	{
@@ -43,51 +36,68 @@ int	name_counter(char *src)
 		return (0);
 }
 
-bool	same_env(char *src, t_shell *store)
+static char	**ft_freeup(char **strs)
 {
-	t_env	*current;
-	int	count;
+	int	i;
 
-	count = name_counter(src);
-	current = store->env;
-	while (current)
+	if (strs)
 	{
-		if (ft_strcmp(src, current->var) == 0)
-			return (false);
-		else if (ft_strncmp(src, current->var, count) == 0 && ft_strcmp(src, current->var) != 0)
+		i = 0;
+		while (strs[i] != NULL)
 		{
-			free (current->var);
-			current->var = ft_strdup(src);
-			return (false);
+			free(strs[i]);
+			i++;
 		}
-		current = current->next;
+		free(strs);
 	}
-	return (true);
+	return (NULL);
 }
 
-bool	same_var(char *src, t_shell *store)
+static char	*ft_word(char const *str, char c)
 {
-	t_var	*current;
-	int	count;
+	int		len_word;
+	int		i;
+	char	*word;
 
-	count = name_counter(src);
-	current = store->var;
-	if (!current)
-		return (false);
-	else
+	len_word = 0;
+	i = 0;
+	while (str[len_word] && !(str[len_word] == c))
+		len_word++;
+	word = (char *)malloc(sizeof(char) * (len_word + 1));
+	if (!word)
+		return (NULL);
+	while (i < len_word)
 	{
-		while (current)
-		{
-			if (ft_strcmp(src, current->hidden) == 0)
-				return true;
-			else if (ft_strncmp(src, current->hidden, count) == 0 && ft_strcmp(src, current->hidden) != 0)
-			{
-				free (current->hidden);
-				current->hidden = ft_strdup(src);
-				return true;
-			}
-			current = current->next;
-		}
+		word[i] = str[i];
+		i++;
 	}
-	return false;
+	word[i] = '\0';
+	return (word);
+}
+
+char	**ft_split_var(char const *str, char c)
+{
+	char	**strings;
+	int		i;
+
+	i = 0;
+	strings = (char **)malloc(sizeof(char *) * (3));
+	if (!strings)
+		return (NULL);
+	if (*str != '\0' && *str != c)
+	{
+		strings[i] = ft_word(str, c);
+		if (strings[i] == NULL)
+			return (ft_freeup(strings));
+		i++;
+	}
+	while (*str && !(*str == c))
+		str++;
+	str++;
+	strings[i] = ft_strdup(str);
+	if (strings[i] == NULL)
+		return (ft_freeup(strings));
+	i++;
+	strings[i] = '\0';
+	return (strings);
 }
