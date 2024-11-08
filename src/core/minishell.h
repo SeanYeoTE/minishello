@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 16:44:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/08 21:28:16 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,17 +238,19 @@ int			echo_handler(t_node *current);
 int			pwd_handler(void);
 
 // env.c
+t_env		*get_env_loc(t_env *env_list, char *arg);
+t_var		*get_var_loc(char *arg, t_var *var_list, t_env *current_env);
 t_env		*create_env_node(char *var);
 t_env		*env_init(char **envp);
 int			env_handler(t_shell *store);
 
 // export.c
-t_env		*get_env_loc(t_env *env_list, char *arg);
-t_var		*get_var_loc(char *arg, t_var *var_list, t_env *current_env);
 int			export_handler(t_shell *store);
 
 // export_utils.c
-int			args_key_counter(char *src);
+void		print_error_msg(char *arg, int ret_value);
+void		sort_env(char **str_array, int env_len);
+void		print_export(char **str_arr, int env_len);
 bool		is_in_env(t_env *env_list, char *arg);
 t_env		*get_last_env(t_env *current_env);
 

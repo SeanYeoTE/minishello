@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/08 21:33:13 by mchua             #+#    #+#             */
+/*   Updated: 2024/11/08 21:33:13 by mchua            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../core/minishell.h"
 
 // static bool	is_valid_var_name(char *arg)
@@ -19,8 +31,8 @@
 static bool	got_equal(char *arg)
 {
 	if (ft_strchr(arg, '=') != NULL)
-		return true;
-	return false;
+		return (true);
+	return (false);
 }
 
 static t_env	*get_target_loc(t_env *env_list, char *arg)
@@ -38,7 +50,7 @@ static t_env	*get_target_loc(t_env *env_list, char *arg)
 	while (env_list)
 	{
 		if (ft_strncmp(env_list->var, arg, count) == 0)
-				return (env_list);
+			return (env_list);
 		env_list = env_list->next;
 	}
 	return (NULL);
@@ -46,8 +58,8 @@ static t_env	*get_target_loc(t_env *env_list, char *arg)
 
 static bool	perform_unset(char *arg, t_shell *store)
 {
-	t_env	*previous_node;//node before target unset arg
-	t_env	*next_node;//node after target unset arg
+	t_env	*previous_node;
+	t_env	*next_node;
 	t_env	*target_env;
 	t_env	*head;
 
@@ -66,16 +78,16 @@ static bool	perform_unset(char *arg, t_shell *store)
 	free (target_env);
 	if (head == target_env)
 		store->env = next_node;
-	else	
+	else
 		previous_node->next = next_node;
 	return (true);
 }
 
-static	void	print_error_msg(char *arg)
+static	void	print_unset_error(char *arg)
 {
-		ft_putstr_fd("unset: ", 1);
-		ft_putstr_fd(arg, 1);
-		ft_putstr_fd(": invalid parameter name\n", 1);
+	ft_putstr_fd("unset: ", 1);
+	ft_putstr_fd(arg, 1);
+	ft_putstr_fd(": invalid parameter name\n", 1);
 }
 
 int	unset_handler(t_shell *store)
@@ -87,7 +99,7 @@ int	unset_handler(t_shell *store)
 	arg = store->cmd_head->command->next->data;
 	if (got_equal(arg))
 	{
-		print_error_msg(arg);
+		print_unset_error(arg);
 		return (BUILTIN_FAILURE);
 	}
 	if (!perform_unset(arg, store))
