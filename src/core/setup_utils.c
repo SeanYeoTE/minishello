@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 16:54:33 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 18:17:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,10 @@ char	*cgetenv(char *var, t_env *env)
 	while (current)
 	{
 		if (ft_strncmp(var, current->var, ft_strlen(var)) == 0)
-			return (current->var + ft_strlen(var) + 1);
+		{
+			if (current->var[ft_strlen(var)] == '=')
+				return (current->var + ft_strlen(var) + 1);
+		}
 		current = current->next;
 	}
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 22:23:12 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 17:57:58 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ void	check_open_fds(int max_fd)
 	fd = 3;
 	while (fd <= max_fd)
 	{
-		if (fcntl(fd, F_GETFD) != -1 || errno != EBADF)
-			close(fd);
+		close(fd);
 		fd++;
 	}
 }

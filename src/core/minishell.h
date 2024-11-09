@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 23:42:01 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/09 18:22:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@
 
 // global variable
 extern sig_atomic_t	g_exit_status;
+
+typedef struct s_quote_state
+{
+	bool	in_single_quotes;
+	bool	in_double_quotes;
+}	t_quote_state;
 
 typedef struct s_node
 {
@@ -120,7 +126,26 @@ int			check_quotes(char *line);
 int			check_error(char *input);
 
 // expansions.c
-char		*expansions(char *input);
+char		*expansions(t_shell *store, char *input);
+
+// expansions_utils.c
+char		*extract_var_name(const char *input, int start, int *end);
+void		update_quote_state(char c, bool *in_single_quotes,
+				bool *in_double_quotes);
+bool		should_expand(bool in_single_quotes);
+char		*remove_dollar_quotes(char *input, int start);
+
+// expansions_replace.c
+char		*replace_var(char *input, int start, int end, const char *value);
+char		*replace_exit_status(char *input, int start);
+
+// expansions_state.c
+void		handle_dollar_quotes(char **input, int *i,
+				t_quote_state *quote_state);
+void		handle_exit_status(char **input, int *i);
+void		handle_variable(char **input, int *i, t_shell *store);
+void		init_expansion_state(bool *in_single_quotes,
+				bool *in_double_quotes);
 
 // remove_quote.c
 void		remove_quote(t_node *token);

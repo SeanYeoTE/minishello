@@ -12,6 +12,25 @@
 
 #include "../core/minishell.h"
 
+static bool	flag_checker(char *src)
+{
+	int		i;
+	bool	n_flag;
+
+	i = 0;
+	n_flag = false;
+	if (src[i] != '-')
+		return (n_flag);
+	if (src[i] == '-' && src[i + 1] == '\0')
+		return (n_flag);
+	i++;
+	while (src[i] != '\0' && src[i] == 'n')
+		i++;
+	if (src[i] == '\0')
+		n_flag = true;
+	return (n_flag);
+}
+
 int	echo_handler(t_node *current)
 {
 	bool	n_flag;
@@ -19,13 +38,14 @@ int	echo_handler(t_node *current)
 
 	n_flag = false;
 	current = current->next;
-	if (current)
+	if (current && flag_checker(current->data))
 	{
-		if (ft_strncmp(current->data, "-n", 2) == 0)
-			n_flag = true;
+		if (current->next != NULL)
+			current = current->next;
+		n_flag = true;
+		while (current != NULL && flag_checker(current->data))
+			current = current->next;
 	}
-	if (n_flag)
-		current = current->next;
 	while (current != NULL)
 	{
 		ft_putstr_fd(current->data, 1);
