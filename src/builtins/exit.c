@@ -3,22 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/11/08 21:19:44 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/09 20:01:17 by melvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
-
-// static bool	one_cmd(t_node *args)
-// {
-// 	if (args->next == NULL)
-// 		return true;
-// 	else
-// 		return false;
-// }
 
 static bool	is_numeric(char *arg)
 {
@@ -69,7 +61,10 @@ int	exit_handler(t_shell *store)
 	else if (store->cmd_head->command->next->next != NULL)
 		print_exit_error(store, 1);
 	else
+	{
 		status = ft_atoi(arg);
+		ft_putstr_fd("exit\n", 0);
+	}
 	if (status < 0)
 		status = status % 256;
 	free_all(store);

@@ -53,9 +53,6 @@ static void	handle_no_arg(t_env *envp)
 	free(str_array);
 }
 
-	//check for alpha, '_', 2
-	//if -, invalid, 2
-	//if other things, invalid identifier, 1
 static int	check_arg(char *arg)
 {
 	int	i;
