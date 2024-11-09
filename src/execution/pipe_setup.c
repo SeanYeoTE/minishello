@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 20:15:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 21:19:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,6 @@ void	handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd)
 		if (pipe_fds[1] > 2)
 			close(pipe_fds[1]);
 		*in_fd = pipe_fds[0];
-	}
-	else
-	{
-		// if (pipe_fds[0] > 2)
-		// 	close(pipe_fds[0]);
-		// if (pipe_fds[1] > 2)
-		// 	close(pipe_fds[1]);
 	}
 }
 

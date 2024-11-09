@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   base.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 19:23:05 by melvin           ###   ########.fr       */
+/*   Updated: 2024/11/09 21:25:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,7 @@ static void	prompter_init(t_shell *store, t_env *env_head, t_var *var_head,
 
 static int	prompter_input(t_shell *store, char *prompt)
 {
-	if (isatty(fileno(stdin)))
-		store->input = readline(prompt);
-	else
-	{
-		char *line;
-		line = get_next_line(fileno(stdin));
-		store->input = ft_strtrim(line, "\n");
-		free(line);
-	}	
+	store->input = readline(prompt);
 	free(prompt);
 	if (store->input == NULL)
 	{
