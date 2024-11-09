@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 06:30:08 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/09 17:41:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,11 @@ static void	handle_expansion_char(char **input, int *i, t_shell *store,
 {
 	if ((*input)[*i] == '$' && (*input)[*i + 1] == '\"' &&
 		!quote_state->in_single_quotes)
-		handle_dollar_quotes(input, i);
+	{
+		handle_dollar_quotes(input, i, quote_state);
+		init_expansion_state(&quote_state->in_single_quotes,
+			&quote_state->in_double_quotes);
+	}
 	else if ((*input)[*i] == '$' && (*input)[*i + 1] == '?' &&
 		should_expand(quote_state->in_single_quotes))
 		handle_exit_status(input, i);

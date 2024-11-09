@@ -6,51 +6,62 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 05:15:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 18:22:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
-void	handle_dollar_quotes(char **input, int *i)
+void	handle_dollar_quotes(char **input, int *i, t_quote_state *quote_state)
 {
-	*input = remove_dollar_quotes(*input, *i);
-	*i = 0;
+	char	*new_input;
+
+	if (quote_state->in_double_quotes)
+	{
+		(*i) += 2;
+		return ;
+	}
+	else
+	{
+		new_input = remove_dollar_quotes(*input, *i);
+		*input = new_input;
+		*i = 0;
+	}
 }
 
 void	handle_exit_status(char **input, int *i)
 {
 	char	*new_input;
+	char	*exit_str;
 
+	exit_str = ft_itoa(g_exit_status);
 	new_input = replace_exit_status(*input, *i);
 	free(*input);
 	*input = new_input;
 	*i = 0;
+	free(exit_str);
 }
 
 void	handle_variable(char **input, int *i, t_shell *store)
 {
 	char	*var;
-	char	*temp;
+	char	*value;
 	char	*new_input;
 	int		end;
-	char	*value;
 
 	var = extract_var_name(*input, *i, &end);
-	if (var == NULL)
+	if (!var)
 	{
 		(*i)++;
 		return ;
 	}
-	temp = cgetenv(var, store->env);
-	if (temp)
-		value = temp;
-	else
+	value = cgetenv(var, store->env);
+	if (!value)
 		value = "";
 	new_input = replace_var(*input, *i, end, value);
 	free(*input);
-	*input = new_input;
 	free(var);
+	*input = new_input;
 	*i = 0;
 }
 
