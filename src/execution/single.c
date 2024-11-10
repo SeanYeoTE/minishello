@@ -37,32 +37,31 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 {
 	pid_t	pid;
 
+	pid = 0;
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), EXIT_FAILURE);
+	signal(SIGINT, SIG_IGN);
 	if (pid == 0)
 	{
-		
-		g_exit_status = redir_handler(cmd, cmd->redir, NULL);
-		if (g_exit_status != 0)
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		store->exit_status = redir_handler(cmd, cmd->redir, NULL);
+		if (store->exit_status != 0)
 		{
 			free_all(store);
-			exit(g_exit_status);
+			exit(store->exit_status);
 		}
 		heredoc_finisher(cmd);
 		if (cmd->command == NULL)
 		{
 			free_all(store);
-			exit(g_exit_status);
+			exit(store->exit_status);
 		}
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		g_exit_status = executor(store, cmd);
-		exit(g_exit_status);
+		store->exit_status = executor(store, cmd);
+		exit(store->exit_status);
 	}
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	return (wait_for_command(pid));
+	return (wait_for_command(store, pid));
 }
 
 static void	set_builtin_fd(t_cmd *cmd)
@@ -84,8 +83,8 @@ static void	set_builtin_fd(t_cmd *cmd)
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
 	pid_t	pid;
-	g_exit_status = redir_handler(cmd, cmd->redir, NULL);
-	if (g_exit_status == 0)
+	store->exit_status = redir_handler(cmd, cmd->redir, NULL);
+	if (store->exit_status == 0)
 	{
 		pid = fork();
 		if (pid == -1)
@@ -98,12 +97,12 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 		}
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
-		waitpid(pid, &g_exit_status, 0);
+		waitpid(pid, &store->exit_status, 0);
 		set_builtin_fd(cmd);
-		g_exit_status = builtin_main(store, cmd->command);
+		store->exit_status = builtin_main(store, cmd->command);
 		reset_fds(store);
 	}
-	return (g_exit_status);
+	return (store->exit_status);
 }
 
 int	single_function(t_shell *store, t_node *head, t_node *tail)

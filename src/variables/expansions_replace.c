@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 03:03:49 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:20:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ char	*replace_var(char *input, int start, int end, const char *value)
 	return (result);
 }
 
-char	*replace_exit_status(char *input, int start)
+char	*replace_exit_status(t_shell *store, char *input, int start)
 {
 	char	*front;
 	char	*back;
@@ -58,7 +58,7 @@ char	*replace_exit_status(char *input, int start)
 
 	front = ft_strndup(input, start);
 	back = ft_strdup(input + start + 2);
-	exit_str = ft_itoa(g_exit_status);
+	exit_str = ft_itoa(store->exit_status);
 	result_len = calculate_result_len(front, back, exit_str);
 	result = (char *)malloc(result_len);
 	result[0] = '\0';

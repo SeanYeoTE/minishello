@@ -6,13 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 14:24:39 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:25:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
-int	prompter(t_shell *store, t_env *env_head, t_var *var_head);
+int	prompter(t_shell *store, t_env *env_head, t_var *var_head, int exit_status);
 int	pre_execution(t_shell *store);
 int	parser(t_shell *store);
 
@@ -48,7 +48,7 @@ static int	prompter_input(t_shell *store, char *prompt)
 	return (1);
 }
 
-int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
+int	prompter(t_shell *store, t_env *env_head, t_var *var_head, int exit_status)
 {
 	char	*prompt;
 
@@ -56,7 +56,7 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head)
 	if (!prompter_input(store, prompt))
 	{
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head));
+		return (prompter(store, env_head, var_head, exit_status));
 	}
 	pre_execution(store);
 	free_all(store);
@@ -81,10 +81,11 @@ int	parser(t_shell *store)
 {
 	t_env	*env_head;
 	t_var	*var_head;
+	int 	exit_status;
 
 	env_head = store->env;
 	var_head = store->var;
-	g_exit_status = 0;
+	exit_status = store->exit_status;
 	if (store->head)
 	{
 		if (pipe_counter(store->head) == 0)
@@ -93,12 +94,13 @@ int	parser(t_shell *store)
 			multiple_function(store);
 		env_head = store->env;
 		var_head = store->var;
+		exit_status = store->exit_status;
 	}
 	else if (store->input[0] == '\0')
 	{
 		free_nonessential(store);
-		return (prompter(store, env_head, var_head));
+		return (prompter(store, env_head, var_head, exit_status));
 	}
 	free_nonessential(store);
-	return (prompter(store, env_head, var_head));
+	return (prompter(store, env_head, var_head, exit_status));
 }

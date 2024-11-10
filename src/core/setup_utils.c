@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 18:17:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:13:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 {
+	store->exit_status = 0;
 	store->input_reset = dup(STDIN_FILENO);
 	store->output_reset = dup(STDOUT_FILENO);
 	store->head = NULL;

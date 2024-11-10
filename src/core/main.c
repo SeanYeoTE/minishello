@@ -6,13 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 16:21:22 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:38:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_exit_status;
+// int	g_exit_status;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -25,6 +25,5 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	}
 	env_head = env_init(envp);
-	g_exit_status = 0;
-	return (prompter(&store, env_head, NULL));
+	return (prompter(&store, env_head, NULL, 0));
 }

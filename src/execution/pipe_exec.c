@@ -6,28 +6,28 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 13:52:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:16:03 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
-static void	update_exit_status(int res)
+static void	update_exit_status(t_shell *store, int res)
 {
 	if (WIFEXITED(res))
-		g_exit_status = WEXITSTATUS(res);
+		store->exit_status = WEXITSTATUS(res);
 	else if (WIFSIGNALED(res))
-		g_exit_status = WTERMSIG(res) + 128;
+		store->exit_status = WTERMSIG(res) + 128;
 }
 
-static int	wait_for_processes(t_cmd *cmd)
+static int	wait_for_processes(t_shell *store, t_cmd *cmd)
 {
 	int		res;
 
 	res = 0;
 	while ((waitpid(cmd->pid, &res, 0)) != -1)
 	{
-		update_exit_status(res);
+		update_exit_status(store, res);
 		if (cmd->next)
 			cmd = cmd->next;
 	}
@@ -52,7 +52,7 @@ int	multi_executor(t_shell *store)
 		}
 		cmd = cmd->next;
 	}
-	return (wait_for_processes(store->cmd_head));
+	return (wait_for_processes(store, store->cmd_head));
 }
 
 static void	process_pipe_token(t_shell *store, t_node **front,

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 10:33:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:17:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
 	{
-		g_exit_status = executor(store, cmd);
-		exit(g_exit_status);
+		store->exit_status = executor(store, cmd);
+		exit(store->exit_status);
 	}
 	else
 	{
-		g_exit_status = builtin_main(store, cmd->command);
+		store->exit_status = builtin_main(store, cmd->command);
 		free_all(store);
-		exit(g_exit_status);
+		exit(store->exit_status);
 	}
 }
 
@@ -49,14 +49,14 @@ static void	handle_child_process(t_shell *store, t_cmd *cmd,
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	g_exit_status = redir_handler(cmd, cmd->redir, NULL);
-	if (g_exit_status != 0)
-		exit(g_exit_status);
+	store->exit_status = redir_handler(cmd, cmd->redir, NULL);
+	if (store->exit_status != 0)
+		exit(store->exit_status);
 	if (cmd->prev == NULL)
 	{
-		g_exit_status = handle_all_heredocs(store);
-		if (g_exit_status != 0)
-			exit(g_exit_status);
+		store->exit_status = handle_all_heredocs(store);
+		if (store->exit_status != 0)
+			exit(store->exit_status);
 	}
 	setup_pipes(in_fd, out_fd, cmd);
 	run_cmd(cmd, store);
