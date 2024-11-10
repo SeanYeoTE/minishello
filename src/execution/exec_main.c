@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 22:32:56 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 09:27:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static int	run_execve(t_shell *store, char *exepath, char **argv)
 {
 	if (execve(exepath, argv, store->envp) == -1)
 	{
+		free_all(store);
 		print_erroronly(strerror(errno), argv[0]);
 		return (126);
 	}
