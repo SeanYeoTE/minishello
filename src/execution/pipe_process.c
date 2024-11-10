@@ -6,12 +6,19 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:17:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 20:18:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
+/**
+ * @brief Processes all heredoc inputs for commands in pipeline
+ *
+ * @param store Shell data structure containing command list
+ * @return int EXIT_SUCCESS if all heredocs processed, EXIT_FAILURE on error
+ * @note Must be called before executing pipeline to set up all heredoc inputs
+ */
 static int	handle_all_heredocs(t_shell *store)
 {
 	t_cmd	*cmd;
@@ -29,6 +36,13 @@ static int	handle_all_heredocs(t_shell *store)
 	return (EXIT_SUCCESS);
 }
 
+/**
+ * @brief Executes a command, either builtin or external
+ *
+ * @param cmd Command structure to execute
+ * @param store Shell data structure
+ * @note Exits process with appropriate status after execution
+ */
 void	run_cmd(t_cmd *cmd, t_shell *store)
 {
 	if (check_builtin(cmd->command) == 0)
@@ -44,6 +58,15 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 	}
 }
 
+/**
+ * @brief Handles child process setup and execution
+ *
+ * @param store Shell data structure
+ * @param cmd Command to execute
+ * @param in_fd Input file descriptor
+ * @param out_fd Output file descriptor
+ * @note Sets up signals, redirections, heredocs, and executes command
+ */
 static void	handle_child_process(t_shell *store, t_cmd *cmd,
 	int in_fd, int out_fd)
 {
@@ -62,6 +85,16 @@ static void	handle_child_process(t_shell *store, t_cmd *cmd,
 	run_cmd(cmd, store);
 }
 
+/**
+ * @brief Creates a new process for command execution
+ *
+ * @param store Shell data structure
+ * @param cmd Command to execute
+ * @param in_fd Input file descriptor
+ * @param out_fd Output file descriptor
+ * @return int Process ID on success, -1 on failure
+ * @note Parent process ignores signals while child executes
+ */
 int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 {
 	pid_t	pid;
@@ -80,6 +113,16 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	return (pid);
 }
 
+/**
+ * @brief Executes a command and handles process management
+ *
+ * @param store Shell data structure
+ * @param cmd Command to execute
+ * @param in_fd Input file descriptor
+ * @param out_fd Output file descriptor
+ * @return int EXIT_SUCCESS on success, EXIT_FAILURE on error
+ * @note Creates process and stores PID in command structure
+ */
 int	execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 {
 	pid_t	last_pid;
