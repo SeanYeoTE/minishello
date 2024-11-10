@@ -6,12 +6,18 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 17:57:58 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:49:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
+/**
+ * @brief Handles the heredoc file descriptor setup
+ *
+ * @param node Command node containing the heredoc file descriptor
+ * @note Duplicates heredoc fd to stdin if present, then closes the original fd
+ */
 static void	handle_heredoc_fd(t_cmd *node)
 {
 	if (node->heredoc_fd != -1)
@@ -23,6 +29,13 @@ static void	handle_heredoc_fd(t_cmd *node)
 	}
 }
 
+/**
+ * @brief Handles the input file descriptor setup
+ *
+ * @param node Command node containing the input file descriptor
+ * @param temp_filename Name of temporary file to use as input if needed
+ * @note Handles both regular input redirection and temporary file input
+ */
 static void	handle_input_fd(t_cmd *node, char *temp_filename)
 {
 	if (node->input_fd != STDIN_FILENO)
@@ -41,6 +54,12 @@ static void	handle_input_fd(t_cmd *node, char *temp_filename)
 	}
 }
 
+/**
+ * @brief Handles the output file descriptor setup
+ *
+ * @param node Command node containing the output file descriptor
+ * @note Duplicates output fd to stdout if different from default, then closes original
+ */
 static void	handle_output_fd(t_cmd *node)
 {
 	if (node->output_fd != STDOUT_FILENO)
@@ -51,6 +70,13 @@ static void	handle_output_fd(t_cmd *node)
 	}
 }
 
+/**
+ * @brief Sets up all file descriptors for a command
+ *
+ * @param node Command node containing all file descriptors
+ * @param temp_filename Name of temporary file to use as input if needed
+ * @note Handles heredoc, input, and output file descriptors in sequence
+ */
 void	set_fd(t_cmd *node, char *temp_filename)
 {
 	handle_heredoc_fd(node);
@@ -58,6 +84,12 @@ void	set_fd(t_cmd *node, char *temp_filename)
 	handle_output_fd(node);
 }
 
+/**
+ * @brief Closes all file descriptors above a certain number
+ *
+ * @param max_fd Maximum file descriptor number to check
+ * @note Used to clean up any leftover file descriptors
+ */
 void	check_open_fds(int max_fd)
 {
 	int	fd;

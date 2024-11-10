@@ -6,28 +6,43 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 13:52:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:52:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
-static void	update_exit_status(int res)
+/**
+ * @brief Updates the shell's exit status based on process termination
+ *
+ * @param store Shell data structure to update
+ * @param res Process status from waitpid
+ * @note Handles both normal exit and signal termination cases
+ */
+static void	update_exit_status(t_shell *store, int res)
 {
 	if (WIFEXITED(res))
-		g_exit_status = WEXITSTATUS(res);
+		store->exit_status = WEXITSTATUS(res);
 	else if (WIFSIGNALED(res))
-		g_exit_status = WTERMSIG(res) + 128;
+		store->exit_status = WTERMSIG(res) + 128;
 }
 
-static int	wait_for_processes(t_cmd *cmd)
+/**
+ * @brief Waits for all child processes to complete
+ *
+ * @param store Shell data structure
+ * @param cmd Command list to track processes
+ * @return int 0 on success
+ * @note Updates exit status for each process and restores SIGINT handler
+ */
+static int	wait_for_processes(t_shell *store, t_cmd *cmd)
 {
 	int		res;
 
 	res = 0;
 	while ((waitpid(cmd->pid, &res, 0)) != -1)
 	{
-		update_exit_status(res);
+		update_exit_status(store, res);
 		if (cmd->next)
 			cmd = cmd->next;
 	}
@@ -35,6 +50,13 @@ static int	wait_for_processes(t_cmd *cmd)
 	return (0);
 }
 
+/**
+ * @brief Executes multiple commands connected by pipes
+ *
+ * @param store Shell data structure containing commands
+ * @return int EXIT_SUCCESS on success, EXIT_FAILURE on error
+ * @note Handles input/output redirection between piped commands
+ */
 int	multi_executor(t_shell *store)
 {
 	int		in_fd;
@@ -52,9 +74,18 @@ int	multi_executor(t_shell *store)
 		}
 		cmd = cmd->next;
 	}
-	return (wait_for_processes(store->cmd_head));
+	return (wait_for_processes(store, store->cmd_head));
 }
 
+/**
+ * @brief Processes a pipe token in the command list
+ *
+ * @param store Shell data structure
+ * @param front Pointer to front of token list
+ * @param back Current pipe token
+ * @param create Flag indicating if new command should be created
+ * @note Creates command structure and updates token list pointers
+ */
 static void	process_pipe_token(t_shell *store, t_node **front,
 	t_node *back, bool *create)
 {
@@ -70,6 +101,13 @@ static void	process_pipe_token(t_shell *store, t_node **front,
 	*front = temp;
 }
 
+/**
+ * @brief Handles execution of multiple commands with pipes
+ *
+ * @param store Shell data structure
+ * @return int Result of multi_executor
+ * @note Parses pipe tokens and creates command structures
+ */
 int	multiple_function(t_shell *store)
 {
 	t_node	*front;

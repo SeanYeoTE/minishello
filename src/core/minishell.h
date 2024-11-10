@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 13:43:39 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/10 19:31:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # define NO_PERMISSION_FAILURE 127
 
 // global variable
-extern sig_atomic_t	g_exit_status;
+// extern sig_atomic_t	g_exit_status;
 
 typedef struct s_quote_state
 {
@@ -84,6 +84,7 @@ typedef struct s_var
 typedef struct s_shell
 {
 	char	**envp;
+	int		exit_status;
 	int		input_reset;
 	int		output_reset;
 	int		fd_in;
@@ -113,7 +114,8 @@ char		**ccreatearray(t_env *env);
 char		*form_prompt(char *cwd);
 
 // base.c
-int			prompter(t_shell *store, t_env *env_head, t_var *var_head);
+int			prompter(t_shell *store, t_env *env_head, t_var *var_head,
+				int exit_status);
 
 // checks.c
 int			redir_checker(t_node *cmd);
@@ -138,12 +140,12 @@ int			handle_export(t_shell *store, char *current_arg);
 
 // expansions_replace.c
 char		*replace_var(char *input, int start, int end, const char *value);
-char		*replace_exit_status(char *input, int start);
+char		*replace_exit_status(t_shell *store, char *input, int start);
 
 // expansions_state.c
 void		handle_dollar_quotes(char **input, int *i,
 				t_quote_state *quote_state);
-void		handle_exit_status(char **input, int *i);
+void		handle_exit_status(t_shell *store, char **input, int *i);
 void		handle_variable(char **input, int *i, t_shell *store);
 void		init_expansion_state(bool *in_single_quotes,
 				bool *in_double_quotes);
@@ -180,7 +182,7 @@ void		handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd);
 int			handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd);
 
 // pipe_fd.c
-int			wait_for_command(pid_t pid);
+int			wait_for_command(t_shell *store, pid_t pid);
 void		setup_pipes(int in_fd, int out_fd, t_cmd *cmd);
 
 // pipe_process.c

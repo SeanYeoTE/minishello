@@ -6,12 +6,21 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 21:58:12 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 20:36:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
+/**
+ * @brief Checks if two file descriptors point to the same resource
+ *
+ * @param fd1 First file descriptor to compare
+ * @param fd2 Second file descriptor to compare
+ * @return bool true if both fds point to same resource, false otherwise
+ * @note Compares device ID and inode number to determine if same resource
+ *       Returns false if either fstat call fails
+ */
 bool	are_same_resource(int fd1, int fd2)
 {
 	struct stat	stat1;
@@ -30,6 +39,13 @@ bool	are_same_resource(int fd1, int fd2)
 	return ((stat1.st_dev == stat2.st_dev) && (stat1.st_ino == stat2.st_ino));
 }
 
+/**
+ * @brief Resets standard input and output to their original file descriptors
+ *
+ * @param store Shell data structure containing reset file descriptors
+ * @note Only resets if current stdin/stdout differ from original
+ *       Prints error message if dup2 fails during reset
+ */
 void	reset_fds(t_shell *store)
 {
 	if (!are_same_resource(store->input_reset, STDIN_FILENO))
