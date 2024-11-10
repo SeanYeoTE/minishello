@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 10:33:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 14:29:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,16 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		signal(SIGQUIT, SIG_DFL);
 		g_exit_status = redir_handler(cmd, cmd->redir, NULL);
 		if (g_exit_status != 0)
+		{
+			free_all(store);
 			exit(g_exit_status);
+		}
 		heredoc_finisher(cmd);
+		if (cmd->command == NULL)
+		{
+			free_all(store);
+			exit(g_exit_status);
+		}
 		g_exit_status = executor(store, cmd);
 		exit(g_exit_status);
 	}
@@ -88,18 +96,16 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
-	if (store->cmd_head->command == NULL)
+	if (store->cmd_head->command == NULL && store->cmd_head->redir == NULL)
 	{
 		print_erroronly("syntax error", "newline");
 		return (2);
 	}
-	else if (check_builtin(store->cmd_head->command) == 0)
-	{
+	else if (store->cmd_head->command == NULL && store->cmd_head->redir)
 		return (execute_external_command(store, store->cmd_head));
-	}
+	else if (check_builtin(store->cmd_head->command) == 0)
+		return (execute_external_command(store, store->cmd_head));
 	else
-	{
 		return (execute_builtin_command(store, store->cmd_head));
-	}
 	return (0);
 }
