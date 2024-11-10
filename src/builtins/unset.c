@@ -67,27 +67,31 @@ static bool	perform_unset(char *arg, t_shell *store)
 	return (true);
 }
 
-static	void	print_unset_error(void)
+static int	unset(t_shell *store, t_node *arg)
 {
-	// ft_putstr_fd("unset: ", 1);
-	ft_putstr_fd("", 1);
-	// ft_putstr_fd(arg, 1);
-	// ft_putstr_fd(": invalid parameter name\n", 1);
-}
+	char	*current_arg;
 
-int	unset_handler(t_shell *store)
-{
-	char	*arg;
-
-	if (!(store->cmd_head->command->next))
+	if (!arg->next)
 		return (EXIT_SUCCESS);
-	arg = store->cmd_head->command->next->data;
-	if (got_equal(arg))
-	{
-		print_unset_error();
+	current_arg = arg->next->data;
+	if (got_equal(current_arg))
 		return (EXIT_SUCCESS);
-	}
-	if (!perform_unset(arg, store))
+	if (!perform_unset(current_arg, store))
 		return (EXIT_SUCCESS);
 	return (EXIT_SUCCESS);
+}
+
+int	unset_handler(t_shell *store, t_node *args)
+{
+	t_node	*current_arg;
+	int		ret_value;
+
+	ret_value = 0;
+	current_arg = args;
+	while (current_arg)
+	{
+		ret_value = unset(store, current_arg);
+		current_arg = current_arg->next;
+	}
+	return (ret_value);
 }

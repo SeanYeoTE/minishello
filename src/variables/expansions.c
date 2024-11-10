@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 17:41:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:30:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	handle_expansion_char(char **input, int *i, t_shell *store,
 	}
 	else if ((*input)[*i] == '$' && (*input)[*i + 1] == '?' &&
 		should_expand(quote_state->in_single_quotes))
-		handle_exit_status(input, i);
+		handle_exit_status(store, input, i);
 	else if ((*input)[*i] == '$' &&
 		should_expand(quote_state->in_single_quotes))
 	{

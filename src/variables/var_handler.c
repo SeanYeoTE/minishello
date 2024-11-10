@@ -93,30 +93,26 @@ t_var	*split_var(char *src)
 	return (new_var);
 }
 
-int	var_handler(char *src, t_shell *store)
+int	var_handler(t_node *args, t_shell *store)
 {
-	t_var	*new_var;
-	t_var	*current;
+	int		count;
+	int		ret_value;
+	t_node	*current_arg;
 
-	new_var = NULL;
-	if (!same_env(src, store) || !same_var(src, store))
-		new_var = split_var(src);
-	if (!new_var)
-		return (EXIT_FAILURE);
-	if (store->var == NULL)
-		store->var = new_var;
-	else
+	count = 0;
+	ret_value = 0;
+	current_arg = args;
+	while (current_arg)
 	{
-		current = store->var;
-		while (current)
-		{
-			if (current->next == NULL && new_var != NULL)
-			{
-				current->next = new_var;
-				break ;
-			}
-			current = current->next;
-		}
+		count++;
+		current_arg = current_arg->next;
 	}
-	return (EXIT_SUCCESS);
+	if (count > 1)
+	{
+		ft_putstr_fd("This will not be handled in Minishell\n", 2);
+		ret_value = 1;
+	}
+	else
+		ret_value = set_var(args->data, store);
+	return (ret_value);
 }

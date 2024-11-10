@@ -6,14 +6,26 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 18:17:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:46:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/**
+ * @brief Initializes the shell's variables and state
+ * @param store Main shell data structure
+ * @param env_head Environment variables list
+ * @param var_head Shell variables list
+ * @details Sets up initial shell state including:
+ *          - File descriptors for I/O
+ *          - Command and token linked lists
+ *          - Environment variables
+ *          - PATH variable and its components
+ */
 void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 {
+	store->exit_status = 0;
 	store->input_reset = dup(STDIN_FILENO);
 	store->output_reset = dup(STDOUT_FILENO);
 	store->head = NULL;
@@ -30,6 +42,14 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
 	store->envp = ccreatearray(env_head);
 }
 
+/**
+ * @brief Custom getenv implementation for the shell
+ * @param var Environment variable name to look up
+ * @param env Environment variables list
+ * @return Value of the environment variable or NULL if not found
+ * @details Searches through the environment list for a variable
+ *          matching the provided name and returns its value
+ */
 char	*cgetenv(char *var, t_env *env)
 {
 	t_env	*current;
@@ -47,6 +67,11 @@ char	*cgetenv(char *var, t_env *env)
 	return (NULL);
 }
 
+/**
+ * @brief Counts the number of environment variables
+ * @param env Environment variables list
+ * @return Number of environment variables in the list
+ */
 static int	count_env_entries(t_env *env)
 {
 	t_env	*current;
@@ -62,6 +87,13 @@ static int	count_env_entries(t_env *env)
 	return (count);
 }
 
+/**
+ * @brief Creates an array of environment variables
+ * @param env Environment variables list
+ * @return NULL-terminated array of environment variable strings
+ * @details Converts the linked list of environment variables into
+ *          an array format suitable for execve and other functions
+ */
 char	**ccreatearray(t_env *env)
 {
 	t_env	*current;
@@ -87,6 +119,13 @@ char	**ccreatearray(t_env *env)
 	return (new_env);
 }
 
+/**
+ * @brief Forms the shell prompt string
+ * @param cwd Current working directory
+ * @return Formatted prompt string
+ * @details Creates a prompt string in the format "username:cwd$ "
+ *          The returned string must be freed by the caller
+ */
 char	*form_prompt(char *cwd)
 {
 	char	*username;

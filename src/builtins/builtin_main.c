@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 21:07:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 13:25:42 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,12 @@ int	builtin_main(t_shell *store, t_node *current)
 	else if (!ft_strcmp(current->data, "env"))
 		exit_status = env_handler(store);
 	else if (!ft_strcmp(current->data, "export"))
-		exit_status = export_handler(store);
+		exit_status = export_handler(store, current);
 	else if (!ft_strcmp(current->data, "unset"))
-		exit_status = unset_handler(store);
+		exit_status = unset_handler(store, current);
 	else if (!ft_strcmp(current->data, "exit"))
 		exit_status = exit_handler(store);
 	else
-		exit_status = var_handler(current->data, store);
+		exit_status = var_handler(current, store);
 	return (exit_status);
 }

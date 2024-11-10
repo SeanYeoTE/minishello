@@ -32,5 +32,6 @@ int	pwd_handler(void)
 		free(cwd);
 		return (BUILTIN_FAILURE);
 	}
+	free(cwd);
 	return (EXIT_SUCCESS);
 }

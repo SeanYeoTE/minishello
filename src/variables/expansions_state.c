@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 18:22:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:30:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,14 @@ void	handle_dollar_quotes(char **input, int *i, t_quote_state *quote_state)
 	}
 }
 
-void	handle_exit_status(char **input, int *i)
+void	handle_exit_status(t_shell *store, char **input, int *i)
 {
 	char	*new_input;
-	char	*exit_str;
 
-	exit_str = ft_itoa(g_exit_status);
-	new_input = replace_exit_status(*input, *i);
+	new_input = replace_exit_status(store, *input, *i);
 	free(*input);
 	*input = new_input;
 	*i = 0;
-	free(exit_str);
 }
 
 void	handle_variable(char **input, int *i, t_shell *store)

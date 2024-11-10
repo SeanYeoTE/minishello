@@ -53,7 +53,7 @@ static void	handle_no_arg(t_env *envp)
 	free(str_array);
 }
 
-static int	check_arg(char *arg)
+int	check_arg(char *arg)
 {
 	int	i;
 
@@ -75,7 +75,7 @@ static int	check_arg(char *arg)
 	return (0);
 }
 
-static void	set_export(t_shell *store, char *arg)
+void	set_export(t_shell *store, char *arg)
 {
 	t_env	*current_env;
 	t_var	*current_var;
@@ -103,29 +103,22 @@ static void	set_export(t_shell *store, char *arg)
 	}
 }
 
-int	export_handler(t_shell *store)
+int	export_handler(t_shell *store, t_node *args)
 {
-	char	*arg;
-	t_node	*array;
 	int		ret_value;
+	t_node	*current_arg;
 
 	ret_value = 0;
-	if (store->cmd_head->command->next == NULL)
+	if (args->next == NULL)
 	{
 		handle_no_arg(store->env);
 		return (0);
 	}
-	arg = store->cmd_head->command->next->data;
-	array = store->cmd_head->command->next;
-	ret_value = check_arg(arg);
-	print_error_msg(arg, ret_value);
-	while (array)
+	current_arg = args->next;
+	while (current_arg)
 	{
-		if (ret_value == 0)
-			set_export(store, arg);
-		array = array->next;
-		if (array)
-			arg = array->data;
+		ret_value = handle_export (store, current_arg->data);
+		current_arg = current_arg->next;
 	}
 	return (ret_value);
 }

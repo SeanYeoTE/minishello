@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mem_utils_extra.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 14:58:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 15:00:16 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 10:10:12 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,12 @@ void	free_var(t_var **var)
 	while (current)
 	{
 		tmp = current->next;
-		free(current->data);
-		free(current->name);
-		free(current->hidden);
+		if (current->data != NULL)
+			free(current->data);
+		if (current->name != NULL)
+			free(current->name);
+		if (current->data != NULL)
+			free(current->hidden);
 		free(current);
 		current = tmp;
 	}

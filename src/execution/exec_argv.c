@@ -6,12 +6,19 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/07 22:26:40 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 19:49:08 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
+/**
+ * @brief Counts the number of nodes between start and end nodes
+ *
+ * @param start Pointer to the starting node
+ * @param end Pointer to the ending node (exclusive)
+ * @return int Number of nodes between start and end
+ */
 static int	count_args(t_node *start, t_node *end)
 {
 	int		count;
@@ -27,6 +34,13 @@ static int	count_args(t_node *start, t_node *end)
 	return (count);
 }
 
+/**
+ * @brief Initializes an array of strings with given size
+ *
+ * @param size Number of arguments to allocate space for
+ * @return char** Newly allocated array of strings, NULL if allocation fails
+ * @note Allocates size + 2 to account for program name and NULL terminator
+ */
 static char	**init_argv(int size)
 {
 	char	**ret;
@@ -37,6 +51,14 @@ static char	**init_argv(int size)
 	return (ret);
 }
 
+/**
+ * @brief Fills the argv array with strings from linked list nodes
+ *
+ * @param ret Array to fill with strings
+ * @param start Starting node of the linked list
+ * @param end Ending node of the linked list (exclusive)
+ * @return int 0 on success, -1 on failure
+ */
 static int	fill_argv(char **ret, t_node *start, t_node *end)
 {
 	int	i;
@@ -54,6 +76,14 @@ static int	fill_argv(char **ret, t_node *start, t_node *end)
 	return (0);
 }
 
+/**
+ * @brief Creates an array of strings from linked list nodes
+ *
+ * @param start Starting node of the linked list
+ * @param end Ending node of the linked list (exclusive)
+ * @return char** Array of strings containing node data, NULL if allocation fails
+ * @note Caller is responsible for freeing the returned array
+ */
 char	**argv_creator(t_node *start, t_node *end)
 {
 	char	**ret;
@@ -75,6 +105,13 @@ char	**argv_creator(t_node *start, t_node *end)
 	return (ret);
 }
 
+/**
+ * @brief Cleans up allocated memory for execution
+ *
+ * @param exepath Path to executable to be freed
+ * @param argv Array of argument strings to be freed
+ * @param temp_filename Temporary filename (currently unused)
+ */
 void	cleanup(char *exepath, char **argv, char *temp_filename)
 {
 	int	i;
