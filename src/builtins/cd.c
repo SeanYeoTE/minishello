@@ -16,7 +16,7 @@ int	cd_handler(t_node *current)
 {
 	char	*home;
 
-	if (current->next->next != NULL)
+	if (current->next && current->next->next != NULL)
 	{
 		ft_putstr_fd("cd: too many arguments", 2);
 		return (EXIT_FAILURE);

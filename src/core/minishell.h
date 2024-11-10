@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 05:17:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/09 18:22:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,8 @@ char		*replace_var(char *input, int start, int end, const char *value);
 char		*replace_exit_status(char *input, int start);
 
 // expansions_state.c
-void		handle_dollar_quotes(char **input, int *i);
+void		handle_dollar_quotes(char **input, int *i,
+				t_quote_state *quote_state);
 void		handle_exit_status(char **input, int *i);
 void		handle_variable(char **input, int *i, t_shell *store);
 void		init_expansion_state(bool *in_single_quotes,
