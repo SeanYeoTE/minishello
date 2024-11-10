@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/09 18:22:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 13:43:39 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,7 @@ void		update_quote_state(char c, bool *in_single_quotes,
 				bool *in_double_quotes);
 bool		should_expand(bool in_single_quotes);
 char		*remove_dollar_quotes(char *input, int start);
+int			handle_export(t_shell *store, char *current_arg);
 
 // expansions_replace.c
 char		*replace_var(char *input, int start, int end, const char *value);
@@ -270,7 +271,9 @@ t_env		*env_init(char **envp);
 int			env_handler(t_shell *store);
 
 // export.c
-int			export_handler(t_shell *store);
+int			check_arg(char *arg);
+void		set_export(t_shell *store, char *arg);
+int			export_handler(t_shell *store, t_node *args);
 
 // export_utils.c
 void		print_error_msg(char *arg, int ret_value);
@@ -284,14 +287,15 @@ t_var		*create_var_node(char *var, char *data);
 bool		same_env(char *src, t_shell *store);
 bool		same_var(char *src, t_shell *store);
 t_var		*split_var(char *src);
-int			var_handler(char *src, t_shell *store);
+int			var_handler(t_node *args, t_shell *store);
 
 // var_utils.c
 int			name_counter(char *src);
 char		**ft_split_var(char const *str, char c);
+int			set_var(char *src, t_shell *store);
 
 // unset.c
-int			unset_handler(t_shell *store);
+int			unset_handler(t_shell *store, t_node *current);
 
 // exit.c
 int			exit_handler(t_shell *store);

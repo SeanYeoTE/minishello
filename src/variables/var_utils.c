@@ -101,3 +101,31 @@ char	**ft_split_var(char const *str, char c)
 	strings[i] = '\0';
 	return (strings);
 }
+
+int	set_var(char *src, t_shell *store)
+{
+	t_var	*new_var;
+	t_var	*current;
+
+	new_var = NULL;
+	if (!same_env(src, store) || !same_var(src, store))
+		new_var = split_var(src);
+	if (!new_var)
+		return (EXIT_FAILURE);
+	if (store->var == NULL)
+		store->var = new_var;
+	else
+	{
+		current = store->var;
+		while (current)
+		{
+			if (current->next == NULL && new_var != NULL)
+			{
+				current->next = new_var;
+				break ;
+			}
+			current = current->next;
+		}
+	}
+	return (EXIT_SUCCESS);
+}
