@@ -6,13 +6,12 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 06:54:32 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 13:56:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 10:21:38 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
-// help to check for trailing pipe operator
 // also for starting with pipe operator
 int	check_invalid_pipe(char *input)
 {
@@ -21,11 +20,6 @@ int	check_invalid_pipe(char *input)
 	i = 0;
 	while (input[i] == ' ')
 		i++;
-	if (input[i] == '|')
-		return (1);
-	i = ft_strlen(input) - 1;
-	while (input[i] == ' ')
-		i--;
 	if (input[i] == '|')
 		return (1);
 	return (0);
