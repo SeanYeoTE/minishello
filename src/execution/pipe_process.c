@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 13:50:22 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/10 10:33:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ static void	handle_child_process(t_shell *store, t_cmd *cmd,
 	int in_fd, int out_fd)
 {
 	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	g_exit_status = redir_handler(cmd, cmd->redir, NULL);
 	if (g_exit_status != 0)
 		exit(g_exit_status);
@@ -74,6 +75,7 @@ int	execute_command(t_shell *store, t_cmd *cmd, int in_fd, int out_fd)
 	if (pid == 0)
 		handle_child_process(store, cmd, in_fd, out_fd);
 	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	cmd->pid = pid;
 	return (pid);
 }
