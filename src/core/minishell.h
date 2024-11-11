@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:31:09 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 12:10:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,8 @@ typedef struct s_shell
 int			main(int argc, char **argv, char **envp);
 
 // setup_utils.c
-void		init_var(t_shell *store, t_env *env_head, t_var *var_head);
+void		init_var(t_shell *store, t_env *env_head, t_var *var_head,
+				int exit_status);
 char		*cgetenv(char *var, t_env *env);
 char		**ccreatearray(t_env *env);
 char		*form_prompt(char *cwd);

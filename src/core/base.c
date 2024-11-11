@@ -6,52 +6,23 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:44:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 12:09:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../core/minishell.h"
 
-/**
- * @brief Main shell prompt function that handles user input and command execution
- * @param store Main shell data structure containing all shell state
- * @param env_head Pointer to the environment variables list
- * @param var_head Pointer to the shell variables list
- * @param exit_status Last command's exit status
- * @return EXIT_SUCCESS on successful execution
- */
 int	prompter(t_shell *store, t_env *env_head, t_var *var_head, int exit_status);
-
-/**
- * @brief Prepares user input for execution by handling spaces, expansions and lexing
- * @param store Main shell data structure
- * @return EXIT_SUCCESS on successful preparation
- */
 int	pre_execution(t_shell *store);
-
-/**
- * @brief Parses the tokenized input and executes appropriate command handlers
- * @param store Main shell data structure
- * @return Returns to prompter with updated shell state
- */
 int	parser(t_shell *store);
 
-/**
- * @brief Initializes the shell prompt with necessary setup
- * @param store Main shell data structure
- * @param env_head Environment variables list
- * @param var_head Shell variables list
- * @param prompt Pointer to the prompt string to be initialized
- * @details Sets up signal handlers, initializes variables, and creates the prompt
- */
-static void	prompter_init(t_shell *store, t_env *env_head, t_var *var_head,
-		char **prompt)
+
+static void	prompter_init(char **prompt)
 {
 	char	cwd[1024];
 
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, SIG_IGN);
-	init_var(store, env_head, var_head);
 	getcwd(cwd, sizeof(cwd));
 	*prompt = form_prompt(cwd);
 }
@@ -96,7 +67,8 @@ int	prompter(t_shell *store, t_env *env_head, t_var *var_head, int exit_status)
 {
 	char	*prompt;
 
-	prompter_init(store, env_head, var_head, &prompt);
+	prompter_init(&prompt);
+	init_var(store, env_head, var_head, exit_status);
 	if (!prompter_input(store, prompt))
 	{
 		free_nonessential(store);

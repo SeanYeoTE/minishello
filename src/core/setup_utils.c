@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:46:54 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 12:05:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
  *          - Environment variables
  *          - PATH variable and its components
  */
-void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
+void	init_var(t_shell *store, t_env *env_head, t_var *var_head, int exit_status)
 {
-	store->exit_status = 0;
+	store->exit_status = exit_status;
 	store->input_reset = dup(STDIN_FILENO);
 	store->output_reset = dup(STDOUT_FILENO);
 	store->head = NULL;
