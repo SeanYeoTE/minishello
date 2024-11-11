@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 12:53:02 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 12:55:33 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:13:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*ft_getenv(char *var, t_env *env)
 		}
 		current = current->next;
 	}
-    return (NULL);
+	return (NULL);
 }
 
 /**

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:15:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
  * @param store Main shell data structure
  * @param state Shell state structure
  * @return EXIT_SUCCESS after successful command execution
- * @details Coordinates the shell's main operation cycle including input, processing, and execution
+ * @details Coordinates the shell's main operation cycle including input,
+ * processing, and execution
  */
 int	minishell_loop(t_shell *store, t_shell_state *state)
 {
@@ -32,7 +33,7 @@ int	minishell_loop(t_shell *store, t_shell_state *state)
 		if (!prompter_input(store, prompt))
 		{
 			free_nonessential(store);
-			continue;
+			continue ;
 		}
 		pre_execution(store);
 		parser(store, &should_continue);
@@ -47,10 +48,12 @@ int	minishell_loop(t_shell *store, t_shell_state *state)
 }
 
 /**
- * @brief Prepares the input string for execution by handling various preprocessing steps
+ * @brief Prepares the input string for execution by handling various 
+ * preprocessing steps
  * @param store Main shell data structure
  * @return EXIT_SUCCESS after successful preprocessing
- * @details Handles input spacing, variable expansions, lexical analysis, and quote removal
+ * @details Handles input spacing, variable expansions, lexical analysis,
+ * and quote removal
  */
 int	pre_execution(t_shell *store)
 {
@@ -66,11 +69,14 @@ int	pre_execution(t_shell *store)
 }
 
 /**
- * @brief Parses the preprocessed input and routes to appropriate execution handlers
+ * @brief Parses the preprocessed input and routes to appropriate execution 
+ * handlers
  * @param store Main shell data structure
- * @param should_continue Pointer to boolean indicating if the loop should continue
+ * @param should_continue Pointer to boolean indicating if the loop should 
+ * continue
  * @return EXIT_SUCCESS after successful parsing and execution
- * @details Determines if command requires pipe handling and routes to appropriate handler
+ * @details Determines if command requires pipe handling and routes to 
+ * appropriate handler
  */
 int	parser(t_shell *store, bool *should_continue)
 {

@@ -11,8 +11,8 @@ LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 
 # Source directories
 SRC_PATH = src/
-CORE_DIR = core/
-PARSER_DIR = parser/
+CORE_DIR = 1.Core/
+LEXER_DIR = 2.Lexer/
 EXEC_DIR = execution/
 BUILTIN_DIR = builtins/
 UTILS_DIR = utils/
@@ -21,7 +21,7 @@ REDIR_DIR = redirections/
 
 # Source files by directory
 CORE_SRC =		main.c sig_handler.c base.c setup_utils.c setup_getters.c
-PARSER_SRC =	scanner.c scanner_quote.c parse_detection.c checks.c checks2.c \
+LEXER_SRC =	scanner.c scanner_quote.c parse_detection.c checks.c checks2.c \
 				input_quote.c input_space.c
 EXEC_SRC =		pipe_exec.c pipe_fd.c pipe_process.c pipe_setup.c \
 				single.c exec_argv.c exec_fd.c exec_main.c exec_path.c \
@@ -35,7 +35,7 @@ VAR_SRC =		var_handler.c var_utils.c expansions.c expansions_utils.c expansions_
 
 # Combine all sources with their directories
 SRCS =	$(addprefix $(SRC_PATH)$(CORE_DIR), $(CORE_SRC)) \
-		$(addprefix $(SRC_PATH)$(PARSER_DIR), $(PARSER_SRC)) \
+		$(addprefix $(SRC_PATH)$(LEXER_DIR), $(LEXER_SRC)) \
 		$(addprefix $(SRC_PATH)$(EXEC_DIR), $(EXEC_SRC)) \
 		$(addprefix $(SRC_PATH)$(REDIR_DIR), $(REDIR_SRC)) \
 		$(addprefix $(SRC_PATH)$(BUILTIN_DIR), $(BUILTIN_SRC)) \
@@ -44,12 +44,12 @@ SRCS =	$(addprefix $(SRC_PATH)$(CORE_DIR), $(CORE_SRC)) \
 
 # Object files
 OBJ_PATH = obj/
-OBJ_DIRS = $(CORE_DIR) $(PARSER_DIR) $(EXEC_DIR) $(BUILTIN_DIR) $(UTILS_DIR) $(VAR_DIR) $(REDIR_DIR)
+OBJ_DIRS = $(CORE_DIR) $(LEXER_DIR) $(EXEC_DIR) $(BUILTIN_DIR) $(UTILS_DIR) $(VAR_DIR) $(REDIR_DIR)
 OBJS = $(SRCS:$(SRC_PATH)%.c=$(OBJ_PATH)%.o)
 
 # Header files
 HEADERS = includes/minishell.h includes/core.h includes/builtins.h includes/execution.h \
-          includes/parser.h includes/redirections.h includes/utils.h includes/variables.h
+          includes/lexer.h includes/redirections.h includes/utils.h includes/variables.h
 
 # Target executable
 NAME = minishell

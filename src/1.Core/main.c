@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 12:59:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:13:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
  */
 int	main(int argc, char **argv, char **envp)
 {
-	t_shell	store;
-	t_env	*env_head;
+	t_shell			store;
+	t_env			*env_head;
 	t_shell_state	state;
 
 	if (argc != 1 || argv[1])

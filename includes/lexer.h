@@ -6,12 +6,12 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:15:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:12:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:05:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_H
-# define PARSER_H
+#ifndef LEXER_H
+# define LEXER_H
 
 # include "minishell.h"
 

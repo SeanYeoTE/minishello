@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 12:58:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:14:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ void	prompter_init(char **prompt)
  * @brief Handles reading and initial processing of user input
  * @param store Main shell data structure
  * @param prompt The prompt string to display
- * @return 1 if input is valid and ready for processing, 0 if input should be skipped
+ * @return 1 if input is valid and ready for processing, 
+ * 0 if input should be skipped
  * @details Reads user input, handles EOF, empty input, and basic syntax checking
  */
 int	prompter_input(t_shell *store, char *prompt)
