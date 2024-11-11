@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 void	set_parent(t_node *node, t_cmd *cmd)
 {
 	t_node	*current;

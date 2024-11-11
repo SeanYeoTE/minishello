@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 int	cd_handler(t_node *current)
 {
 	char	*home;

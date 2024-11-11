@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expansions_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 13:42:08 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 char	*extract_var_name(const char *input, int start, int *end)
 {
 	int		j;

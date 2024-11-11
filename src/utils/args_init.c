@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:58 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 15:02:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 static void	setup_new_node(t_node *new_node, char *value)
 {
 	new_node->next = NULL;

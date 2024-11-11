@@ -6,35 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 20:18:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
-/**
- * @brief Processes all heredoc inputs for commands in pipeline
- *
- * @param store Shell data structure containing command list
- * @return int EXIT_SUCCESS if all heredocs processed, EXIT_FAILURE on error
- * @note Must be called before executing pipeline to set up all heredoc inputs
- */
-static int	handle_all_heredocs(t_shell *store)
-{
-	t_cmd	*cmd;
-	int		result;
-
-	result = 0;
-	cmd = store->cmd_head;
-	while (cmd)
-	{
-		result = heredoc_finisher(cmd);
-		if (result != 0)
-			return (EXIT_FAILURE);
-		cmd = cmd->next;
-	}
-	return (EXIT_SUCCESS);
-}
+#include "../../includes/minishell.h" 
 
 /**
  * @brief Executes a command, either builtin or external
@@ -72,7 +48,7 @@ static void	handle_child_process(t_shell *store, t_cmd *cmd,
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	store->exit_status = redir_handler(cmd, cmd->redir, NULL);
+	store->exit_status = redir_handler(store, cmd, cmd->redir, NULL);
 	if (store->exit_status != 0)
 		exit(store->exit_status);
 	if (cmd->prev == NULL)

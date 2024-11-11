@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:52:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 /**
  * @brief Updates the shell's exit status based on process termination
  *

@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/09 12:54:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 13:55:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 int	redir_checker(t_node *cmd)
 {
 	if (ft_strcmp(cmd->data, ">") == 0)

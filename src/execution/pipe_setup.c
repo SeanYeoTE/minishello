@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 20:23:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 /**
  * @brief Counts the number of pipe tokens in a command list
  *

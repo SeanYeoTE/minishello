@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h" //to add into header file
+#include "../../includes/minishell.h"
 
 int	name_counter(char *src)
 {

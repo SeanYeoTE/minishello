@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 t_var	*create_var_node(char *var, char *data)
 {
 	t_var	*new_var;

@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mem_utils_extra.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 14:58:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 10:10:12 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 void	free_env(t_env **env)
 {
 	t_env	*tmp;

@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/11/09 20:01:17 by melvin           ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 static bool	is_numeric(char *arg)
 {
 	if (*arg == '-' || *arg == '+')

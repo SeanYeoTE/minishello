@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 t_env	*get_env_loc(t_env *env_list, char *arg)
 {
 	int	count;

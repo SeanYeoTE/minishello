@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 20:26:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 /**
  * @brief Handles all types of I/O redirection for a command
  *
@@ -22,7 +21,7 @@
  * @note Processes input (<), output (>), and append (>>) redirections
  *       For each redirection token, processes the following token as the filename
  */
-int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
+int	redir_handler(t_shell *store, t_cmd *cmd, t_node *loop, t_node *end)
 {
 	int	result;
 
@@ -37,5 +36,6 @@ int	redir_handler(t_cmd *cmd, t_node *loop, t_node *end)
 			result = handle_append_redirection(cmd, loop->next->data);
 		loop = loop->next;
 	}
+	store->exit_status = result;
 	return (result);
 }

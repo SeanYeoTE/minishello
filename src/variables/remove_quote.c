@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   remove_quote.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 12:02:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 13:40:20 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 static int	count_quotes(const char *str, int len)
 {
 	int		i;

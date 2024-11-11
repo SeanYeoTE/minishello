@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_main.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 13:25:42 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 int	builtin_main(t_shell *store, t_node *current)
 {
 	int		exit_status;
