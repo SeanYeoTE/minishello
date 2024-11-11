@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 12:10:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 13:01:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@
 # define BADCMD_FAILURE 126
 # define NO_PERMISSION_FAILURE 127
 
-// global variable
-// extern sig_atomic_t	g_exit_status;
+
 
 typedef struct s_quote_state
 {
@@ -81,6 +80,13 @@ typedef struct s_var
 	struct s_var	*next;
 }	t_var;
 
+typedef struct s_shell_state
+{
+	t_env	*env;
+	t_var	*var;
+	int		exit_status;
+}	t_shell_state;
+
 typedef struct s_shell
 {
 	char	**envp;
@@ -105,18 +111,28 @@ typedef struct s_shell
 // Function prototypes
 
 // main.c
+void		init_shell_state(t_shell_state *state, t_env *env_head);
 int			main(int argc, char **argv, char **envp);
 
+// base.c
+int			minishell_loop(t_shell *store, t_shell_state *state);
+int			pre_execution(t_shell *store);
+int			parser(t_shell *store, bool *should_continue);
+
 // setup_utils.c
-void		init_var(t_shell *store, t_env *env_head, t_var *var_head,
-				int exit_status);
-char		*cgetenv(char *var, t_env *env);
-char		**ccreatearray(t_env *env);
+void		init_var(t_shell *store, t_shell_state *state);
+void		update_shell_state(t_shell *store, t_shell_state *state);
+void		prompter_init(char **prompt);
+int			prompter_input(t_shell *store, char *prompt);
+
+// setup_getters.c
+char		*ft_getenv(char *var, t_env *env);
+char		**ft_createarray(t_env *env);
 char		*form_prompt(char *cwd);
 
-// base.c
-int			prompter(t_shell *store, t_env *env_head, t_var *var_head,
-				int exit_status);
+
+
+
 
 // checks.c
 int			redir_checker(t_node *cmd);

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:45:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 12:59:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_shell	store;
 	t_env	*env_head;
+	t_shell_state	state;
 
 	if (argc != 1 || argv[1])
 	{
@@ -36,5 +37,13 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	}
 	env_head = env_init(envp);
-	return (prompter(&store, env_head, NULL, 0));
+	init_shell_state(&state, env_head);
+	return (minishell_loop(&store, &state));
+}
+
+void	init_shell_state(t_shell_state *state, t_env *env_head)
+{
+	state->env = env_head;
+	state->var = NULL;
+	state->exit_status = 0;
 }

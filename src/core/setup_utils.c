@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 12:05:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 12:58:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,16 @@
 /**
  * @brief Initializes the shell's variables and state
  * @param store Main shell data structure
- * @param env_head Environment variables list
- * @param var_head Shell variables list
+ * @param state Shell state structure to copy from
  * @details Sets up initial shell state including:
  *          - File descriptors for I/O
  *          - Command and token linked lists
  *          - Environment variables
  *          - PATH variable and its components
  */
-void	init_var(t_shell *store, t_env *env_head, t_var *var_head, int exit_status)
+void	init_var(t_shell *store, t_shell_state *state)
 {
-	store->exit_status = exit_status;
+	store->exit_status = state->exit_status;
 	store->input_reset = dup(STDIN_FILENO);
 	store->output_reset = dup(STDOUT_FILENO);
 	store->head = NULL;
@@ -35,110 +34,65 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head, int exit_status)
 	store->expanded = false;
 	store->cmd_head = NULL;
 	store->cmd_tail = NULL;
-	store->env = env_head;
-	store->var = var_head;
-	store->path = ft_strdup(cgetenv("PATH", env_head));
+	store->env = state->env;
+	store->var = state->var;
+	store->path = ft_strdup(ft_getenv("PATH", store->env));
 	store->paths = ft_split(store->path, ':');
-	store->envp = ccreatearray(env_head);
+	store->envp = ft_createarray(store->env);
 }
 
 /**
- * @brief Custom getenv implementation for the shell
- * @param var Environment variable name to look up
- * @param env Environment variables list
- * @return Value of the environment variable or NULL if not found
- * @details Searches through the environment list for a variable
- *          matching the provided name and returns its value
+ * @brief Updates the shell state structure with current values
+ * @param store Main shell data structure
+ * @param state Shell state structure to update
+ * @details Copies current environment, variables and exit status
+ *          from the store into the state structure
  */
-char	*cgetenv(char *var, t_env *env)
+void	update_shell_state(t_shell *store, t_shell_state *state)
 {
-	t_env	*current;
-
-	current = env;
-	while (current)
-	{
-		if (ft_strncmp(var, current->var, ft_strlen(var)) == 0)
-		{
-			if (current->var[ft_strlen(var)] == '=')
-				return (current->var + ft_strlen(var) + 1);
-		}
-		current = current->next;
-	}
-	return (NULL);
+	state->env = store->env;
+	state->var = store->var;
+	state->exit_status = store->exit_status;
 }
 
 /**
- * @brief Counts the number of environment variables
- * @param env Environment variables list
- * @return Number of environment variables in the list
+ * @brief Initializes the shell prompt string
+ * @param prompt Pointer to the prompt string to initialize
+ * @details Sets the prompt to the current working directory
  */
-static int	count_env_entries(t_env *env)
+void	prompter_init(char **prompt)
 {
-	t_env	*current;
-	int		count;
+	char	cwd[1024];
 
-	count = 0;
-	current = env;
-	while (current)
-	{
-		count++;
-		current = current->next;
-	}
-	return (count);
+	signal(SIGINT, ctrl_c_handler);
+	signal(SIGQUIT, SIG_IGN);
+	getcwd(cwd, sizeof(cwd));
+	*prompt = form_prompt(cwd);
 }
 
 /**
- * @brief Creates an array of environment variables
- * @param env Environment variables list
- * @return NULL-terminated array of environment variable strings
- * @details Converts the linked list of environment variables into
- *          an array format suitable for execve and other functions
+ * @brief Handles reading and initial processing of user input
+ * @param store Main shell data structure
+ * @param prompt The prompt string to display
+ * @return 1 if input is valid and ready for processing, 0 if input should be skipped
+ * @details Reads user input, handles EOF, empty input, and basic syntax checking
  */
-char	**ccreatearray(t_env *env)
+int	prompter_input(t_shell *store, char *prompt)
 {
-	t_env	*current;
-	char	**new_env;
-	int		i;
-	int		size;
-
-	size = count_env_entries(env);
-	new_env = (char **)malloc(sizeof(char *) * (size + 1));
-	if (!new_env)
+	store->input = readline(prompt);
+	free(prompt);
+	if (store->input == NULL)
 	{
-		perror("Failed to allocate memory for environment");
-		exit(1);
+		free_all(store);
+		exit(EXIT_SUCCESS);
 	}
-	i = 0;
-	current = env;
-	while (current)
+	if (store->input[0] == '\0')
+		return (0);
+	add_history(store->input);
+	if (check_error(store->input))
 	{
-		new_env[i++] = current->var;
-		current = current->next;
+		print_erroronly("syntax error", store->input);
+		return (0);
 	}
-	new_env[i] = NULL;
-	return (new_env);
-}
-
-/**
- * @brief Forms the shell prompt string
- * @param cwd Current working directory
- * @return Formatted prompt string
- * @details Creates a prompt string in the format "username:cwd$ "
- *          The returned string must be freed by the caller
- */
-char	*form_prompt(char *cwd)
-{
-	char	*username;
-	char	*temp;
-	char	*ret;
-
-	username = getenv("USER");
-	ret = ft_strjoin(username, " ");
-	temp = ft_strjoin(ret, ":");
-	free(ret);
-	ret = ft_strjoin(temp, cwd);
-	free(temp);
-	temp = ft_strjoin(ret, "$ ");
-	free(ret);
-	return (temp);
+	return (1);
 }

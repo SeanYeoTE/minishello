@@ -75,7 +75,7 @@ t_env	*env_init(char **envp)
 
 	head = NULL;
 	i = 0;
-	while (envp[i])
+	while (envp && envp[i])
 	{
 		new_node = create_env_node(envp[i]);
 		if (head == NULL)

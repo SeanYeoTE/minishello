@@ -19,7 +19,7 @@ UTILS_DIR = utils/
 VAR_DIR = variables/
 
 # Source files by directory
-CORE_SRC =		main.c sig_handler.c base.c setup_utils.c
+CORE_SRC =		main.c sig_handler.c base.c setup_utils.c setup_getters.c
 PARSER_SRC =	scanner.c scanner_quote.c parse_detection.c checks.c checks2.c \
 				input_quote.c input_space.c
 EXEC_SRC =		pipe_exec.c pipe_fd.c pipe_process.c pipe_setup.c \

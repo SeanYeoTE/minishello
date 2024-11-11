@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:30:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 12:53:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	handle_variable(char **input, int *i, t_shell *store)
 		(*i)++;
 		return ;
 	}
-	value = cgetenv(var, store->env);
+	value = ft_getenv(var, store->env);
 	if (!value)
 		value = "";
 	new_input = replace_var(*input, *i, end, value);
