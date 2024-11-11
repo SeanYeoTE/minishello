@@ -6,62 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:38:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
-t_cmd	*get_last_cmd(t_cmd *cmd)
-{
-	t_cmd	*current;
-
-	current = cmd;
-	while (current && current->next)
-		current = current->next;
-	return (current);
-}
-
-int	count_cmds(t_shell *store)
-{
-	t_cmd	*iter;
-	int		count;
-
-	count = 0;
-	iter = store->cmd_head;
-	while (iter)
-	{
-		count++;
-		iter = iter->next;
-	}
-	return (count);
-}
-
-static void	init_cmd_fds(t_cmd *cmd)
-{
-	cmd->input_fd = STDIN_FILENO;
-	cmd->output_fd = STDOUT_FILENO;
-	cmd->heredoc_fd = -1;
-	cmd->heredoc_delimiter = NULL;
-}
-
-static void	setup_cmd_links(t_shell *store, t_cmd *cmd, bool create)
-{
-	t_cmd	*last;
-
-	if (create)
-	{
-		cmd->prev = NULL;
-		cmd->next = NULL;
-		store->cmd_head = cmd;
-	}
-	else
-	{
-		last = get_last_cmd(store->cmd_head);
-		cmd->prev = last;
-		cmd->next = NULL;
-		last->next = cmd;
-	}
-}
 
 t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 {
@@ -83,4 +32,51 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	detach_redir(cmd);
 	init_cmd_fds(cmd);
 	return (cmd);
+}
+
+void	setup_cmd_links(t_shell *store, t_cmd *cmd, bool create)
+{
+	t_cmd	*last;
+
+	if (create)
+	{
+		cmd->prev = NULL;
+		cmd->next = NULL;
+		store->cmd_head = cmd;
+	}
+	else
+	{
+		last = get_last_cmd(store->cmd_head);
+		cmd->prev = last;
+		cmd->next = NULL;
+		last->next = cmd;
+	}
+}
+
+void	detach_redir(t_cmd *new)
+{
+	t_node	*temp;
+	t_node	*file;
+
+	temp = new->command;
+	while (temp)
+	{
+		if (redir_checker(temp) == 1)
+		{
+			file = temp->next;
+			remove_nodes(&new->command, temp, file);
+			add_to_redir(&new->redir, temp, file);
+			temp = new->command;
+		}
+		else
+			temp = temp->next;
+	}
+}
+
+void	init_cmd_fds(t_cmd *cmd)
+{
+	cmd->input_fd = STDIN_FILENO;
+	cmd->output_fd = STDOUT_FILENO;
+	cmd->heredoc_fd = -1;
+	cmd->heredoc_delimiter = NULL;
 }

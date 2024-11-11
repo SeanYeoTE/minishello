@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:06:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:46:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ typedef struct s_shell
 # include "core.h"
 # include "builtins.h"
 # include "execution.h"
+# include "parser.h"
 # include "lexer.h"
 # include "redirections.h"
 # include "utils.h"

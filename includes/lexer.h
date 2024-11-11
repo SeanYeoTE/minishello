@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:15:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:05:39 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:39:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 # define LEXER_H
 
 # include "minishell.h"
+
+// lexer.c
+bool		is_space(char c);
+int			full_lexer(char *str, t_shell *store, int index);
+int			lexer(t_shell *store);
 
 // checks.c
 int			redir_checker(t_node *cmd);
@@ -24,10 +29,6 @@ int			is_double_operator(const char *input, int i);
 // checks2.c
 int			check_quotes(char *line);
 int			check_error(char *input);
-
-// parse_detection.c
-bool		is_space(char c);
-int			full_lexer(char *str, t_shell *store, int index);
 
 // input_utils.c
 char		*input_spacer(char *input);
@@ -42,21 +43,11 @@ int			scanner_operator(char *str, int start, t_shell *store);
 int			scanner_space(char *str, int start);
 int			scanner_word(char *str, int start, t_shell *store);
 
-// args_init.c
+// t_node_utils.c
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
 
-// t_cmd_utils.c
-t_cmd		*get_last_cmd(t_cmd *cmd);
-int			count_cmds(t_shell *store);
-t_cmd		*init_cmd(t_shell *store, t_node *start, t_node *end, bool create);
 
-// t_cmd_utils_extra.c
-void		set_parent(t_node *node, t_cmd *cmd);
-void		remove_nodes(t_node **start, t_node *redir, t_node *file);
-void		add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file);
-int			create_cmd(t_shell *store, t_node *start, t_node *end, bool create);
-void		detach_redir(t_cmd *new);
 
 #endif

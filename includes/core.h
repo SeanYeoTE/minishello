@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:12:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:11:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:21:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int			main(int argc, char **argv, char **envp);
 
 // base.c
 int			minishell_loop(t_shell *store, t_shell_state *state);
-int			pre_execution(t_shell *store);
 int			parser(t_shell *store, bool *should_continue);
 
 // setup_utils.c

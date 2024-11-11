@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_detection.c                                  :+:      :+:    :+:   */
+/*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:21:32 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,25 @@ int	full_lexer(char *str, t_shell *store, int index)
 			return (full_lexer(str, store, scanner_word(str, index, store)));
 	}
 	return (0);
+}
+
+/**
+ * @brief Prepares the input string for execution by handling various 
+ * preprocessing steps
+ * @param store Main shell data structure
+ * @return EXIT_SUCCESS after successful preprocessing
+ * @details Handles input spacing, variable expansions, lexical analysis,
+ * and quote removal
+ */
+int	lexer(t_shell *store)
+{
+	store->input = input_spacer(store->input);
+	if (ft_strchr(store->input, '$') != NULL)
+	{
+		store->expanded = true;
+		store->input = expansions(store, store->input);
+	}
+	full_lexer(store->input, store, 0);
+	remove_quote(store->head);
+	return (EXIT_SUCCESS);
 }

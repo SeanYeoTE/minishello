@@ -72,34 +72,27 @@ void	add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file)
 	}
 }
 
-int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
+t_cmd	*get_last_cmd(t_cmd *cmd)
 {
-	t_cmd	*new;
+	t_cmd	*current;
 
-	if (!start)
-		return (1);
-	new = init_cmd(store, start, end, create);
-	if (!new)
-		return (1);
-	return (0);
+	current = cmd;
+	while (current && current->next)
+		current = current->next;
+	return (current);
 }
 
-void	detach_redir(t_cmd *new)
+int	count_cmds(t_shell *store)
 {
-	t_node	*temp;
-	t_node	*file;
+	t_cmd	*iter;
+	int		count;
 
-	temp = new->command;
-	while (temp)
+	count = 0;
+	iter = store->cmd_head;
+	while (iter)
 	{
-		if (redir_checker(temp) == 1)
-		{
-			file = temp->next;
-			remove_nodes(&new->command, temp, file);
-			add_to_redir(&new->redir, temp, file);
-			temp = new->command;
-		}
-		else
-			temp = temp->next;
+		count++;
+		iter = iter->next;
 	}
+	return (count);
 }
