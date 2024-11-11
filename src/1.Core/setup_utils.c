@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:14:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 21:57:27 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
  */
 void	init_var(t_shell *store, t_shell_state *state)
 {
+	g_sig = 0;
 	store->exit_status = state->exit_status;
 	store->input_reset = dup(STDIN_FILENO);
 	store->output_reset = dup(STDOUT_FILENO);

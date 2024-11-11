@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:14:30 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:19:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 21:44:47 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int			multi_executor(t_shell *store);
 int			multiple_function(t_shell *store);
 
 // single.c
-int			heredoc_finisher(t_cmd *cmd);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // single_external.c

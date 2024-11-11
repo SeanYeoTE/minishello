@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 23:00:22 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,19 @@ static void	write_heredoc_line(int fd, char *line)
  * @return int 0 on success
  * @note Reads from stdin using readline, writes to fd until delimiter is found
  */
-static int	read_heredoc_input(int fd, char *delimiter)
+static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *store)
 {
 	char	*line;
 
 	while (1)
 	{
+		heredoc_setup_signals();
 		line = readline("> ");
+		if (g_sig == 1)
+		{
+			store->exit_status = heredoc_sigint_handler(filename, store);
+			break ;
+		}
 		if (line == NULL || ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
@@ -97,7 +103,7 @@ static int	read_heredoc_input(int fd, char *delimiter)
  * @note Creates temporary file, reads input until delimiter,
  *       then opens file for reading and stores fd in cmd structure
  */
-int	handle_heredoc(t_cmd *cmd)
+int	handle_heredoc(t_cmd *cmd, t_shell* store)
 {
 	static int	index = 0;
 	char		*filename;
@@ -107,7 +113,7 @@ int	handle_heredoc(t_cmd *cmd)
 	fd = open_heredoc_file(filename, O_CREAT | O_WRONLY | O_TRUNC);
 	if (fd == -1)
 		return (free(filename), 1);
-	if (read_heredoc_input(fd, cmd->heredoc_delimiter) != 0)
+	if (read_heredoc_input(fd, cmd->heredoc_delimiter, filename, store) != 0)
 	{
 		close(fd);
 		return (free(filename), 1);

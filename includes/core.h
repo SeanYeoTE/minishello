@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   core.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:12:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:21:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 22:25:29 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,7 @@ char		*form_prompt(char *cwd);
 
 // sig_handler.c
 void		ctrl_c_handler(int signum);
-
+int			heredoc_sigint_handler(char *filename, t_shell *store);
+void		heredoc_setup_signals();
+void		child_sigint_handler(int signum);
 #endif

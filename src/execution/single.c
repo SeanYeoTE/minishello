@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 22:59:48 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
 	pid_t	pid;
 	redir_handler(store, cmd, cmd->redir, NULL);
+	
 	if (store->exit_status == 0)
 	{
 		pid = fork();
@@ -54,9 +55,9 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 			return (perror("fork"), EXIT_FAILURE);
 		if (pid == 0)
 		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
-			heredoc_finisher(cmd);
+			// signal(SIGINT, SIG_DFL);
+			// signal(SIGQUIT, SIG_DFL);
+			heredoc_finisher(cmd, store);
 		}
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);

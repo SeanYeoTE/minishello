@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:13:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 22:20:26 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h" 
 
-// int	g_exit_status;
+volatile sig_atomic_t g_sig;
 
 /**
  * @brief Entry point of the minishell program
@@ -31,6 +31,7 @@ int	main(int argc, char **argv, char **envp)
 	t_env			*env_head;
 	t_shell_state	state;
 
+	g_sig = 0;
 	if (argc != 1 || argv[1])
 	{
 		perror("run without args");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:46:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 22:19:55 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define BUILTIN_FAILURE 1
 # define BADCMD_FAILURE 126
 # define NO_PERMISSION_FAILURE 127
+
+extern volatile sig_atomic_t g_sig;
 
 /* Type definitions */
 typedef struct s_quote_state
