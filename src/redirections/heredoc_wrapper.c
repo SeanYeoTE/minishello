@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 14:33:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/13 17:37:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,17 @@ int	heredoc_finisher(t_cmd *cmd, t_shell* store)
 		{
 			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
 			if (cmd->heredoc_delimiter == NULL)
+			{
+				free_all(store);
 				return (1);
+			}
 			result = handle_heredoc(cmd, store);
 			if (result != EXIT_SUCCESS)
 				break ;
 		}
 		tmp = tmp->next;
 	}
+	free_all(store);
 	return (result);
 }
 
@@ -64,4 +68,23 @@ int	handle_all_heredocs(t_shell *store)
 		cmd = cmd->next;
 	}
 	return (EXIT_SUCCESS);
+}
+
+
+int	heredoc_child(t_cmd *cmd, t_shell *store, int child2)
+{
+	pid_t	pid;
+
+	signal(SIGINT, SIG_IGN);
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), 1);
+	if (pid == 0)
+	{
+		exit(heredoc_finisher(cmd, store));
+	}
+	waitpid(pid, &store->exit_status, 0);
+	if (child2 == 0)
+		signal(SIGINT, ctrl_c_handler);
+	return (0);
 }

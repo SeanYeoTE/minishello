@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/13 17:02:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,25 @@ bool	are_same_resource(int fd1, int fd2)
  * @note Only resets if current stdin/stdout differ from original
  *       Prints error message if dup2 fails during reset
  */
-void	reset_fds(t_shell *store)
+void	reset_fds(t_shell *store, int check)
 {
-	if (!are_same_resource(store->input_reset, STDIN_FILENO))
+	if (check == 1)
+	{
+		if (!are_same_resource(store->input_reset, STDIN_FILENO))
+		{
+			if (dup2(store->input_reset, STDIN_FILENO) == -1)
+				print_erroronly("dup2 failed on input reset", strerror(errno));
+		}
+		if (!are_same_resource(store->output_reset, STDOUT_FILENO))
+		{
+			if (dup2(store->output_reset, STDOUT_FILENO) == -1)
+				print_erroronly("dup2 failed on output reset", strerror(errno));
+		}	
+	}
+	else
 	{
 		if (dup2(store->input_reset, STDIN_FILENO) == -1)
 			print_erroronly("dup2 failed on input reset", strerror(errno));
-	}
-	if (!are_same_resource(store->output_reset, STDOUT_FILENO))
-	{
 		if (dup2(store->output_reset, STDOUT_FILENO) == -1)
 			print_erroronly("dup2 failed on output reset", strerror(errno));
 	}

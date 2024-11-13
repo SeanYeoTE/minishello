@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 15:14:40 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/13 17:52:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,10 @@ static int	setup_child_io(t_shell *store, t_cmd *cmd)
 	if (store->exit_status != 0)
 		return (store->exit_status);
 	
-	if (heredoc_finisher(cmd, store) != 0)
+	if (heredoc_child(cmd, store, 1) != 0)
+	{
 		return (EXIT_FAILURE);
-		
+	}
 	if (cmd->command == NULL)
 		return (store->exit_status);
 		
@@ -59,7 +60,8 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
 		free_all(store);
 		exit(setup_status);
 	}
-	
+	reset_fds(store, 2);
+	setup_child_signals();
 	store->exit_status = executor(store, cmd);
 	exit(store->exit_status);
 }

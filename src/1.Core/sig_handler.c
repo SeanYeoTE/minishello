@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:50:48 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 15:08:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/13 18:00:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	child_sigint_handler(int signum)
 int	heredoc_sigint_handler(char *filename, t_shell *store)
 {
 	(void)filename;
-	free_all (store);
+	free_all(store);
 	g_sig = 0;
 	return (130);
 }

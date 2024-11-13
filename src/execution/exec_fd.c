@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/13 17:18:45 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
  */
 static void	handle_heredoc_fd(t_cmd *node)
 {
+	printf("heredoc_fd: %d\n", node->heredoc_fd);
 	if (node->heredoc_fd != -1)
 	{
 		if (dup2(node->heredoc_fd, STDIN_FILENO) == -1)
@@ -37,6 +38,7 @@ static void	handle_heredoc_fd(t_cmd *node)
  */
 static void	handle_input_fd(t_cmd *node, char *temp_filename)
 {
+	printf("temp_filename: %s\n", temp_filename);
 	if (node->input_fd != STDIN_FILENO)
 	{
 		if (dup2(node->input_fd, STDIN_FILENO) == -1)
