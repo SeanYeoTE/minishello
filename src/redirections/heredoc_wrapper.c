@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_wrapper.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 22:56:46 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/13 14:33:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	heredoc_finisher(t_cmd *cmd, t_shell* store)
 			if (cmd->heredoc_delimiter == NULL)
 				return (1);
 			result = handle_heredoc(cmd, store);
-			if (result == 1)
+			if (result != EXIT_SUCCESS)
 				break ;
 		}
 		tmp = tmp->next;

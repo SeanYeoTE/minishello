@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_external.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 21:44:21 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/13 15:14:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,15 +78,14 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 
 	if (!store || !cmd)
 		return (EXIT_FAILURE);
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
 		return (EXIT_FAILURE);
 	}
-	signal(SIGINT, SIG_IGN);
 	if (pid == 0)
 		execute_child_process(store, cmd);
-    signal(SIGINT, ctrl_c_handler);
 	return (wait_for_command(store, pid));
 }

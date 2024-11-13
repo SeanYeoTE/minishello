@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/13 15:16:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,11 @@ int	wait_for_command(t_shell *store, pid_t pid)
 
 	status = 0;
 	waitpid(pid, &status, 0);
+	signal(SIGINT, ctrl_c_handler);
 	if (WIFEXITED(status))
 		store->exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 		store->exit_status = WTERMSIG(status) + 128;
-	signal(SIGINT, ctrl_c_handler);
 	return (EXIT_SUCCESS);
 }
 

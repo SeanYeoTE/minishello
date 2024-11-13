@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 22:59:48 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/13 15:09:20 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 	
 	if (store->exit_status == 0)
 	{
+		signal(SIGINT, SIG_IGN);
 		pid = fork();
 		if (pid == -1)
 			return (perror("fork"), EXIT_FAILURE);
@@ -57,11 +58,10 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 		{
 			// signal(SIGINT, SIG_DFL);
 			// signal(SIGQUIT, SIG_DFL);
-			heredoc_finisher(cmd, store);
+			exit(heredoc_finisher(cmd, store));
 		}
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
 		waitpid(pid, &store->exit_status, 0);
+		signal(SIGINT, ctrl_c_handler);
 		set_builtin_fd(cmd);
 		store->exit_status = builtin_main(store, cmd->command);
 		reset_fds(store);

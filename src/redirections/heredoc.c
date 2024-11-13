@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 23:00:22 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/13 15:04:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,17 @@ static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *
 {
 	char	*line;
 
+	(void)filename;
+	(void)store;
+	signal(SIGINT, child_sigint_handler);
 	while (1)
 	{
-		heredoc_setup_signals();
+		// heredoc_setup_signals();
 		line = readline("> ");
 		if (g_sig == 1)
 		{
-			store->exit_status = heredoc_sigint_handler(filename, store);
+			// return(heredoc_sigint_handler(filename, store));
+			free(line);
 			break ;
 		}
 		if (line == NULL || ft_strcmp(line, delimiter) == 0)
