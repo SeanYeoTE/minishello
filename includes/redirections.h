@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:16:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 22:00:08 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/15 00:26:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int			handle_input_redirection(t_cmd *cmd, char *filename);
 void		reset_fds(t_shell *store, int check);
 
 // heredoc_wrapper.c
-int			heredoc_finisher(t_cmd *cmd, t_shell *store, int child);
+int			heredoc_finisher(t_cmd *cmd, t_shell *store);
 int			handle_all_heredocs(t_shell *store);
 int			heredoc_child(t_cmd *cmd, t_shell *store, int child2);
 int			heredoc_child_loop(t_shell *store);

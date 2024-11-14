@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 23:50:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/15 01:14:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * @note Searches for "<<" tokens and sets up heredoc with specified delimiter
  *       Allocates memory for delimiter which must be freed by caller
  */
-int	heredoc_finisher(t_cmd *cmd, t_shell* store, int child)
+int	heredoc_finisher(t_cmd *cmd, t_shell* store)
 {
 	t_node	*tmp;
 	int		result;
@@ -31,32 +31,18 @@ int	heredoc_finisher(t_cmd *cmd, t_shell* store, int child)
 	{
 		if (ft_strcmp(tmp->data, "<<") == 0)
 		{
+			if (cmd->heredoc_delimiter)
+				free(cmd->heredoc_delimiter);
 			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
 			if (cmd->heredoc_delimiter == NULL)
 				return (1);
-			if (child)
-				result = heredoc_single_builtin(cmd, store);
-			else
-				result = heredoc_single_external(cmd, store);
+			result = heredoc_single_external(cmd, store);
 			if (result != EXIT_SUCCESS)
-			{
-				if (!child)
-				{
-					free(cmd->heredoc_delimiter);
-					cmd->heredoc_delimiter = NULL;
-				}
 				break;
-			}
-			if (!child)
-			{
-				free(cmd->heredoc_delimiter);
-				cmd->heredoc_delimiter = NULL;
-			}
 		}
 		tmp = tmp->next;
 	}
-	if (child)
-		free_all(store);
+	free_all(store);
 	return (result);
 }
 
@@ -81,7 +67,7 @@ int	handle_all_heredocs(t_shell *store)
 			close(cmd->heredoc_fd);
 			cmd->heredoc_fd = -1;
 		}
-		result = heredoc_finisher(cmd, store, 0);
+		result = heredoc_finisher(cmd, store);
 		if (result != 0)
 			return (EXIT_FAILURE);
 		cmd = cmd->next;
@@ -123,7 +109,7 @@ int	heredoc_child(t_cmd *cmd, t_shell *store, int child2)
 	{
 		close(pipe_fds[0]);  // Child only needs write end
 		cmd->heredoc_write_fd = pipe_fds[1];
-		exit(heredoc_finisher(cmd, store, 1));
+		exit(heredoc_finisher(cmd, store));
 	}
 	close(pipe_fds[1]);  // Parent only needs read end
 	cmd->heredoc_fd = pipe_fds[0];
@@ -163,7 +149,7 @@ int	heredoc_child_loop(t_shell *store)
 		{
 			close(pipe_fds[0]);  // Child only needs write end
 			cmd->heredoc_write_fd = pipe_fds[1];
-			exit(heredoc_finisher(cmd, store, 1));
+			exit(heredoc_finisher(cmd, store));
 		}
 		close(pipe_fds[1]);  // Parent only needs read end
 		cmd->heredoc_fd = pipe_fds[0];

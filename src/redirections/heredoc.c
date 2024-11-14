@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 23:59:24 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/15 01:13:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,22 +81,5 @@ int	heredoc_single_external(t_cmd *cmd, t_shell* store)
 		return (130);  // Return 130 for SIGINT
 	}
 	
-	return (0);
-}
-
-int	heredoc_single_builtin(t_cmd *cmd, t_shell* store)
-{
-	int		result;
-
-	result = read_heredoc_input(cmd->heredoc_write_fd, cmd->heredoc_delimiter, store);
-	close(cmd->heredoc_write_fd);  // Close write end
-
-	if (result != 0)  // If interrupted
-	{
-		close(cmd->heredoc_fd);  // Close read end
-		free_all(store);
-		return (130);  // Return 130 for SIGINT
-	}
-
 	return (0);
 }
