@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   printer.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:01:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 12:55:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 20:23:01 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int	print_stack_se(t_node *start, t_node *end)
 	{
 		printf("Node Value: %s...\n", start->data);
 		printf("Token Type: %d\n", start->type);
+		printf("next %p\n", start->next);
 		printf("***************\n");
 		start = start->next;
 		count++;

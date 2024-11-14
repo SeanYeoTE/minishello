@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 16:39:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 20:36:28 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,34 @@ static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *
  * @note Creates temporary file, reads input until delimiter,
  *       then stores filename in cmd structure for later use
  */
-int	handle_heredoc(t_cmd *cmd, t_shell* store)
+int	heredoc_single_external(t_cmd *cmd, t_shell* store)
+{
+	static int	index;
+	int			fd;
+	int			result;
+
+	index = 0;
+	cmd->heredoc_filename = get_heredoc_filename(index++);
+	if (!cmd->heredoc_filename)
+		return (1);
+	fd = open_heredoc_file(cmd->heredoc_filename, O_CREAT | O_WRONLY | O_TRUNC);
+	if (fd == -1)
+		return (free(cmd->heredoc_filename), 1);
+	result = read_heredoc_input(fd, cmd->heredoc_delimiter, cmd->heredoc_filename, store);
+	close(fd);
+	if (result != 0)  // If interrupted
+	{
+		unlink(cmd->heredoc_filename);  // Remove the temporary file
+		free(cmd->heredoc_filename);
+		cmd->heredoc_filename = NULL;
+		// free_all(store);
+		return (130);  // Return 130 for SIGINT
+	}
+	// free_all(store);
+	return (0);
+}
+
+int	heredoc_single_builtin(t_cmd *cmd, t_shell* store)
 {
 	static int	index;
 	int			fd;
@@ -130,6 +157,9 @@ int	handle_heredoc(t_cmd *cmd, t_shell* store)
 		free_all(store);
 		return (130);  // Return 130 for SIGINT
 	}
-	free_all(store);
+	// free_all(store);
+	unlink(cmd->heredoc_filename);  // Remove the temporary file
+	free(cmd->heredoc_filename);
+	cmd->heredoc_filename = NULL;
 	return (0);
 }
