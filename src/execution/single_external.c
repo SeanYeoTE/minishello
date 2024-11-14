@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_external.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 20:04:56 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/15 00:01:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,6 @@ static int	setup_child_io(t_shell *store, t_cmd *cmd)
 	if (store->exit_status != 0)
 		return (store->exit_status);
 	
-	if (heredoc_finisher(cmd, store, 0) != 0)
-	{
-		return (EXIT_FAILURE);
-	}
 	if (cmd->command == NULL)
 		return (store->exit_status);
 		
@@ -76,9 +72,16 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
 int	execute_external_command(t_shell *store, t_cmd *cmd)
 {
 	pid_t	pid;
+	int		heredoc_status;
 
 	if (!store || !cmd)
 		return (EXIT_FAILURE);
+
+	// Handle heredoc in a separate child process
+	heredoc_status = heredoc_child(cmd, store, 0);
+	if (heredoc_status != 0)
+		return (heredoc_status);
+
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 22:58:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ static void	handle_child_process(t_shell *store, t_cmd *cmd,
 	store->exit_status = redir_handler(store, cmd, cmd->redir, NULL);
 	if (store->exit_status != 0)
 		exit(store->exit_status);
-	if (cmd->prev == NULL)
-	{
-		store->exit_status = handle_all_heredocs(store);
-		if (store->exit_status != 0)
-			exit(store->exit_status);
-	}
+	// if (cmd->prev == NULL)
+	// {
+	// 	store->exit_status = handle_all_heredocs(store);
+	// 	if (store->exit_status != 0)
+	// 		exit(store->exit_status);
+	// }
 	setup_pipes(in_fd, out_fd, cmd);
 	run_cmd(cmd, store);
 }

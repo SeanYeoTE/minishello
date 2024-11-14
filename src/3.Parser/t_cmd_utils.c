@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 13:25:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 23:27:14 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,6 @@ void	init_cmd_fds(t_cmd *cmd)
 {
 	cmd->input_fd = STDIN_FILENO;
 	cmd->output_fd = STDOUT_FILENO;
-	cmd->heredoc_fd = -1;
+	cmd->heredoc_fd = -2;
 	cmd->heredoc_delimiter = NULL;
 }

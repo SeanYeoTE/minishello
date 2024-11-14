@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 14:00:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 23:49:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_cmd
 	int				input_fd;
 	int				output_fd;
 	int				heredoc_fd;
+	int				heredoc_write_fd;
 	char			*heredoc_delimiter;
 	char			*heredoc_filename;
 	int				pipe_out;
