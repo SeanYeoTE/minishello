@@ -12,6 +12,15 @@
 
 #include "../../includes/minishell.h"
 
+/**
+ * @brief Counts the length of a variable name up to the equals sign
+ *
+ * This function counts characters in the string until it encounters an equals
+ * sign or the end of the string. Returns 0 if no equals sign is found.
+ *
+ * @param src The source string containing the variable
+ * @return int Length of the variable name, or 0 if no equals sign found
+ */
 int	name_counter(char *src)
 {
 	int		n;
@@ -36,6 +45,15 @@ int	name_counter(char *src)
 		return (0);
 }
 
+/**
+ * @brief Frees memory allocated for an array of strings
+ *
+ * Helper function that deallocates memory for an array of strings and its
+ * contents, typically used for cleanup in case of allocation failures.
+ *
+ * @param strs Array of strings to free
+ * @return char** Always returns NULL
+ */
 static char	**ft_freeup(char **strs)
 {
 	int	i;
@@ -53,6 +71,16 @@ static char	**ft_freeup(char **strs)
 	return (NULL);
 }
 
+/**
+ * @brief Extracts a word from a string up to a delimiter
+ *
+ * Creates a new string containing characters from the input string until
+ * it encounters the specified delimiter character.
+ *
+ * @param str Input string to extract from
+ * @param c Delimiter character
+ * @return char* New string containing the extracted word
+ */
 static char	*ft_word(char const *str, char c)
 {
 	int		len_word;
@@ -75,6 +103,16 @@ static char	*ft_word(char const *str, char c)
 	return (word);
 }
 
+/**
+ * @brief Splits a variable string into name and value components
+ *
+ * Splits a string at the specified delimiter (typically '=') into two parts:
+ * the variable name and its value. Returns an array of two strings.
+ *
+ * @param str String to split
+ * @param c Delimiter character
+ * @return char** Array containing the variable name and value
+ */
 char	**ft_split_var(char const *str, char c)
 {
 	char	**strings;
@@ -102,6 +140,16 @@ char	**ft_split_var(char const *str, char c)
 	return (strings);
 }
 
+/**
+ * @brief Sets a variable in the shell's variable list
+ *
+ * Creates a new variable node and adds it to the shell's variable list if
+ * it doesn't already exist in either the environment or variable list.
+ *
+ * @param src Source string containing the variable definition
+ * @param store Shell structure containing variable and environment information
+ * @return int EXIT_SUCCESS on success, EXIT_FAILURE on failure
+ */
 int	set_var(char *src, t_shell *store)
 {
 	t_var	*new_var;

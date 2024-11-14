@@ -10,7 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
+
+/**
+ * @brief Creates a new variable node
+ *
+ * Allocates memory for a new variable node and initializes its fields with
+ * the provided variable name and data.
+ *
+ * @param var The variable name
+ * @param data The variable data/value
+ * @return t_var* Pointer to the newly created variable node
+ */
 t_var	*create_var_node(char *var, char *data)
 {
 	t_var	*new_var;
@@ -25,6 +36,16 @@ t_var	*create_var_node(char *var, char *data)
 	return (new_var);
 }
 
+/**
+ * @brief Checks if a variable already exists in the shell's variable list
+ *
+ * Compares the source variable name with existing variables, handling both
+ * exact matches and partial matches based on the variable name length.
+ *
+ * @param src The source variable name to check
+ * @param store Shell structure containing the variable list
+ * @return bool True if variable exists, false otherwise
+ */
 bool	same_var(char *src, t_shell *store)
 {
 	t_var	*current;
@@ -53,6 +74,16 @@ bool	same_var(char *src, t_shell *store)
 	return (false);
 }
 
+/**
+ * @brief Checks if a variable exists in the shell's environment
+ *
+ * Compares the source variable name with existing environment variables,
+ * handling both exact matches and partial matches based on the variable name length.
+ *
+ * @param src The source variable name to check
+ * @param store Shell structure containing the environment variables
+ * @return bool True if variable doesn't exist, false if it exists
+ */
 bool	same_env(char *src, t_shell *store)
 {
 	t_env	*current;
@@ -76,6 +107,16 @@ bool	same_env(char *src, t_shell *store)
 	return (true);
 }
 
+/**
+ * @brief Splits a variable string into name and value components
+ *
+ * Creates a new variable node from a string in the format "name=value".
+ * The string is split at the equals sign, and the components are stored
+ * in a new variable node.
+ *
+ * @param src The source string to split
+ * @return t_var* Pointer to the newly created variable node
+ */
 t_var	*split_var(char *src)
 {
 	t_var	*new_var;
@@ -92,6 +133,17 @@ t_var	*split_var(char *src)
 	return (new_var);
 }
 
+/**
+ * @brief Handles variable assignment in the shell
+ *
+ * Processes variable assignments from command arguments. Currently only
+ * handles single variable assignments and returns an error for multiple
+ * assignments.
+ *
+ * @param args Linked list of command arguments
+ * @param store Shell structure containing variable and environment information
+ * @return int 0 on success, 1 on error
+ */
 int	var_handler(t_node *args, t_shell *store)
 {
 	int		count;

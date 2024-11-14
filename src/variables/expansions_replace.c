@@ -6,11 +6,20 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 12:57:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
+
+/**
+ * @brief Calculates the length needed for the result string after variable replacement
+ *
+ * @param front The string before the variable
+ * @param back The string after the variable
+ * @param value The value to replace the variable with
+ * @return size_t The total length needed for the result string
+ */
 static size_t	calculate_result_len(char *front, char *back, const char *value)
 {
 	size_t	result_len;
@@ -23,6 +32,15 @@ static size_t	calculate_result_len(char *front, char *back, const char *value)
 	return (result_len);
 }
 
+/**
+ * @brief Replaces a variable in a string with its value
+ *
+ * @param input The original input string
+ * @param start Starting index of the variable in the input string
+ * @param end Ending index of the variable in the input string
+ * @param value The value to replace the variable with
+ * @return char* A new string with the variable replaced
+ */
 char	*replace_var(char *input, int start, int end, const char *value)
 {
 	char	*front;
@@ -47,6 +65,14 @@ char	*replace_var(char *input, int start, int end, const char *value)
 	return (result);
 }
 
+/**
+ * @brief Replaces the $? variable with the last exit status
+ *
+ * @param store Shell structure containing the exit status
+ * @param input The original input string
+ * @param start Starting index of the $? in the input string
+ * @return char* A new string with the exit status replaced
+ */
 char	*replace_exit_status(t_shell *store, char *input, int start)
 {
 	char	*front;

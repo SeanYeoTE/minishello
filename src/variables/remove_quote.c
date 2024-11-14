@@ -6,11 +6,22 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 12:02:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 12:59:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
+
+/**
+ * @brief Counts the number of quotes in a string
+ *
+ * This function counts both single and double quotes while respecting quote
+ * nesting rules. A quote is only counted if it's not inside another type of quote.
+ *
+ * @param str The string to count quotes in
+ * @param len Length of the string
+ * @return int The total number of quotes found
+ */
 static int	count_quotes(const char *str, int len)
 {
 	int		i;
@@ -39,6 +50,17 @@ static int	count_quotes(const char *str, int len)
 	return (quote_count);
 }
 
+/**
+ * @brief Removes quotes from a string while preserving nested content
+ *
+ * This function creates a new string with all quotes removed, while maintaining
+ * the content between quotes. It handles both single and double quotes, and
+ * respects quote nesting rules.
+ *
+ * @param str The string to remove quotes from
+ * @param len Length of the string
+ * @return char* A new string with quotes removed
+ */
 static char	*quote_remover(const char *str, int len)
 {
 	char	*ret;
@@ -68,6 +90,15 @@ static char	*quote_remover(const char *str, int len)
 	return (ret);
 }
 
+/**
+ * @brief Removes quotes from all tokens in a linked list
+ *
+ * This function processes each token in the linked list, removing both single
+ * and double quotes from their data while preserving the content between quotes.
+ * It only processes tokens that contain quotes.
+ *
+ * @param token The head of the token linked list
+ */
 void	remove_quote(t_node *token)
 {
 	int		len;

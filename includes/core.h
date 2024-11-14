@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   core.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:12:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 22:25:29 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/14 13:03:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int			main(int argc, char **argv, char **envp);
 
 // base.c
 int			minishell_loop(t_shell *store, t_shell_state *state);
-int			parser(t_shell *store, bool *should_continue);
 
 // setup_utils.c
 void		init_var(t_shell *store, t_shell_state *state);

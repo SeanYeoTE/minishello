@@ -6,11 +6,20 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 12:58:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
+
+/**
+ * @brief Extracts a variable name from the input string
+ *
+ * @param input The input string containing the variable
+ * @param start Starting position of the variable in the input string
+ * @param end Pointer to store the ending position of the variable
+ * @return char* The extracted variable name, or NULL if invalid
+ */
 char	*extract_var_name(const char *input, int start, int *end)
 {
 	int		j;
@@ -29,6 +38,13 @@ char	*extract_var_name(const char *input, int start, int *end)
 	return (var_name);
 }
 
+/**
+ * @brief Updates the quote state based on the current character
+ *
+ * @param c Current character being processed
+ * @param in_single_quotes Pointer to single quote state flag
+ * @param in_double_quotes Pointer to double quote state flag
+ */
 void	update_quote_state(char c, bool *in_single_quotes,
 	bool *in_double_quotes)
 {
@@ -38,11 +54,24 @@ void	update_quote_state(char c, bool *in_single_quotes,
 		*in_double_quotes = !*in_double_quotes;
 }
 
+/**
+ * @brief Determines if variable expansion should occur based on quote state
+ *
+ * @param in_single_quotes Current single quote state
+ * @return bool True if expansion should occur, false otherwise
+ */
 bool	should_expand(bool in_single_quotes)
 {
 	return (!in_single_quotes);
 }
 
+/**
+ * @brief Removes dollar quotes from the input string
+ *
+ * @param input The input string containing dollar quotes
+ * @param start Starting position of the dollar quotes
+ * @return char* A new string with dollar quotes removed
+ */
 char	*remove_dollar_quotes(char *input, int start)
 {
 	int		end;
@@ -70,6 +99,13 @@ char	*remove_dollar_quotes(char *input, int start)
 	return (result);
 }
 
+/**
+ * @brief Handles the export of environment variables
+ *
+ * @param store Shell structure containing environment variables
+ * @param current_arg The argument to be exported
+ * @return int Return value indicating success (0) or failure
+ */
 int	handle_export(t_shell *store, char *current_arg)
 {
 	char	*arg;
