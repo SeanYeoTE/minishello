@@ -6,12 +6,22 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:38:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 13:25:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
 
+/**
+ * @brief Initializes a new command structure
+ * @param store Main shell data structure
+ * @param start First node of the command sequence
+ * @param end Last node of the command sequence
+ * @param create Boolean flag indicating if this is the first command
+ * @return Pointer to newly initialized command structure, NULL if allocation fails
+ * @details Allocates memory for a new command structure, sets up redirection,
+ * links, file descriptors and command nodes
+ */
 t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 {
 	t_cmd	*cmd;
@@ -34,6 +44,14 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	return (cmd);
 }
 
+/**
+ * @brief Sets up command structure links in the command list
+ * @param store Main shell data structure
+ * @param cmd Command structure to setup links for
+ * @param create Boolean flag indicating if this is the first command
+ * @details If create is true, sets cmd as head of command list
+ * Otherwise, appends cmd to end of existing command list
+ */
 void	setup_cmd_links(t_shell *store, t_cmd *cmd, bool create)
 {
 	t_cmd	*last;
@@ -53,6 +71,13 @@ void	setup_cmd_links(t_shell *store, t_cmd *cmd, bool create)
 	}
 }
 
+/**
+ * @brief Separates redirection nodes from command nodes
+ * @param new Command structure to process
+ * @details Identifies redirection operators and their associated files in the
+ * command sequence, removes them from the command list and adds them to the
+ * redirection list
+ */
 void	detach_redir(t_cmd *new)
 {
 	t_node	*temp;
@@ -73,6 +98,12 @@ void	detach_redir(t_cmd *new)
 	}
 }
 
+/**
+ * @brief Initializes file descriptors for a command
+ * @param cmd Command structure to initialize file descriptors for
+ * @details Sets default values for input, output and heredoc file descriptors
+ * Input defaults to STDIN, output to STDOUT, heredoc to -1
+ */
 void	init_cmd_fds(t_cmd *cmd)
 {
 	cmd->input_fd = STDIN_FILENO;
