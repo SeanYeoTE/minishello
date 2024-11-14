@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:07:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 22:19:55 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/14 14:00:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_cmd
 	int				output_fd;
 	int				heredoc_fd;
 	char			*heredoc_delimiter;
+	char			*heredoc_filename;
 	int				pipe_out;
 	struct s_cmd	*next;
 	struct s_cmd	*prev;

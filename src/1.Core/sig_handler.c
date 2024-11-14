@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:50:48 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 18:00:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 16:34:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,14 @@ void	ctrl_c_handler(int signum)
 void	child_sigint_handler(int signum)
 {
 	if (signum)
+	{
 		g_sig = 1;
-	write (STDERR_FILENO, "\n", 1);
-	close(STDIN_FILENO);
+		write(STDERR_FILENO, "\n", 1);
+		close(STDIN_FILENO);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_done = 1;  // This will cause readline to return immediately
+	}
 }
 
 int	heredoc_sigint_handler(char *filename, t_shell *store)
@@ -60,10 +65,6 @@ int	heredoc_sigint_handler(char *filename, t_shell *store)
 // 	sigaddset(&mask2, SIGQUIT);
 // 	action1.sa_mask = mask1;
 // 	action2.sa_mask = mask2;
-// 	action1.sa_handler = child_sigint_handler;
-// 	action1.sa_flags = 0;
-// 	action2.sa_handler = SIG_IGN;
-// 	action2.sa_flags = 0;
 // 	sigaction(SIGINT, &action1, NULL);
 // 	sigaction(SIGQUIT, &action2, NULL);
 // }

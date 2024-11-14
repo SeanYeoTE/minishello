@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 17:37:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 16:33:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,19 @@ int	heredoc_finisher(t_cmd *cmd, t_shell* store)
 		{
 			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
 			if (cmd->heredoc_delimiter == NULL)
-			{
-				free_all(store);
 				return (1);
-			}
 			result = handle_heredoc(cmd, store);
 			if (result != EXIT_SUCCESS)
-				break ;
+			{
+				free(cmd->heredoc_delimiter);
+				cmd->heredoc_delimiter = NULL;
+				break;
+			}
+			free(cmd->heredoc_delimiter);
+			cmd->heredoc_delimiter = NULL;
 		}
 		tmp = tmp->next;
 	}
-	free_all(store);
 	return (result);
 }
 
@@ -70,7 +72,14 @@ int	handle_all_heredocs(t_shell *store)
 	return (EXIT_SUCCESS);
 }
 
-
+/**
+ * @brief Creates a child process to handle heredoc input
+ *
+ * @param cmd Command structure containing heredoc information
+ * @param store Shell data structure
+ * @param child2 Flag indicating if this is a nested child process
+ * @return int 0 on success, 1 on error
+ */
 int	heredoc_child(t_cmd *cmd, t_shell *store, int child2)
 {
 	pid_t	pid;

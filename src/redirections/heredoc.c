@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 17:35:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 16:39:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void	write_heredoc_line(int fd, char *line)
  *
  * @param fd File descriptor to write input to
  * @param delimiter String that marks end of heredoc input
- * @return int 0 on success
+ * @return int 0 on success, 1 on interrupt
  * @note Reads from stdin using readline, writes to fd until delimiter is found
  */
 static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *store)
@@ -78,25 +78,25 @@ static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *
 	(void)filename;
 	(void)store;
 	signal(SIGINT, child_sigint_handler);
+	g_sig = 0;  // Reset signal flag at start
 	while (1)
 	{
-		// heredoc_setup_signals();
 		line = readline("> ");
 		if (g_sig == 1)
 		{
-			// return(heredoc_sigint_handler(filename, store));
-			free(line);
-			break ;
+			if (line)
+				free(line);
+			return (1);  // Return 1 to indicate interrupt
 		}
-		if (line == NULL || ft_strcmp(line, delimiter) == 0)
+		if (!line || ft_strcmp(line, delimiter) == 0)
 		{
-			free(line);
-			break ;
+			if (line)
+				free(line);
+			return (0);  // Return 0 for normal completion
 		}
 		write_heredoc_line(fd, line);
 		free(line);
 	}
-	return (0);
 }
 
 /**
@@ -105,30 +105,31 @@ static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *
  * @param cmd Command structure containing heredoc information
  * @return int 0 on success, 1 on error
  * @note Creates temporary file, reads input until delimiter,
- *       then opens file for reading and stores fd in cmd structure
+ *       then stores filename in cmd structure for later use
  */
 int	handle_heredoc(t_cmd *cmd, t_shell* store)
 {
-	static int	index = 0;
-	char		*filename;
+	static int	index;
 	int			fd;
+	int			result;
 
-	filename = get_heredoc_filename(index);
-	fd = open_heredoc_file(filename, O_CREAT | O_WRONLY | O_TRUNC);
-	if (fd == -1)
-		return (free(filename), 1);
-	if (read_heredoc_input(fd, cmd->heredoc_delimiter, filename, store) != 0)
-	{
-		close(fd);
-		return (free(filename), 1);
-	}
-	close(fd);
-	cmd->heredoc_fd = open_heredoc_file(filename, O_RDONLY);
-	if (cmd->heredoc_fd == -1)
-	{
-		free(filename);
+	index = 0;
+	cmd->heredoc_filename = get_heredoc_filename(index++);
+	if (!cmd->heredoc_filename)
 		return (1);
+	fd = open_heredoc_file(cmd->heredoc_filename, O_CREAT | O_WRONLY | O_TRUNC);
+	if (fd == -1)
+		return (free(cmd->heredoc_filename), 1);
+	result = read_heredoc_input(fd, cmd->heredoc_delimiter, cmd->heredoc_filename, store);
+	close(fd);
+	if (result != 0)  // If interrupted
+	{
+		unlink(cmd->heredoc_filename);  // Remove the temporary file
+		free(cmd->heredoc_filename);
+		cmd->heredoc_filename = NULL;
+		free_all(store);
+		return (130);  // Return 130 for SIGINT
 	}
-	free(filename);
+	free_all(store);
 	return (0);
 }

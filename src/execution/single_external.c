@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 17:52:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 15:42:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	setup_child_signals(void)
 }
 
 /**
- * @brief Handles redirection and heredoc setup in child process
+ * @brief Handles redirection setup in child process
  * 
  * @param store Shell data structure
  * @param cmd Command to execute
@@ -33,7 +33,7 @@ static int	setup_child_io(t_shell *store, t_cmd *cmd)
 	if (store->exit_status != 0)
 		return (store->exit_status);
 	
-	if (heredoc_child(cmd, store, 1) != 0)
+	if (heredoc_finisher(cmd, store) != 0)
 	{
 		return (EXIT_FAILURE);
 	}
@@ -61,7 +61,6 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
 		exit(setup_status);
 	}
 	reset_fds(store, 2);
-	setup_child_signals();
 	store->exit_status = executor(store, cmd);
 	exit(store->exit_status);
 }
@@ -72,7 +71,7 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
  * @param store Shell data structure
  * @param cmd Command to execute
  * @return int EXIT_SUCCESS on success, EXIT_FAILURE on error
- * @note Handles process creation, signal setup, and command execution
+ * @note Handles heredoc setup in parent before forking for command execution
  */
 int	execute_external_command(t_shell *store, t_cmd *cmd)
 {

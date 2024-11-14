@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 16:59:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 16:33:12 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,25 +45,12 @@ static void	set_builtin_fd(t_cmd *cmd)
  */
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
-	// pid_t	pid;
 	redir_handler(store, cmd, cmd->redir, NULL);
 	
 	if (store->exit_status == 0)
 	{
 		if (heredoc_child(cmd, store, 0) != 0)
 			return (EXIT_FAILURE);
-		// signal(SIGINT, SIG_IGN);	
-		// pid = heredoc_child(cmd, store);
-		// if (pid == -1)
-		// 	return (perror("fork"), EXIT_FAILURE);
-		// if (pid == 0)
-		// {
-		// 	// signal(SIGINT, SIG_DFL);
-		// 	// signal(SIGQUIT, SIG_DFL);
-		// 	exit(heredoc_finisher(cmd, store));
-		// }
-		// waitpid(pid, &store->exit_status, 0);
-		// signal(SIGINT, ctrl_c_handler);
 		set_builtin_fd(cmd);
 		store->exit_status = builtin_main(store, cmd->command);
 		reset_fds(store, 1);

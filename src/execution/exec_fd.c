@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 17:18:45 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 15:47:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,24 @@
  * @brief Handles the heredoc file descriptor setup
  *
  * @param node Command node containing the heredoc file descriptor
- * @note Duplicates heredoc fd to stdin if present, then closes the original fd
+ * @note Opens heredoc file if filename exists, duplicates to stdin, then cleans up
  */
 static void	handle_heredoc_fd(t_cmd *node)
 {
-	printf("heredoc_fd: %d\n", node->heredoc_fd);
-	if (node->heredoc_fd != -1)
+	if (node->heredoc_filename)
 	{
+		node->heredoc_fd = open(node->heredoc_filename, O_RDONLY);
+		if (node->heredoc_fd == -1)
+		{
+			print_error("Failed to open heredoc file", strerror(errno));
+			return;
+		}
 		if (dup2(node->heredoc_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on heredoc input", strerror(errno));
 		close(node->heredoc_fd);
+		unlink(node->heredoc_filename);  // Clean up the temporary file
+		free(node->heredoc_filename);    // Free the filename
+		node->heredoc_filename = NULL;
 		node->heredoc_fd = -1;
 	}
 }
@@ -38,7 +46,6 @@ static void	handle_heredoc_fd(t_cmd *node)
  */
 static void	handle_input_fd(t_cmd *node, char *temp_filename)
 {
-	printf("temp_filename: %s\n", temp_filename);
 	if (node->input_fd != STDIN_FILENO)
 	{
 		if (dup2(node->input_fd, STDIN_FILENO) == -1)
