@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sig_handler.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:50:48 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 16:34:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 21:15:54 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,14 @@ void	child_sigint_handler(int signum)
 	}
 }
 
-int	heredoc_sigint_handler(char *filename, t_shell *store)
-{
-	(void)filename;
-	free_all(store);
-	g_sig = 0;
-	return (130);
-}
+
+// int	heredoc_sigint_handler(char *filename, t_shell *store)
+// {
+// 	(void)filename;
+// 	free_all(store);
+// 	g_sig = 0;
+// 	return (130);
+// }
 // void	heredoc_setup_signals()
 // {
 // 	struct sigaction	action1;
