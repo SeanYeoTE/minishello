@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:12:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 13:03:33 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/15 18:02:31 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,8 @@ void		ctrl_c_handler(int signum);
 int			heredoc_sigint_handler(char *filename, t_shell *store);
 void		heredoc_setup_signals();
 void		child_sigint_handler(int signum);
+
+// exit_wrapper.c
+void		exit_wrapper(t_shell *store, int exit_status);
+
 #endif

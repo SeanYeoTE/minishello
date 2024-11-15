@@ -6,11 +6,60 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 01:14:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/15 18:30:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
+
+/**
+ * @brief Sets up pipes for a command's heredoc
+ * 
+ * @param cmd Command structure to set up pipes for
+ * @return int 0 on success, 1 on error
+ */
+static int	setup_heredoc_pipes(t_cmd *cmd)
+{
+	int		pipe_fds[2];
+
+	if (cmd->heredoc_fd > 0)
+	{
+		close(cmd->heredoc_fd);
+		cmd->heredoc_fd = -1;
+	}
+	if (cmd->heredoc_write_fd > 0)
+	{
+		close(cmd->heredoc_write_fd);
+		cmd->heredoc_write_fd = -1;
+	}
+
+	if (pipe(pipe_fds) == -1)
+		return (perror("pipe"), 1);
+
+	cmd->heredoc_write_fd = pipe_fds[1];
+	cmd->heredoc_fd = pipe_fds[0];
+	return (0);
+}
+
+/**
+ * @brief Check if this is the last heredoc in the command
+ *
+ * @param current Current node in redirection list
+ * @return int 1 if last heredoc, 0 otherwise
+ */
+static int	is_last_heredoc(t_node *current)
+{
+	t_node	*tmp;
+
+	tmp = current->next->next;  // Skip current heredoc and its delimiter
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->data, "<<") == 0)
+			return (0);
+		tmp = tmp->next;
+	}
+	return (1);
+}
 
 /**
  * @brief Processes heredoc redirections for a command
@@ -24,6 +73,7 @@ int	heredoc_finisher(t_cmd *cmd, t_shell* store)
 {
 	t_node	*tmp;
 	int		result;
+	int		last_heredoc;
 
 	result = 0;
 	tmp = cmd->redir;
@@ -31,48 +81,24 @@ int	heredoc_finisher(t_cmd *cmd, t_shell* store)
 	{
 		if (ft_strcmp(tmp->data, "<<") == 0)
 		{
+			last_heredoc = is_last_heredoc(tmp);
 			if (cmd->heredoc_delimiter)
 				free(cmd->heredoc_delimiter);
 			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
 			if (cmd->heredoc_delimiter == NULL)
 				return (1);
-			result = heredoc_single_external(cmd, store);
+			result = exec_heredoc(cmd, store, last_heredoc);
 			if (result != EXIT_SUCCESS)
 				break;
 		}
 		tmp = tmp->next;
 	}
-	free_all(store);
-	return (result);
-}
-
-/**
- * @brief Processes all heredoc inputs for commands in pipeline
- *
- * @param store Shell data structure containing command list
- * @return int EXIT_SUCCESS if all heredocs processed, EXIT_FAILURE on error
- * @note Must be called before executing pipeline to set up all heredoc inputs
- */
-int	handle_all_heredocs(t_shell *store)
-{
-	t_cmd	*cmd;
-	int		result;
-
-	result = 0;
-	cmd = store->cmd_head;
-	while (cmd)
+	if (cmd->heredoc_write_fd > 0)
 	{
-		if (cmd->heredoc_fd > 0)  // Close any existing heredoc pipe
-		{
-			close(cmd->heredoc_fd);
-			cmd->heredoc_fd = -1;
-		}
-		result = heredoc_finisher(cmd, store);
-		if (result != 0)
-			return (EXIT_FAILURE);
-		cmd = cmd->next;
+		close(cmd->heredoc_write_fd);
+		cmd->heredoc_write_fd = -1;
 	}
-	return (EXIT_SUCCESS);
+	return (result);
 }
 
 /**
@@ -83,7 +109,7 @@ int	handle_all_heredocs(t_shell *store)
  * @param child2 Flag indicating if this is a nested child process
  * @return int 0 on success, 1 on error
  */
-int	heredoc_child(t_cmd *cmd, t_shell *store, int child2)
+int	heredoc_child(t_cmd *cmd, t_shell *store)
 {
 	pid_t	pid;
 	int		pipe_fds[2];
@@ -93,10 +119,8 @@ int	heredoc_child(t_cmd *cmd, t_shell *store, int child2)
 		close(cmd->heredoc_fd);
 		cmd->heredoc_fd = -1;
 	}
-
 	if (pipe(pipe_fds) == -1)
 		return (perror("pipe"), 1);
-
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
@@ -109,13 +133,12 @@ int	heredoc_child(t_cmd *cmd, t_shell *store, int child2)
 	{
 		close(pipe_fds[0]);  // Child only needs write end
 		cmd->heredoc_write_fd = pipe_fds[1];
-		exit(heredoc_finisher(cmd, store));
+		exit_wrapper(store, heredoc_finisher(cmd, store));
 	}
 	close(pipe_fds[1]);  // Parent only needs read end
 	cmd->heredoc_fd = pipe_fds[0];
 	waitpid(pid, &store->exit_status, 0);
-	if (child2 == 0)
-		signal(SIGINT, ctrl_c_handler);
+	signal(SIGINT, ctrl_c_handler);
 	return (0);
 }
 
@@ -123,39 +146,47 @@ int	heredoc_child_loop(t_shell *store)
 {
 	pid_t	pid;
 	t_cmd	*cmd;
-	int		pipe_fds[2];
+	int		result;
 
+	// Set up all pipes before forking
 	cmd = store->cmd_head;
 	while (cmd)
 	{
-		if (cmd->heredoc_fd > 0)
-		{
-			close(cmd->heredoc_fd);
-			cmd->heredoc_fd = -1;
-		}
-
-		if (pipe(pipe_fds) == -1)
-			return (perror("pipe"), 1);
-
-		signal(SIGINT, SIG_IGN);
-		pid = fork();
-		if (pid == -1)
-		{
-			close(pipe_fds[0]);
-			close(pipe_fds[1]);
-			return (perror("fork"), 1);
-		}
-		if (pid == 0)
-		{
-			close(pipe_fds[0]);  // Child only needs write end
-			cmd->heredoc_write_fd = pipe_fds[1];
-			exit(heredoc_finisher(cmd, store));
-		}
-		close(pipe_fds[1]);  // Parent only needs read end
-		cmd->heredoc_fd = pipe_fds[0];
-		waitpid(pid, &store->exit_status, 0);
+		if (setup_heredoc_pipes(cmd) != 0)
+			return (1);
 		cmd = cmd->next;
 	}
+	signal(SIGINT, SIG_IGN);
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), 1);
+	if (pid == 0)
+	{
+		cmd = store->cmd_head;
+		while (cmd)
+		{
+			close(cmd->heredoc_fd);  // Child doesn't need read end
+			result = heredoc_finisher(cmd, store);
+			if (result != EXIT_SUCCESS)
+				exit_wrapper(store, result);
+			cmd = cmd->next;
+		}
+		exit_wrapper(store, EXIT_SUCCESS);
+	}
+	cmd = store->cmd_head;
+	while (cmd)
+	{
+		if (cmd->heredoc_write_fd > 0)
+		{
+			close(cmd->heredoc_write_fd);
+			cmd->heredoc_write_fd = -1;
+		}
+		cmd = cmd->next;
+	}
+	waitpid(pid, &store->exit_status, 0);
 	signal(SIGINT, ctrl_c_handler);
-	return (0);
+	
+	if (WIFEXITED(store->exit_status))
+		return (WEXITSTATUS(store->exit_status));
+	return (1);
 }

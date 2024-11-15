@@ -21,7 +21,7 @@ VAR_DIR = variables/
 REDIR_DIR = redirections/
 
 # Source files by directory
-CORE_SRC =		main.c sig_handler.c base.c setup_utils.c setup_getters.c
+CORE_SRC =		main.c sig_handler.c base.c setup_utils.c setup_getters.c exit_wrapper.c
 LEXER_SRC =		scanner.c scanner_quote.c lexer.c checks.c checks2.c \
 				input_quote.c input_space.c t_node_utils.c
 PARSER_SRC = 	parser.c t_cmd_utils.c t_cmd_utils_extra.c
