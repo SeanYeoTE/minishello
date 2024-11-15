@@ -71,6 +71,8 @@ int	check_arg(char *arg)
 			return (1);
 		i++;
 	}
+	if (arg[i] == '=')
+		return (3);
 	return (0);
 }
 
