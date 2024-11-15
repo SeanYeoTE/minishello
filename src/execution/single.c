@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 20:38:34 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/15 18:28:57 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 	
 	if (store->exit_status == 0)
 	{
-		if (heredoc_child(cmd, store, 0) != 0)
+		if (heredoc_child(cmd, store) != 0)
 			return (EXIT_FAILURE);
 		set_builtin_fd(cmd);
 		store->exit_status = builtin_main(store, cmd->command);

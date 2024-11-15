@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:16:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 20:04:28 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/15 18:32:46 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,11 @@ int			handle_input_redirection(t_cmd *cmd, char *filename);
 void		reset_fds(t_shell *store, int check);
 
 // heredoc_wrapper.c
-int			heredoc_finisher(t_cmd *cmd, t_shell *store, int child);
-int			handle_all_heredocs(t_shell *store);
-int			heredoc_child(t_cmd *cmd, t_shell *store, int child2);
+int			heredoc_finisher(t_cmd *cmd, t_shell *store);
+int			heredoc_child(t_cmd *cmd, t_shell *store);
+int			heredoc_child_loop(t_shell *store);
 
 // heredoc.c
-int			heredoc_single_external(t_cmd *cmd, t_shell *store);
-int			heredoc_single_builtin(t_cmd *cmd, t_shell *store);
+int			exec_heredoc(t_cmd *cmd, t_shell *store, int is_last_heredoc);
 
 #endif

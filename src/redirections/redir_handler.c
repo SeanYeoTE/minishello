@@ -6,11 +6,33 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 23:54:38 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
+
+/**
+ * @brief Sets up heredoc input if available
+ *
+ * @param cmd Command structure containing heredoc information
+ * @return int 0 on success, non-zero on error
+ * @note Uses heredoc_fd if available, setting it as the input source
+ */
+// static int	setup_heredoc_input(t_cmd *cmd)
+// {
+// 	if (cmd->heredoc_fd > 0)
+// 	{
+// 		if (cmd->input_fd != STDIN_FILENO)
+// 			close(cmd->input_fd);
+// 		cmd->input_fd = cmd->heredoc_fd;
+// 		cmd->input_changed = true;
+// 		cmd->heredoc_fd = -1;  // Prevent double-close
+// 		return (0);
+// 	}
+// 	return (0);
+// }
+
 /**
  * @brief Handles all types of I/O redirection for a command
  *
@@ -20,6 +42,7 @@
  * @return int 0 on success, non-zero on error
  * @note Processes input (<), output (>), and append (>>) redirections
  *       For each redirection token, processes the following token as the filename
+ *       Prioritizes heredoc input over file input when both exist
  */
 int	redir_handler(t_shell *store, t_cmd *cmd, t_node *loop, t_node *end)
 {
@@ -36,6 +59,8 @@ int	redir_handler(t_shell *store, t_cmd *cmd, t_node *loop, t_node *end)
 			result = handle_append_redirection(cmd, loop->next->data);
 		loop = loop->next;
 	}
+	// if (result == 0)
+	// 	result = setup_heredoc_input(cmd);
 	store->exit_status = result;
 	return (result);
 }

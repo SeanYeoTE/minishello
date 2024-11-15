@@ -3,64 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 20:36:28 by mchua            ###   ########.fr       */
+/*   Updated: 2024/11/15 18:30:06 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
-/**
- * @brief Generates a unique filename for heredoc temporary file
- *
- * @param index Sequential number to make filename unique
- * @return char* Newly allocated string containing filename
- * @note Creates filename in /tmp directory with format "heredoc_tmp_[index]"
- */
-static char	*get_heredoc_filename(int index)
-{
-	char	*filename;
-	char	*index_str;
-
-	index_str = ft_itoa(index);
-	filename = ft_strjoin("/tmp/heredoc_tmp_", index_str);
-	free(index_str);
-	return (filename);
-}
 
 /**
- * @brief Opens a heredoc file with specified flags
- *
- * @param filename Path to the heredoc file
- * @param flags Open flags (O_CREAT | O_WRONLY | O_TRUNC or O_RDONLY)
- * @return int File descriptor if successful, -1 on error
- * @note Creates file with 0600 permissions if O_CREAT flag is used
- */
-static int	open_heredoc_file(char *filename, int flags)
-{
-	int	fd;
-
-	fd = open(filename, flags, 0600);
-	if (fd == -1)
-	{
-		perror("open");
-		return (-1);
-	}
-	return (fd);
-}
-
-/**
- * @brief Writes a line to the heredoc file
+ * @brief Writes a line to the heredoc pipe
  *
  * @param fd File descriptor to write to
  * @param line String to write
+ * @param should_write Flag indicating if we should write to pipe
  * @note Appends a newline character after the line
  */
-static void	write_heredoc_line(int fd, char *line)
+static void	write_heredoc_line(int fd, char *line, int should_write)
 {
-	write(fd, line, ft_strlen(line));
-	write(fd, "\n", 1);
+	if (should_write)
+	{
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+	}
 }
 
 /**
@@ -68,17 +34,18 @@ static void	write_heredoc_line(int fd, char *line)
  *
  * @param fd File descriptor to write input to
  * @param delimiter String that marks end of heredoc input
+ * @param should_write Flag indicating if we should write to pipe
  * @return int 0 on success, 1 on interrupt
  * @note Reads from stdin using readline, writes to fd until delimiter is found
  */
-static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *store)
+static int	read_heredoc_input(int fd, char *delimiter, t_shell *store, int should_write)
 {
 	char	*line;
 
-	(void)filename;
 	(void)store;
 	signal(SIGINT, child_sigint_handler);
 	g_sig = 0;  // Reset signal flag at start
+	rl_outstream = stderr;  // Redirect readline's output to stderr
 	while (1)
 	{
 		line = readline("> ");
@@ -94,72 +61,31 @@ static int	read_heredoc_input(int fd, char *delimiter, char *filename, t_shell *
 				free(line);
 			return (0);  // Return 0 for normal completion
 		}
-		write_heredoc_line(fd, line);
+		write_heredoc_line(fd, line, should_write);
 		free(line);
 	}
 }
 
 /**
- * @brief Handles the complete heredoc process
+ * @brief Handles the complete heredoc process using pipes
  *
  * @param cmd Command structure containing heredoc information
+ * @param is_last_heredoc Flag indicating if this is the last heredoc
  * @return int 0 on success, 1 on error
- * @note Creates temporary file, reads input until delimiter,
- *       then stores filename in cmd structure for later use
+ * @note Uses existing pipe file descriptors from cmd structure
  */
-int	heredoc_single_external(t_cmd *cmd, t_shell* store)
+int	exec_heredoc(t_cmd *cmd, t_shell* store, int is_last_heredoc)
 {
-	static int	index;
-	int			fd;
-	int			result;
+	int		result;
 
-	index = 0;
-	cmd->heredoc_filename = get_heredoc_filename(index++);
-	if (!cmd->heredoc_filename)
-		return (1);
-	fd = open_heredoc_file(cmd->heredoc_filename, O_CREAT | O_WRONLY | O_TRUNC);
-	if (fd == -1)
-		return (free(cmd->heredoc_filename), 1);
-	result = read_heredoc_input(fd, cmd->heredoc_delimiter, cmd->heredoc_filename, store);
-	close(fd);
+	result = read_heredoc_input(cmd->heredoc_write_fd, cmd->heredoc_delimiter, store, is_last_heredoc);
+
 	if (result != 0)  // If interrupted
 	{
-		unlink(cmd->heredoc_filename);  // Remove the temporary file
-		free(cmd->heredoc_filename);
-		cmd->heredoc_filename = NULL;
-		// free_all(store);
+		close(cmd->heredoc_write_fd);  // Only close on error
+		close(cmd->heredoc_fd);
 		return (130);  // Return 130 for SIGINT
 	}
-	// free_all(store);
-	return (0);
-}
-
-int	heredoc_single_builtin(t_cmd *cmd, t_shell* store)
-{
-	static int	index;
-	int			fd;
-	int			result;
-
-	index = 0;
-	cmd->heredoc_filename = get_heredoc_filename(index++);
-	if (!cmd->heredoc_filename)
-		return (1);
-	fd = open_heredoc_file(cmd->heredoc_filename, O_CREAT | O_WRONLY | O_TRUNC);
-	if (fd == -1)
-		return (free(cmd->heredoc_filename), 1);
-	result = read_heredoc_input(fd, cmd->heredoc_delimiter, cmd->heredoc_filename, store);
-	close(fd);
-	if (result != 0)  // If interrupted
-	{
-		unlink(cmd->heredoc_filename);  // Remove the temporary file
-		free(cmd->heredoc_filename);
-		cmd->heredoc_filename = NULL;
-		free_all(store);
-		return (130);  // Return 130 for SIGINT
-	}
-	// free_all(store);
-	unlink(cmd->heredoc_filename);  // Remove the temporary file
-	free(cmd->heredoc_filename);
-	cmd->heredoc_filename = NULL;
+	
 	return (0);
 }
