@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 00:01:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 14:59:18 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		return (EXIT_FAILURE);
 
 	// Handle heredoc in a separate child process
-	heredoc_status = heredoc_child(cmd, store, 0);
+	heredoc_status = heredoc_child(cmd, store);
 	if (heredoc_status != 0)
 		return (heredoc_status);
 
