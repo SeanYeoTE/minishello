@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:32:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 20:12:52 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	minishell_loop(t_shell *store, t_shell_state *state)
 	char			*prompt;
 	bool			should_continue;
 
+	g_sig = 0;
 	while (1)
 	{
 		should_continue = false;

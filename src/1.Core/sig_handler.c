@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sig_handler.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:50:48 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 01:11:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 20:17:51 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
  */
 void	ctrl_c_handler(int signum)
 {
+	g_sig = 1;
 	if (signum == SIGINT)
 		write (STDERR_FILENO, "\n", 1);
 	rl_replace_line("", 0);
