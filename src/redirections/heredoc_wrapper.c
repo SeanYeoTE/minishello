@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/19 20:27:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 20:57:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,11 +141,12 @@ int	heredoc_child(t_cmd *cmd, t_shell *store)
 	close(pipe_fds[1]);  // Parent only needs read end
 	cmd->heredoc_fd = pipe_fds[0];
 	waitpid(pid, &status, 0);
-	if (WIFSIGNALED(status))
-	{
-		store->exit_status = 130;
-		return (130);
-	}
+	// if (WIFSIGNALED(status))
+	// {
+	// 	printf("hi u entered me");
+	// 	store->exit_status = 130;
+	// 	return (130);
+	// }
 	if (WIFEXITED(status))
 	{
 		store->exit_status = WEXITSTATUS(status);
@@ -169,7 +170,7 @@ int	heredoc_child_loop(t_shell *store)
 	{
 		if (setup_heredoc_pipes(cmd) != 0)
 			return (1);
-		cmd = cmd->next;
+	cmd = cmd->next;
 	}
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
@@ -202,17 +203,18 @@ int	heredoc_child_loop(t_shell *store)
 		cmd = cmd->next;
 	}
 	waitpid(pid, &status, 0);
-	signal(SIGINT, ctrl_c_handler);
-	if (WIFSIGNALED(status))
-	{
-		store->exit_status = 130;
-		return (130);
-	}
-	if (WIFEXITED(store->exit_status))
+	// if (WIFSIGNALED(status))
+	// {
+	// 	printf("hi u entered me");
+	// 	store->exit_status = 130;
+	// 	return (130);
+	// }
+	if (WIFEXITED(status))
 	{
 		store->exit_status = WEXITSTATUS(status);
-		return (store->exit_status);
+		return (WEXITSTATUS(status));
 	}
-	store->exit_status = 1;
+	signal(SIGINT, ctrl_c_handler);
+	store->exit_status = 10000;
 	return (1);
 }
