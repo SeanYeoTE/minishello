@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 18:30:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 20:07:24 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static int	setup_heredoc_pipes(t_cmd *cmd)
 {
 	int		pipe_fds[2];
 
+	if (checkforheredoc(cmd) == 0)
+		return (0);
 	if (cmd->heredoc_fd > 0)
 	{
 		close(cmd->heredoc_fd);

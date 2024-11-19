@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/19 14:59:18 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 19:54:12 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,20 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
 	exit(store->exit_status);
 }
 
+int checkforheredoc(t_cmd *cmd)
+{
+	t_node	*tmp;
+
+	tmp = cmd->redir;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->data, "<<") == 0)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
 /**
  * @brief Executes an external command in a child process
  *
@@ -78,10 +92,12 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		return (EXIT_FAILURE);
 
 	// Handle heredoc in a separate child process
-	heredoc_status = heredoc_child(cmd, store);
-	if (heredoc_status != 0)
-		return (heredoc_status);
-
+	if (checkforheredoc(cmd))
+	{
+		heredoc_status = heredoc_child(cmd, store);
+		if (heredoc_status != 0)
+			return (heredoc_status);
+	}
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)

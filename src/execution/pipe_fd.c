@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 23:06:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 19:50:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
  * @param fd File descriptor to close
  * @note Only closes fd if it's greater than 2 (not stdin/stdout/stderr)
  */
-static void	close_fd_if_valid(int fd)
+void	close_fd_if_valid(int fd)
 {
 	if (fd > 2)
 		close(fd);

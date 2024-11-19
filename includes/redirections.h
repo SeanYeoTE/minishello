@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:16:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 18:32:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/19 20:02:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int			heredoc_child(t_cmd *cmd, t_shell *store);
 int			heredoc_child_loop(t_shell *store);
 
 // heredoc.c
+
 int			exec_heredoc(t_cmd *cmd, t_shell *store, int is_last_heredoc);
 
 #endif
