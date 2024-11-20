@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/19 19:54:12 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/20 16:55:48 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
 		free_all(store);
 		exit(setup_status);
 	}
-	reset_fds(store, 2);
+	// reset_fds(store, 2);
 	store->exit_status = executor(store, cmd);
 	exit(store->exit_status);
 }
@@ -98,6 +98,7 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		if (heredoc_status != 0)
 			return (heredoc_status);
 	}
+	// printf("heredoc_fd: %d\n", cmd->heredoc_fd);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
