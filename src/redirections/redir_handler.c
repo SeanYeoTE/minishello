@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 23:54:38 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 15:23:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,16 +51,14 @@ int	redir_handler(t_shell *store, t_cmd *cmd, t_node *loop, t_node *end)
 	result = 0;
 	while (loop != end && result == 0)
 	{
-		if (ft_strcmp(loop->data, "<") == 0)
+		if (ft_strcmp(loop->data, "<") == 0 && loop->next)
 			result = handle_input_redirection(cmd, loop->next->data);
-		else if (ft_strcmp(loop->data, ">") == 0)
+		else if (ft_strcmp(loop->data, ">") == 0 && loop->next)
 			result = handle_output_redirection(cmd, loop->next->data);
-		else if (ft_strcmp(loop->data, ">>") == 0)
+		else if (ft_strcmp(loop->data, ">>") == 0 && loop->next)
 			result = handle_append_redirection(cmd, loop->next->data);
 		loop = loop->next;
 	}
-	// if (result == 0)
-	// 	result = setup_heredoc_input(cmd);
 	store->exit_status = result;
 	return (result);
 }

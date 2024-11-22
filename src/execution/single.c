@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/20 16:57:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 14:10:29 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
  * @note Handles both input and output redirection
  *       Closes original file descriptors after duplication
  */
-static void	set_builtin_fd(t_cmd *cmd)
+void	set_builtin_fd(t_cmd *cmd)
 {
 	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{

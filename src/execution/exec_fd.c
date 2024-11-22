@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/20 17:07:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 14:12:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ static void	handle_heredoc_fd(t_cmd *node)
  */
 static void	handle_input_fd(t_cmd *node, char *temp_filename)
 {
-	printf("input_fd: %d\n", node->input_fd);
 	if (node->input_fd != STDIN_FILENO)
 	{
 		if (dup2(node->input_fd, STDIN_FILENO) == -1)

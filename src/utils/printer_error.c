@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:02:30 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 12:55:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 15:27:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ void	print_erroronly(char *str, char *arg)
 	char	*prefix;
 	char	*message;
 
-	prefix = create_error_prefix(arg);
+	if (arg)
+		prefix = create_error_prefix(arg);
+	else
+		prefix = ft_strdup("bash: ");
 	message = create_error_message(prefix, str);
 	free(prefix);
 	ft_putstr_fd(message, STDERR_FILENO);

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 18:30:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 14:11:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 	}
 	else
 	{
+		set_builtin_fd(cmd);
 		store->exit_status = builtin_main(store, cmd->command);
 		free_all(store);
 		exit(store->exit_status);

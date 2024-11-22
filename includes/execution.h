@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:14:30 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/19 20:05:07 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 14:10:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int			multi_executor(t_shell *store);
 int			multiple_function(t_shell *store);
 
 // single.c
+void		set_builtin_fd(t_cmd *cmd);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // single_external.c

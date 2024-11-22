@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 00:18:05 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 14:14:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	// cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 	{
-		fprintf(stderr, "ERROR: Failed to allocate memory for cmd\n");
+		print_error(strerror(errno), "Failed to allocate memory for cmd");
 		return (NULL);
 	}
 	cmd->redir = NULL;

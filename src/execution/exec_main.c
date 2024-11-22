@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 15:50:01 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 15:26:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ static int	handle_execution_errors(char *exepath, char **argv,
  */
 static char	*resolve_path(t_shell *store, char **argv)
 {
+	if (argv[0] == NULL)
+		return (NULL);
 	if (ft_strncmp(argv[0], "./", 2) == 0 || ft_strchr(argv[0], '/'))
 		return (ft_strdup(argv[0]));
 	return (findprocesspath(store, argv));
