@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 14:11:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/22 17:01:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,27 @@
  */
 void	run_cmd(t_cmd *cmd, t_shell *store)
 {
-	if (check_builtin(cmd->command) == 0)
+	if (store->cmd_head->command == NULL && store->cmd_head->redir == NULL)
+	{
+		print_erroronly("syntax error", "newline");
+		store->exit_status = 2;
+		exit(store->exit_status);
+	}
+	else if (store->cmd_head->command == NULL && store->cmd_head->redir)
 	{
 		store->exit_status = executor(store, cmd);
 		exit(store->exit_status);
 	}
-	else
+	else if (check_builtin(cmd->command))
 	{
 		set_builtin_fd(cmd);
 		store->exit_status = builtin_main(store, cmd->command);
 		free_all(store);
+		exit(store->exit_status);
+	}
+	else
+	{
+		store->exit_status = executor(store, cmd);
 		exit(store->exit_status);
 	}
 }
