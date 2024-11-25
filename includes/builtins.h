@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:13:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:11:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/25 20:48:13 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ t_env		*get_env_loc(t_env *env_list, char *arg);
 t_var		*get_var_loc(char *arg, t_var *var_list, t_env *current_env);
 t_env		*create_env_node(char *var);
 t_env		*env_init(char **envp);
+void		handle_shlvl(t_env *head);
 int			env_handler(t_shell *store);
 
 // export.c
