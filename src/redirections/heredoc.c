@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/19 20:00:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:51:11 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int	expandforheredoc(t_cmd *cmd)
  * @param expand Flag indicating if variables should be expanded
  * @note Appends a newline character after the line
  */
-static void	write_heredoc_line(t_cmd *cmd, char *line, int should_write, t_shell *store)
+static void	write_heredoc_line(t_cmd *cmd, char *line, int should_write,
+				t_shell *store)
 {
 	char	*expanded_line;
 
@@ -61,6 +62,7 @@ static void	write_heredoc_line(t_cmd *cmd, char *line, int should_write, t_shell
 			free(line);
 	}
 }
+
 /**
  * @brief Reads input lines until delimiter is encountered
  *
@@ -76,8 +78,8 @@ static int	read_heredoc_input(t_cmd *cmd, t_shell *store, int should_write)
 
 	(void)store;
 	signal(SIGINT, child_sigint_handler);
-	g_sig = 0;  // Reset signal flag at start
-	rl_outstream = stderr;  // Redirect readline's output to stderr
+	g_sig = 0;
+	rl_outstream = stderr;
 	while (1)
 	{
 		line = readline("> ");
@@ -85,16 +87,15 @@ static int	read_heredoc_input(t_cmd *cmd, t_shell *store, int should_write)
 		{
 			if (line)
 				free(line);
-			return (1);  // Return 1 to indicate interrupt
+			return (1);
 		}
 		if (!line || ft_strcmp(line, cmd->heredoc_delimiter) == 0)
 		{
 			if (line)
 				free(line);
-			return (0);  // Return 0 for normal completion
+			return (0);
 		}
 		write_heredoc_line(cmd, line, should_write, store);
-		// free(line);
 	}
 }
 
@@ -106,17 +107,16 @@ static int	read_heredoc_input(t_cmd *cmd, t_shell *store, int should_write)
  * @return int 0 on success, 1 on error
  * @note Uses existing pipe file descriptors from cmd structure
  */
-int	exec_heredoc(t_cmd *cmd, t_shell* store, int is_last_heredoc)
+int	exec_heredoc(t_cmd *cmd, t_shell *store, int is_last_heredoc)
 {
 	int		result;
 
 	result = read_heredoc_input(cmd, store, is_last_heredoc);
-
-	if (result != 0)  // If interrupted
+	if (result != 0)
 	{
-		close(cmd->heredoc_write_fd);  // Only close on error
+		close(cmd->heredoc_write_fd);
 		close(cmd->heredoc_fd);
-		return (130);  // Return 130 for SIGINT
+		return (130);
 	}
 	return (0);
 }

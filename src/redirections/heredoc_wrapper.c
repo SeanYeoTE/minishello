@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 14:14:22 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:54:15 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,8 @@ static int	setup_heredoc_pipes(t_cmd *cmd)
 		close(cmd->heredoc_write_fd);
 		cmd->heredoc_write_fd = -1;
 	}
-
 	if (pipe(pipe_fds) == -1)
 		return (perror("pipe"), 1);
-
 	cmd->heredoc_write_fd = pipe_fds[1];
 	cmd->heredoc_fd = pipe_fds[0];
 	return (0);
@@ -53,7 +51,7 @@ static int	is_last_heredoc(t_node *current)
 {
 	t_node	*tmp;
 
-	tmp = current->next->next;  // Skip current heredoc and its delimiter
+	tmp = current->next->next;
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->data, "<<") == 0)
@@ -71,7 +69,7 @@ static int	is_last_heredoc(t_node *current)
  * @note Searches for "<<" tokens and sets up heredoc with specified delimiter
  *       Allocates memory for delimiter which must be freed by caller
  */
-int	heredoc_finisher(t_cmd *cmd, t_shell* store)
+int	heredoc_finisher(t_cmd *cmd, t_shell *store)
 {
 	t_node	*tmp;
 	int		result;
@@ -91,7 +89,7 @@ int	heredoc_finisher(t_cmd *cmd, t_shell* store)
 				return (1);
 			result = exec_heredoc(cmd, store, last_heredoc);
 			if (result != EXIT_SUCCESS)
-				break;
+				break ;
 		}
 		tmp = tmp->next;
 	}
@@ -117,7 +115,7 @@ int	heredoc_child(t_cmd *cmd, t_shell *store)
 	int		pipe_fds[2];
 	int		status;
 
-	if (cmd->heredoc_fd > 0)  // Close previous pipe if it exists
+	if (cmd->heredoc_fd > 0)
 	{
 		close(cmd->heredoc_fd);
 		cmd->heredoc_fd = -1;
@@ -134,11 +132,11 @@ int	heredoc_child(t_cmd *cmd, t_shell *store)
 	}
 	if (pid == 0)
 	{
-		close(pipe_fds[0]);  // Child only needs write end
+		close(pipe_fds[0]);
 		cmd->heredoc_write_fd = pipe_fds[1];
 		exit_wrapper(store, heredoc_finisher(cmd, store));
 	}
-	close(pipe_fds[1]);  // Parent only needs read end
+	close(pipe_fds[1]);
 	cmd->heredoc_fd = pipe_fds[0];
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
@@ -158,13 +156,12 @@ int	heredoc_child_loop(t_shell *store)
 	int		result;
 	int		status;
 
-	// Set up all pipes before forking
 	cmd = store->cmd_head;
 	while (cmd)
 	{
 		if (setup_heredoc_pipes(cmd) != 0)
 			return (1);
-	cmd = cmd->next;
+		cmd = cmd->next;
 	}
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
@@ -175,7 +172,7 @@ int	heredoc_child_loop(t_shell *store)
 		cmd = store->cmd_head;
 		while (cmd)
 		{
-			close(cmd->heredoc_fd);  // Child doesn't need read end
+			close(cmd->heredoc_fd);
 			if (checkforheredoc(cmd))
 			{
 				result = heredoc_finisher(cmd, store);
