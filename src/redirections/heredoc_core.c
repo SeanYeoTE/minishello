@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
+/*   heredoc_core.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/27 17:51:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 18:35:12 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,4 +119,40 @@ int	exec_heredoc(t_cmd *cmd, t_shell *store, int is_last_heredoc)
 		return (130);
 	}
 	return (0);
+}
+
+/**
+ * @brief Processes heredoc redirections for a command
+ *
+ * @param cmd Command structure containing redirection information
+ * @return int 0 on success, 1 on error
+ * @note Searches for "<<" tokens and sets up heredoc with specified delimiter
+ *       Allocates memory for delimiter which must be freed by caller
+ */
+int	heredoc_finisher(t_cmd *cmd, t_shell *store)
+{
+	t_node	*tmp;
+	int		result;
+	int		last_heredoc;
+
+	result = 0;
+	tmp = cmd->redir;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->data, "<<") == 0)
+		{
+			last_heredoc = is_last_heredoc(tmp);
+			if (cmd->heredoc_delimiter)
+				free(cmd->heredoc_delimiter);
+			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
+			if (cmd->heredoc_delimiter == NULL)
+				return (1);
+			result = exec_heredoc(cmd, store, last_heredoc);
+			if (result != EXIT_SUCCESS)
+				break ;
+		}
+		tmp = tmp->next;
+	}
+	close_heredoc_write(cmd);
+	return (result);
 }
