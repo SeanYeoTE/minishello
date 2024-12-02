@@ -6,15 +6,15 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 12:57:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:16:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 /**
- * @brief Calculates the length needed for the result string after variable replacement
- *
+ * @brief Calculates the length needed for the result string after variable
+ * replacement
  * @param front The string before the variable
  * @param back The string after the variable
  * @param value The value to replace the variable with

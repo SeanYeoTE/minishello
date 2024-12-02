@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/15 12:02:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/27 17:41:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:15:42 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
  * @brief Counts the number of quotes in a string
  *
  * This function counts both single and double quotes while respecting quote
- * nesting rules. A quote is only counted if it's not inside another type of quote.
- *
+ * nesting rules. A quote is only counted if it's not inside another type
+ * of quote.
  * @param str The string to count quotes in
  * @param len Length of the string
  * @return int The total number of quotes found
@@ -93,7 +93,8 @@ static char	*quote_remover(const char *str, int len)
 /**
  * @brief Handles quote removal for the first token
  *
- * This function specifically handles quote removal for the first token (when count is 0).
+ * This function specifically handles quote removal for the first token
+ * (when count is 0).
  * It processes tokens of type 8 or 9 that have a length greater than 2.
  *
  * @param token The token to process

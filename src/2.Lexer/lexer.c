@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/26 19:33:30 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:13:01 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,3 @@ int	lexer(t_shell *store)
 	remove_quote(store->head);
 	return (EXIT_SUCCESS);
 }
-
-

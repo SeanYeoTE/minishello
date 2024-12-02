@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 12:59:06 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:15:03 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ static void	handle_expansion_char(char **input, int *i, t_shell *store,
  * @brief Main function for handling variable expansions in the input string
  *
  * This function processes the entire input string, handling variable expansions
- * while respecting quote states. It expands environment variables, the exit status
- * variable ($?), and handles special quote cases.
+ * while respecting quote states. It expands environment variables, the exit
+ * status variable ($?), and handles special quote cases.
  *
  * @param store Shell structure containing environment and state information
  * @param input The input string to process

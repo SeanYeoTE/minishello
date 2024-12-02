@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 15:23:05 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:17:02 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@
  * @param end End node of the token list (exclusive)
  * @return int 0 on success, non-zero on error
  * @note Processes input (<), output (>), and append (>>) redirections
- *       For each redirection token, processes the following token as the filename
+ *       For each redirection token, processes the following token as the
+ *       filename
  *       Prioritizes heredoc input over file input when both exist
  */
 int	redir_handler(t_shell *store, t_cmd *cmd, t_node *loop, t_node *end)
