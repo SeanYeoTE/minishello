@@ -6,13 +6,46 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:02:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 18:33:16 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 21:23:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
 
+/**
+ * @brief Updates shell exit status based on process status
+ * @param store Shell data structure
+ * @param status Process status from waitpid
+ * @return int Exit status
+ */
+static int	return_exit_status(t_shell *store, int pid)
+{
+	int	status;
 
+	waitpid(pid, &status, 0);
+	signal(SIGINT, ctrl_c_handler);
+	if (WIFEXITED(status))
+	{
+		store->exit_status = WEXITSTATUS(status);
+		return (WEXITSTATUS(status));
+	}
+	store->exit_status = 1;
+	return (1);
+}
+
+/**
+ * @brief Handles child process operations for heredoc
+ * @param cmd Command structure
+ * @param store Shell data structure
+ * @param pipe_fds Pipe file descriptors
+ * @return int Result of heredoc operation
+ */
+int	handle_child_heredoc(t_cmd *cmd, t_shell *store, int pipe_fds[2])
+{
+	close(pipe_fds[0]);
+	cmd->heredoc_write_fd = pipe_fds[1];
+	return (heredoc_finisher(cmd, store));
+}
 
 /**
  * @brief Creates a child process to handle heredoc input
@@ -26,7 +59,6 @@ int	heredoc_child(t_cmd *cmd, t_shell *store)
 {
 	pid_t	pid;
 	int		pipe_fds[2];
-	int		status;
 
 	if (cmd->heredoc_fd > 0)
 	{
@@ -44,75 +76,32 @@ int	heredoc_child(t_cmd *cmd, t_shell *store)
 		return (perror("fork"), 1);
 	}
 	if (pid == 0)
-	{
-		close(pipe_fds[0]);
-		cmd->heredoc_write_fd = pipe_fds[1];
-		exit_wrapper(store, heredoc_finisher(cmd, store));
-	}
+		exit_wrapper(store, handle_child_heredoc(cmd, store, pipe_fds));
 	close(pipe_fds[1]);
 	cmd->heredoc_fd = pipe_fds[0];
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-	{
-		store->exit_status = WEXITSTATUS(status);
-		return (WEXITSTATUS(status));
-	}
-	signal(SIGINT, ctrl_c_handler);
-	store->exit_status = 1;
-	return (1);
+	return (return_exit_status(store, pid));
 }
 
 int	heredoc_child_loop(t_shell *store)
 {
 	pid_t	pid;
 	t_cmd	*cmd;
-	int		result;
-	int		status;
 
-	cmd = store->cmd_head;
-	while (cmd)
-	{
-		if (setup_heredoc_pipes(cmd) != 0)
-			return (1);
-		cmd = cmd->next;
-	}
+	if (setup_heredoc_pipes_wrapper(store) != 0)
+		return (1);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		cmd = store->cmd_head;
-		while (cmd)
-		{
-			close(cmd->heredoc_fd);
-			if (checkforheredoc(cmd))
-			{
-				result = heredoc_finisher(cmd, store);
-				if (result != EXIT_SUCCESS)
-					exit_wrapper(store, result);
-			}
-			cmd = cmd->next;
-		}
-		exit_wrapper(store, EXIT_SUCCESS);
+		heredoc_finisher_wrapper(store);
 	}
 	cmd = store->cmd_head;
 	while (cmd)
 	{
-		if (cmd->heredoc_write_fd > 0)
-		{
-			close(cmd->heredoc_write_fd);
-			cmd->heredoc_write_fd = -1;
-		}
+		close_heredoc_write(cmd);
 		cmd = cmd->next;
 	}
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-	{
-		store->exit_status = WEXITSTATUS(status);
-		return (WEXITSTATUS(status));
-	}
-	signal(SIGINT, ctrl_c_handler);
-	store->exit_status = 10000;
-	return (1);
+	return (return_exit_status(store, pid));
 }
