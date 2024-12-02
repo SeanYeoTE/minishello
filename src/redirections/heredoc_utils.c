@@ -5,15 +5,59 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/14 10:00:00 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 16:17:39 by seayeo           ###   ########.fr       */
+/*   Created: 2024/12/02 18:32:17 by seayeo            #+#    #+#             */
+/*   Updated: 2024/12/02 21:30:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 /**
+ * @brief Closes the heredoc write file descriptor if it's open
+ * 
+ * @param cmd Command structure containing the file descriptor
+ */
+void	close_heredoc_write(t_cmd *cmd)
+{
+	if (cmd->heredoc_write_fd > 0)
+	{
+		close(cmd->heredoc_write_fd);
+		cmd->heredoc_write_fd = -1;
+	}
+}
+
+/**
+ * @brief Sets up pipes for a command's heredoc
+ * 
+ * @param cmd Command structure to set up pipes for
+ * @return int 0 on success, 1 on error
+ */
+int	setup_heredoc_pipes(t_cmd *cmd)
+{
+	int		pipe_fds[2];
+
+	if (checkforheredoc(cmd) == 0)
+		return (0);
+	if (cmd->heredoc_fd > 0)
+	{
+		close(cmd->heredoc_fd);
+		cmd->heredoc_fd = -1;
+	}
+	if (cmd->heredoc_write_fd > 0)
+	{
+		close(cmd->heredoc_write_fd);
+		cmd->heredoc_write_fd = -1;
+	}
+	if (pipe(pipe_fds) == -1)
+		return (perror("pipe"), 1);
+	cmd->heredoc_write_fd = pipe_fds[1];
+	cmd->heredoc_fd = pipe_fds[0];
+	return (0);
+}
+
+/**
  * @brief Check if this is the last heredoc in the command
+ *
  * @param current Current node in redirection list
  * @return int 1 if last heredoc, 0 otherwise
  */
@@ -31,61 +75,36 @@ int	is_last_heredoc(t_node *current)
 	return (1);
 }
 
-/**
- * @brief Frees the heredoc delimiter if allocated
- * @param cmd Command structure containing delimiter
- */
-void	cleanup_delimiter(t_cmd *cmd)
+int	setup_heredoc_pipes_wrapper(t_shell *store)
 {
-	if (cmd->heredoc_delimiter)
-		free(cmd->heredoc_delimiter);
+	t_cmd	*cmd;
+
+	cmd = store->cmd_head;
+	while (cmd)
+	{
+		if (setup_heredoc_pipes(cmd) != 0)
+			return (1);
+		cmd = cmd->next;
+	}
+	return (0);
 }
 
-/**
- * @brief Processes a single heredoc node
- * @param cmd Command structure
- * @param store Shell data structure
- * @param node Current node in redirection list
- * @return int Result of heredoc execution
- */
-int	process_heredoc_node(t_cmd *cmd, t_shell *store, t_node *node)
+void	heredoc_finisher_wrapper(t_shell *store)
 {
-	int	last_heredoc;
-
-	last_heredoc = is_last_heredoc(node);
-	cleanup_delimiter(cmd);
-	cmd->heredoc_delimiter = ft_strdup(node->next->data);
-	if (!cmd->heredoc_delimiter)
-		return (1);
-	return (exec_heredoc(cmd, store, last_heredoc));
-}
-
-/**
- * @brief Processes all heredoc nodes in a command
- * @param cmd Command structure
- * @param store Shell data structure
- * @return int Result of heredoc processing
- */
-int	heredoc_finisher(t_cmd *cmd, t_shell *store)
-{
-	t_node	*tmp;
+	t_cmd	*cmd;
 	int		result;
 
-	tmp = cmd->redir;
-	while (tmp)
+	cmd = store->cmd_head;
+	while (cmd)
 	{
-		if (ft_strcmp(tmp->data, "<<") == 0)
+		close(cmd->heredoc_fd);
+		if (checkforheredoc(cmd))
 		{
-			result = process_heredoc_node(cmd, store, tmp);
+			result = heredoc_finisher(cmd, store);
 			if (result != EXIT_SUCCESS)
-				break ;
+				exit_wrapper(store, result);
 		}
-		tmp = tmp->next;
+		cmd = cmd->next;
 	}
-	if (cmd->heredoc_write_fd > 0)
-	{
-		close(cmd->heredoc_write_fd);
-		cmd->heredoc_write_fd = -1;
-	}
-	return (result);
+	exit_wrapper(store, EXIT_SUCCESS);
 }
