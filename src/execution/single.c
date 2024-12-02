@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/27 17:46:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 16:37:17 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	set_builtin_fd(t_cmd *cmd)
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
 	redir_handler(store, cmd, cmd->redir, NULL);
+	// printf("exit_status: %d\n", store->exit_status);
 	if (store->exit_status == 0)
 	{
 		if (heredoc_child(cmd, store) != 0)

@@ -1,34 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_utils.c                                    :+:      :+:    :+:   */
+/*   heredoc_setup.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/02 18:32:17 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 21:30:40 by seayeo           ###   ########.fr       */
+/*   Created: 2024/03/14 10:00:00 by seayeo            #+#    #+#             */
+/*   Updated: 2024/12/02 16:16:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 /**
- * @brief Closes the heredoc write file descriptor if it's open
- * 
- * @param cmd Command structure containing the file descriptor
- */
-void	close_heredoc_write(t_cmd *cmd)
-{
-	if (cmd->heredoc_write_fd > 0)
-	{
-		close(cmd->heredoc_write_fd);
-		cmd->heredoc_write_fd = -1;
-	}
-}
-
-/**
  * @brief Sets up pipes for a command's heredoc
- * 
  * @param cmd Command structure to set up pipes for
  * @return int 0 on success, 1 on error
  */
@@ -56,26 +41,56 @@ int	setup_heredoc_pipes(t_cmd *cmd)
 }
 
 /**
- * @brief Check if this is the last heredoc in the command
- *
- * @param current Current node in redirection list
- * @return int 1 if last heredoc, 0 otherwise
+ * @brief Creates a new pipe for heredoc operations
+ * @param pipe_fds Array to store pipe file descriptors
+ * @return int 0 on success, 1 on error
  */
-int	is_last_heredoc(t_node *current)
+int	setup_heredoc_pipe(int pipe_fds[2])
 {
-	t_node	*tmp;
-
-	tmp = current->next->next;
-	while (tmp)
-	{
-		if (ft_strcmp(tmp->data, "<<") == 0)
-			return (0);
-		tmp = tmp->next;
-	}
-	return (1);
+	if (pipe(pipe_fds) == -1)
+		return (perror("pipe"), 1);
+	return (0);
 }
 
-int	setup_heredoc_pipes_wrapper(t_shell *store)
+/**
+ * @brief Closes heredoc file descriptor if open
+ * @param cmd Command structure containing the file descriptor
+ */
+void	cleanup_heredoc_fd(t_cmd *cmd)
+{
+	if (cmd->heredoc_fd > 0)
+	{
+		close(cmd->heredoc_fd);
+		cmd->heredoc_fd = -1;
+	}
+}
+
+/**
+ * @brief Closes all write file descriptors in the command list
+ * @param store Shell data structure containing command list
+ */
+void	cleanup_write_fds(t_shell *store)
+{
+	t_cmd	*cmd;
+
+	cmd = store->cmd_head;
+	while (cmd)
+	{
+		if (cmd->heredoc_write_fd > 0)
+		{
+			close(cmd->heredoc_write_fd);
+			cmd->heredoc_write_fd = -1;
+		}
+		cmd = cmd->next;
+	}
+}
+
+/**
+ * @brief Sets up heredoc pipes for all commands in the list
+ * @param store Shell data structure containing command list
+ * @return int 0 on success, 1 on error
+ */
+int	setup_all_heredoc_pipes(t_shell *store)
 {
 	t_cmd	*cmd;
 
@@ -87,24 +102,4 @@ int	setup_heredoc_pipes_wrapper(t_shell *store)
 		cmd = cmd->next;
 	}
 	return (0);
-}
-
-void	heredoc_finisher_wrapper(t_shell *store)
-{
-	t_cmd	*cmd;
-	int		result;
-
-	cmd = store->cmd_head;
-	while (cmd)
-	{
-		close(cmd->heredoc_fd);
-		if (checkforheredoc(cmd))
-		{
-			result = heredoc_finisher(cmd, store);
-			if (result != EXIT_SUCCESS)
-				exit_wrapper(store, result);
-		}
-		cmd = cmd->next;
-	}
-	exit_wrapper(store, EXIT_SUCCESS);
 }
