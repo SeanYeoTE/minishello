@@ -1,17 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
+/*   heredoc_core.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/27 17:51:11 by seayeo           ###   ########.fr       */
+/*   Created: 2024/03/14 10:00:00 by seayeo            #+#    #+#             */
+/*   Updated: 2024/12/02 16:15:54 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
 
+/**
+ * @brief Checks if heredoc delimiter contains quotes for expansion
+ * @param cmd Command structure containing the delimiter
+ * @return int 1 if expansion is needed, 0 otherwise
+ */
 int	expandforheredoc(t_cmd *cmd)
 {
 	char	*delimiter;
@@ -37,12 +42,11 @@ int	expandforheredoc(t_cmd *cmd)
 }
 
 /**
- * @brief Writes a line to the heredoc pipe
- * @param fd File descriptor to write to
+ * @brief Writes a line to the heredoc pipe with optional expansion
+ * @param cmd Command structure containing file descriptors
  * @param line String to write
  * @param should_write Flag indicating if we should write to pipe
- * @param expand Flag indicating if variables should be expanded
- * @note Appends a newline character after the line
+ * @param store Shell data structure for expansions
  */
 static void	write_heredoc_line(t_cmd *cmd, char *line, int should_write,
 				t_shell *store)
@@ -65,12 +69,10 @@ static void	write_heredoc_line(t_cmd *cmd, char *line, int should_write,
 
 /**
  * @brief Reads input lines until delimiter is encountered
- *
- * @param fd File descriptor to write input to
- * @param delimiter String that marks end of heredoc input
+ * @param cmd Command structure containing heredoc information
+ * @param store Shell data structure
  * @param should_write Flag indicating if we should write to pipe
  * @return int 0 on success, 1 on interrupt
- * @note Reads from stdin using readline, writes to fd until delimiter is found
  */
 static int	read_heredoc_input(t_cmd *cmd, t_shell *store, int should_write)
 {
@@ -101,11 +103,10 @@ static int	read_heredoc_input(t_cmd *cmd, t_shell *store, int should_write)
 
 /**
  * @brief Handles the complete heredoc process using pipes
- *
  * @param cmd Command structure containing heredoc information
+ * @param store Shell data structure
  * @param is_last_heredoc Flag indicating if this is the last heredoc
- * @return int 0 on success, 1 on error
- * @note Uses existing pipe file descriptors from cmd structure
+ * @return int 0 on success, 130 on interrupt
  */
 int	exec_heredoc(t_cmd *cmd, t_shell *store, int is_last_heredoc)
 {
