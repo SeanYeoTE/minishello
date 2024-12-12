@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 17:02:48 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:51:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	reset_fds(t_shell *store, int check)
 		{
 			if (dup2(store->output_reset, STDOUT_FILENO) == -1)
 				print_erroronly("dup2 failed on output reset", strerror(errno));
-		}	
+		}
 	}
 	else
 	{

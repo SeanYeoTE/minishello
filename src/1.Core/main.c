@@ -6,13 +6,13 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/15 01:09:17 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:14:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
 
-volatile sig_atomic_t g_sig;
+volatile sig_atomic_t	g_sig;
 
 /**
  * @brief Entry point of the minishell program

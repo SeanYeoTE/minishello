@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:15:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:39:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:12:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,5 @@ int			scanner_word(char *str, int start, t_shell *store);
 int			init_node(char *value, t_node **head);
 t_node		*get_last(t_node *last);
 t_node		*get_node(t_node *ret, int num);
-
-
 
 #endif

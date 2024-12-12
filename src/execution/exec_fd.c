@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 14:12:15 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:46:36 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ static void	handle_input_fd(t_cmd *node, char *temp_filename)
  * @brief Handles the output file descriptor setup
  *
  * @param node Command node containing the output file descriptor
- * @note Duplicates output fd to stdout if different from default, then closes original
+ * @note Duplicates output fd to stdout if different from default,
+ * 			then closes original
  */
 static void	handle_output_fd(t_cmd *node)
 {

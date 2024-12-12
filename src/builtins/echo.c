@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
+
 static bool	flag_checker(char *src)
 {
 	int		i;

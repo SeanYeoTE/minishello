@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:50:48 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/19 20:17:51 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:14:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,9 @@ void	child_sigint_handler(int signum)
 		close(STDIN_FILENO);
 		rl_replace_line("", 0);
 		rl_on_new_line();
-		rl_done = 1;  // This will cause readline to return immediately
+		rl_done = 1;
 	}
 }
-
 
 // int	heredoc_sigint_handler(char *filename, t_shell *store)
 // {
@@ -60,7 +59,6 @@ void	child_sigint_handler(int signum)
 // 	struct sigaction	action2;
 // 	sigset_t			mask1;
 // 	sigset_t			mask2;
-	
 // 	sigemptyset(&mask1);
 // 	sigemptyset(&mask2);
 // 	sigaddset(&mask1, SIGINT);

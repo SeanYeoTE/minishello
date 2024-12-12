@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:14:30 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 14:10:44 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 11:49:26 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void		handle_pipe_fds(int *in_fd, int pipe_fds[2], int is_last_cmd);
 int			handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd);
 
 // pipe_fd.c
-void        close_fd_if_valid(int fd);
+void		close_fd_if_valid(int fd);
 int			wait_for_command(t_shell *store, pid_t pid);
 void		setup_pipes(int in_fd, int out_fd, t_cmd *cmd);
 
@@ -40,8 +40,8 @@ void		set_builtin_fd(t_cmd *cmd);
 int			single_function(t_shell *store, t_node *start, t_node *end);
 
 // single_external.c
-int         checkforheredoc(t_cmd *cmd);
-int	        execute_external_command(t_shell *store, t_cmd *cmd);
+int			checkforheredoc(t_cmd *cmd);
+int			execute_external_command(t_shell *store, t_cmd *cmd);
 
 // exec_path.c
 char		*findprocesspath(t_shell *store, char **arr);

@@ -6,11 +6,12 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 12:40:05 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:47:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
+
 int	builtin_main(t_shell *store, t_node *current)
 {
 	int		exit_status;

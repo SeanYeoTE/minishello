@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h" 
+#include "../../includes/minishell.h"
+
 int	cd_handler(t_node *current)
 {
 	char	*home;
@@ -29,6 +30,8 @@ int	cd_handler(t_node *current)
 			return (BUILTIN_FAILURE);
 		}
 	}
+	else if ((current->next->data)[0] == '\0')
+		return (EXIT_FAILURE);
 	else if (chdir(current->next->data) != 0)
 	{
 		perror(current->data);

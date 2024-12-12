@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:19:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 13:06:31 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/26 19:38:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void		init_expansion_state(bool *in_single_quotes,
 				bool *in_double_quotes);
 
 // remove_quote.c
+int			should_remove_quote(t_node *head);
 void		remove_quote(t_node *token);
 
 // var_handler.c
