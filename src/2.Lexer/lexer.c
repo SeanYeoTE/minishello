@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:21:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/12 17:39:29 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int	full_lexer(char *str, t_shell *store, int index)
 int	lexer(t_shell *store)
 {
 	store->input = input_spacer(store->input);
+	// printf("input: %s\n", store->input);
 	if (ft_strchr(store->input, '$') != NULL)
 	{
 		store->expanded = true;
