@@ -66,6 +66,34 @@ t_env	*create_env_node(char *var)
 	return (new_env);
 }
 
+// void	handle_shlvl(t_env *head)
+// {
+// 	t_env	*current_env;
+// 	char	*shell_value;
+
+// 	current_env = head;
+// 	if (current_env == NULL)
+// 	{
+// 		printf("nihao\n");
+// 		return ;
+// 	}
+// 	else
+// 	{
+// 		while (current_env)
+// 		{
+// 			printf("hi\n");
+// 			if (ft_strncmp(current_env->var, "SHLVL=", 6) == 0)
+// 			{
+// 				shell_value = ft_strchr(current_env->var, '=');
+// 				shell_value++;
+// 				*shell_value = *shell_value + 48;
+// 				return ;
+// 			}
+// 			current_env = current_env->next;
+// 		}
+// 	}
+// }
+
 t_env	*env_init(char **envp)
 {
 	t_env	*current;
@@ -75,6 +103,7 @@ t_env	*env_init(char **envp)
 
 	head = NULL;
 	i = 0;
+	// handle_shlvl(head);
 	while (envp && envp[i])
 	{
 		new_node = create_env_node(envp[i]);
