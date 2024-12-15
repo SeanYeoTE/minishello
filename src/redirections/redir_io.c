@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 13:43:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,9 @@ int	handle_append_redirection(t_cmd *cmd, char *filename)
 int	handle_input_redirection(t_cmd *cmd, char *filename)
 {
 	int	inputfd;
-
+	
 	inputfd = open(filename, O_RDONLY);
+	// printf("hi\n");
 	cmd->input_changed = true;
 	if (inputfd == -1)
 	{

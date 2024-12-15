@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/19 20:51:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 14:47:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,9 +95,10 @@ int	prompter_input(t_shell *store, char *prompt)
 	if (store->input[0] == '\0')
 		return (0);
 	add_history(store->input);
-	if (check_error(store->input))
+	if (check_error(store, store->input))
 	{
 		print_erroronly("syntax error", store->input);
+		store->exit_status = 2;
 		return (0);
 	}
 	return (1);

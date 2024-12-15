@@ -6,11 +6,12 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/27 17:51:36 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 14:31:23 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
+
 /**
  * @brief Checks if two file descriptors point to the same resource
  *

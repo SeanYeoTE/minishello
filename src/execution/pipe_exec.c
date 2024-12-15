@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/27 17:47:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 15:40:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,5 +129,6 @@ int	multiple_function(t_shell *store)
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
+	print_cmd_stack(&store->cmd_head);
 	return (multi_executor(store));
 }

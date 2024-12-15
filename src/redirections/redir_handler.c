@@ -6,32 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 21:54:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 12:17:02 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 14:31:37 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
-
-/**
- * @brief Sets up heredoc input if available
- *
- * @param cmd Command structure containing heredoc information
- * @return int 0 on success, non-zero on error
- * @note Uses heredoc_fd if available, setting it as the input source
- */
-// static int	setup_heredoc_input(t_cmd *cmd)
-// {
-// 	if (cmd->heredoc_fd > 0)
-// 	{
-// 		if (cmd->input_fd != STDIN_FILENO)
-// 			close(cmd->input_fd);
-// 		cmd->input_fd = cmd->heredoc_fd;
-// 		cmd->input_changed = true;
-// 		cmd->heredoc_fd = -1;  // Prevent double-close
-// 		return (0);
-// 	}
-// 	return (0);
-// }
 
 /**
  * @brief Handles all types of I/O redirection for a command

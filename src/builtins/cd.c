@@ -31,7 +31,7 @@ int	cd_handler(t_node *current)
 		}
 	}
 	else if ((current->next->data)[0] == '\0')
-		return (EXIT_FAILURE);
+		return (EXIT_SUCCESS);
 	else if (chdir(current->next->data) != 0)
 	{
 		perror(current->data);
