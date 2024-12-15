@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 14:14:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:14:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
  * @param start First node of the command sequence
  * @param end Last node of the command sequence
  * @param create Boolean flag indicating if this is the first command
- * @return Pointer to newly initialized command structure, NULL if allocation fails
+ * @return Pointer to newly initialized command structure, NULL if allocation
+ * fails
  * @details Allocates memory for a new command structure, sets up redirection,
  * links, file descriptors and command nodes
  */
@@ -27,7 +28,6 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	t_cmd	*cmd;
 
 	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
-	// cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (!cmd)
 	{
 		print_error(strerror(errno), "Failed to allocate memory for cmd");

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/20 17:00:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:46:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,6 @@ void	close_fd_if_valid(int fd)
 }
 
 /**
- * @brief Sets up heredoc input redirection
- *
- * @param cmd Command structure containing heredoc file descriptor
- * @note Uses heredoc_fd directly if available, duplicates to stdin
- */
-// static void	setup_heredoc_fd(t_cmd *cmd)
-// {
-// 	if (cmd->heredoc_fd > 0)
-// 	{
-// 		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
-// 			print_error("dup2 failed on heredoc input", strerror(errno));
-// 		close(cmd->heredoc_fd);
-// 		cmd->heredoc_fd = -1;
-// 	}
-// }
-
-/**
  * @brief Sets up input file descriptor for piped commands
  *
  * @param in_fd Input file descriptor from pipe
@@ -56,12 +39,6 @@ static void	setup_input_fd(int in_fd, t_cmd *cmd)
 			print_error("dup2 failed on input", strerror(errno));
 		close_fd_if_valid(in_fd);
 	}
-	// if (cmd->redir && cmd->input_fd != STDIN_FILENO)
-	// {
-	// 	if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
-	// 		print_error("dup2 failed on redirected input", strerror(errno));
-	// 	close_fd_if_valid(cmd->input_fd);
-	// }
 }
 
 /**
@@ -73,12 +50,6 @@ static void	setup_input_fd(int in_fd, t_cmd *cmd)
  */
 static void	setup_output_fd(int out_fd, t_cmd *cmd)
 {
-	// if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
-	// {
-	// 	if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
-	// 		print_error("dup2 failed on redirected output", strerror(errno));
-	// 	close_fd_if_valid(cmd->output_fd);
-	// }
 	(void)cmd;
 	if (out_fd != STDOUT_FILENO)
 	{
@@ -98,8 +69,6 @@ static void	setup_output_fd(int out_fd, t_cmd *cmd)
  */
 void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 {
-	// setup_heredoc_fd(cmd);
-	// if (cmd->heredoc_fd == -1)
 	(void)cmd;
 	setup_input_fd(in_fd, cmd);
 	setup_output_fd(out_fd, cmd);

@@ -78,8 +78,8 @@ bool	same_var(char *src, t_shell *store)
  * @brief Checks if a variable exists in the shell's environment
  *
  * Compares the source variable name with existing environment variables,
- * handling both exact matches and partial matches based on the variable name length.
- *
+ * handling both exact matches and partial matches based on the variable
+ * name length.
  * @param src The source variable name to check
  * @param store Shell structure containing the environment variables
  * @return bool True if variable doesn't exist, false if it exists

@@ -6,13 +6,13 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/25 21:47:08 by mchua            ###   ########.fr       */
+/*   Updated: 2024/12/02 12:14:09 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
 
-volatile sig_atomic_t g_sig;
+volatile sig_atomic_t	g_sig;
 
 static int			get_lvl(const char *str)
 {

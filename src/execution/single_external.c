@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 15:28:18 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/12 17:53:41 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,8 @@ static int	setup_child_io(t_shell *store, t_cmd *cmd)
 	redir_handler(store, cmd, cmd->redir, NULL);
 	if (store->exit_status != 0)
 		return (store->exit_status);
-	
 	if (cmd->command == NULL)
 		return (store->exit_status);
-		
 	return (EXIT_SUCCESS);
 }
 
@@ -48,7 +46,7 @@ static int	setup_child_io(t_shell *store, t_cmd *cmd)
 static void	execute_child_process(t_shell *store, t_cmd *cmd)
 {
 	int	setup_status;
-	
+
 	setup_child_signals();
 	setup_status = setup_child_io(store, cmd);
 	if (setup_status != EXIT_SUCCESS)
@@ -56,12 +54,11 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
 		free_all(store);
 		exit(setup_status);
 	}
-	// reset_fds(store, 2);
 	store->exit_status = executor(store, cmd);
 	exit(store->exit_status);
 }
 
-int checkforheredoc(t_cmd *cmd)
+int	checkforheredoc(t_cmd *cmd)
 {
 	t_node	*tmp;
 
@@ -102,6 +99,8 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		if (heredoc_status != 0)
 			return (heredoc_status);
 	}
+	if (cmd->command == NULL)
+		return (heredoc_status);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)
