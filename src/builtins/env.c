@@ -126,9 +126,14 @@ int	env_handler(t_shell *store)
 	current = store->env;
 	while (current)
 	{
-		ft_putstr_fd(current->var, store->cmd_head->output_fd);
-		ft_putstr_fd("\n", store->cmd_head->output_fd);
-		current = current->next;
+		if (ft_strchr(current->var, '='))
+		{
+			ft_putstr_fd(current->var, store->cmd_head->output_fd);
+			ft_putstr_fd("\n", store->cmd_head->output_fd);
+			current = current->next;
+		}
+		else
+			break ;
 	}
 	return (EXIT_SUCCESS);
 }
