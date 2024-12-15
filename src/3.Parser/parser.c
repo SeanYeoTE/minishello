@@ -6,16 +6,18 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 15:32:14 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 13:26:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:14:22 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 /**
- * @brief Parses the preprocessed input and routes to appropriate execution handlers
+ * @brief Parses the preprocessed input and routes to appropriate execution
+ * 	handlers
  * @param store Main shell data structure containing command information
- * @param should_continue Pointer to boolean indicating if shell loop should continue
+ * @param should_continue Pointer to boolean indicating if shell loop should
+ * 	continue
  * @return EXIT_SUCCESS after successful parsing and execution
  * @details Analyzes command structure to determine execution path:
  * - For single commands without pipes, routes to single_function

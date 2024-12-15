@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 15:26:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:47:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
  * @param exepath Path to the executable
  * @param argv Array of command arguments
  * @param temp_filename Temporary file name for redirection
- * @return int Error code (0 for success, 126 for permission denied, 127 for not found)
+ * @return int Error code (0 for success, 126 for permission denied,
+ * 			127 for not found)
  * @note Checks for command existence, directory status, and permissions
  */
 static int	handle_execution_errors(char *exepath, char **argv,

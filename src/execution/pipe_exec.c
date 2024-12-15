@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 15:01:42 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:47:00 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,6 @@ int	multi_executor(t_shell *store)
 
 	in_fd = STDIN_FILENO;
 	cmd = store->cmd_head;
-
-	
 	if (heredoc_child_loop(store) != 0)
 		return (EXIT_FAILURE);
 	while (cmd)

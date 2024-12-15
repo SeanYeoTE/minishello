@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/22 14:10:29 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/12 17:54:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	set_builtin_fd(t_cmd *cmd)
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
 	redir_handler(store, cmd, cmd->redir, NULL);
-	
+	// printf("exit_status: %d\n", store->exit_status);
 	if (store->exit_status == 0)
 	{
 		if (heredoc_child(cmd, store) != 0)
@@ -65,13 +65,13 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
  * @param head Start of command token list
  * @param tail End of command token list
  * @return int Exit status of command execution
- * @note Creates command structure and executes either builtin or external command
+ * @note Creates command structure and executes either builtin or 
+ * 			external command
  *       Handles syntax errors and empty commands with redirections
  */
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
 	create_cmd(store, head, tail, true);
-	
 	if (store->cmd_head->command == NULL && store->cmd_head->redir == NULL)
 	{
 		print_erroronly("syntax error", "newline");
