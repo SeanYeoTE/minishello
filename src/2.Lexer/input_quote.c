@@ -6,11 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 13:31:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 14:09:58 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:11:16 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 bool	within_quote(const char *input, int index)
 {

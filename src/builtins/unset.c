@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 static bool	got_equal(char *arg)
 {

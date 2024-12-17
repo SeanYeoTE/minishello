@@ -6,15 +6,15 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 15:01:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 15:00:37 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/26 15:29:12 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 static void	print_node_info(t_node *node)
 {
-	printf("Node Value: %s\n", node->data);
+	printf("Node Value: .%s.\n", node->data);
 	printf("Token Type: %d\n", node->type);
 	printf("Node Prev Value: %p\n", node->prev);
 	printf("Node Next Value: %p\n", node->next);
@@ -47,6 +47,7 @@ int	print_stack_se(t_node *start, t_node *end)
 	{
 		printf("Node Value: %s...\n", start->data);
 		printf("Token Type: %d\n", start->type);
+		printf("next %p\n", start->next);
 		printf("***************\n");
 		start = start->next;
 		count++;

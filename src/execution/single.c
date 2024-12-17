@@ -6,81 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 20:53:34 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 13:43:22 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
-/**
- * @brief Processes heredoc redirections for a command
- *
- * @param cmd Command structure containing redirection information
- * @return int 0 on success, 1 on error
- * @note Searches for "<<" tokens and sets up heredoc with specified delimiter
- *       Allocates memory for delimiter which must be freed by caller
- */
-int	heredoc_finisher(t_cmd *cmd)
-{
-	t_node	*tmp;
-	int		result;
-
-	result = 0;
-	tmp = cmd->redir;
-	while (tmp)
-	{
-		if (ft_strcmp(tmp->data, "<<") == 0)
-		{
-			cmd->heredoc_delimiter = ft_strdup(tmp->next->data);
-			if (cmd->heredoc_delimiter == NULL)
-				return (1);
-			result = handle_heredoc(cmd);
-		}
-		tmp = tmp->next;
-	}
-	return (result);
-}
-
-/**
- * @brief Executes an external command in a child process
- *
- * @param store Shell data structure
- * @param cmd Command to execute
- * @return int EXIT_SUCCESS on success, EXIT_FAILURE on error
- * @note Handles signal setup, redirections, and heredoc processing
- *       Child process exits with appropriate status
- */
-int	execute_external_command(t_shell *store, t_cmd *cmd)
-{
-	pid_t	pid;
-
-	pid = 0;
-	pid = fork();
-	if (pid == -1)
-		return (perror("fork"), EXIT_FAILURE);
-	signal(SIGINT, SIG_IGN);
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		store->exit_status = redir_handler(cmd, cmd->redir, NULL);
-		if (store->exit_status != 0)
-		{
-			free_all(store);
-			exit(store->exit_status);
-		}
-		heredoc_finisher(cmd);
-		if (cmd->command == NULL)
-		{
-			free_all(store);
-			exit(store->exit_status);
-		}
-		store->exit_status = executor(store, cmd);
-		exit(store->exit_status);
-	}
-	return (wait_for_command(store, pid));
-}
-
+#include "../../includes/minishell.h" 
 /**
  * @brief Sets up file descriptors for builtin command execution
  *
@@ -88,7 +18,7 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
  * @note Handles both input and output redirection
  *       Closes original file descriptors after duplication
  */
-static void	set_builtin_fd(t_cmd *cmd)
+void	set_builtin_fd(t_cmd *cmd)
 {
 	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
 	{
@@ -115,25 +45,15 @@ static void	set_builtin_fd(t_cmd *cmd)
  */
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
-	pid_t	pid;
-	store->exit_status = redir_handler(cmd, cmd->redir, NULL);
+	redir_handler(store, cmd, cmd->redir, NULL);
+	// printf("exit_status: %d\n", store->exit_status);
 	if (store->exit_status == 0)
 	{
-		pid = fork();
-		if (pid == -1)
-			return (perror("fork"), EXIT_FAILURE);
-		if (pid == 0)
-		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);
-			heredoc_finisher(cmd);
-		}
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-		waitpid(pid, &store->exit_status, 0);
+		if (heredoc_child(cmd, store) != 0)
+			return (EXIT_FAILURE);
 		set_builtin_fd(cmd);
 		store->exit_status = builtin_main(store, cmd->command);
-		reset_fds(store);
+		reset_fds(store, 1);
 	}
 	return (store->exit_status);
 }
@@ -145,12 +65,15 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
  * @param head Start of command token list
  * @param tail End of command token list
  * @return int Exit status of command execution
- * @note Creates command structure and executes either builtin or external command
+ * @note Creates command structure and executes either builtin or 
+ * 			external command
  *       Handles syntax errors and empty commands with redirections
  */
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
+	// print_stack(&head);
 	create_cmd(store, head, tail, true);
+	// print_cmd_stack(&store->cmd_head);
 	if (store->cmd_head->command == NULL && store->cmd_head->redir == NULL)
 	{
 		print_erroronly("syntax error", "newline");

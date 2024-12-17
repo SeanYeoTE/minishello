@@ -6,11 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 13:48:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 14:57:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/14 23:52:53 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 void	freechararray(char **v)
 {
@@ -61,6 +61,10 @@ void	free_cmd(t_cmd **cmd)
 			free_stack(&current->redir);
 		if (current->heredoc_delimiter)
 			free(current->heredoc_delimiter);
+		if (current->heredoc_fd > 0)
+			close(current->heredoc_fd);
+		if (current->heredoc_write_fd > 0)
+			close(current->heredoc_write_fd);
 		free(current);
 		current = tmp;
 	}

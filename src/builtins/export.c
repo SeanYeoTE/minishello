@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 static int	get_env_len(t_env *envp)
 {
@@ -66,12 +66,16 @@ int	check_arg(char *arg)
 			return (1);
 		i++;
 	}
+	if (arg[i] == '_' && !arg[i + 1])
+		return (3);
 	while (arg[i] && arg[i] != '=')
 	{
 		if (!ft_isalnum(arg[i]) && arg[i] != '_')
 			return (1);
 		i++;
 	}
+	// if (arg[i] == '=' && arg[i + 1] == '\0')
+	// 	return (3);
 	return (0);
 }
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 t_env	*get_env_loc(t_env *env_list, char *arg)
 {
@@ -66,6 +66,34 @@ t_env	*create_env_node(char *var)
 	return (new_env);
 }
 
+// void	handle_shlvl(t_env *head)
+// {
+// 	t_env	*current_env;
+// 	char	*shell_value;
+
+// 	current_env = head;
+// 	if (current_env == NULL)
+// 	{
+// 		printf("nihao\n");
+// 		return ;
+// 	}
+// 	else
+// 	{
+// 		while (current_env)
+// 		{
+// 			printf("hi\n");
+// 			if (ft_strncmp(current_env->var, "SHLVL=", 6) == 0)
+// 			{
+// 				shell_value = ft_strchr(current_env->var, '=');
+// 				shell_value++;
+// 				*shell_value = *shell_value + 48;
+// 				return ;
+// 			}
+// 			current_env = current_env->next;
+// 		}
+// 	}
+// }
+
 t_env	*env_init(char **envp)
 {
 	t_env	*current;
@@ -75,7 +103,8 @@ t_env	*env_init(char **envp)
 
 	head = NULL;
 	i = 0;
-	while (envp[i])
+	// handle_shlvl(head);
+	while (envp && envp[i])
 	{
 		new_node = create_env_node(envp[i]);
 		if (head == NULL)
@@ -98,9 +127,14 @@ int	env_handler(t_shell *store)
 	current = store->env;
 	while (current)
 	{
-		ft_putstr_fd(current->var, store->cmd_head->output_fd);
-		ft_putstr_fd("\n", store->cmd_head->output_fd);
-		current = current->next;
+		if (ft_strchr(current->var, '='))
+		{
+			ft_putstr_fd(current->var, store->cmd_head->output_fd);
+			ft_putstr_fd("\n", store->cmd_head->output_fd);
+			current = current->next;
+		}
+		else
+			break ;
 	}
 	return (EXIT_SUCCESS);
 }

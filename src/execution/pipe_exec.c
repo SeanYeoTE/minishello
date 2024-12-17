@@ -6,12 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:52:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/17 13:11:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 /**
  * @brief Updates the shell's exit status based on process termination
  *
@@ -65,6 +64,8 @@ int	multi_executor(t_shell *store)
 
 	in_fd = STDIN_FILENO;
 	cmd = store->cmd_head;
+	if (heredoc_child_loop(store) != 0)
+		return (EXIT_FAILURE);
 	while (cmd)
 	{
 		if (handle_command(store, cmd, &in_fd, &out_fd) == EXIT_FAILURE)
@@ -92,6 +93,9 @@ static void	process_pipe_token(t_shell *store, t_node **front,
 	t_node	*temp;
 
 	temp = back->next;
+	// if (back->prev == NULL)
+	// 	create_cmd(store, *front, NULL, *create);  // Create empty command for leading pipe
+	// else
 	create_cmd(store, *front, back->prev, *create);
 	*create = false;
 	free(back->data);
@@ -122,11 +126,13 @@ int	multiple_function(t_shell *store)
 		if (ft_strcmp(back->data, "|") == 0)
 		{
 			process_pipe_token(store, &front, back, &create);
+			// print_cmd_stack(&store->cmd_head);
 			back = front;
 		}
 		else
 			back = back->next;
 	}
 	create_cmd(store, front, back, create);
+	// print_cmd_stack(&store->cmd_head);
 	return (multi_executor(store));
 }

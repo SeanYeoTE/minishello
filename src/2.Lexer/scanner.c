@@ -6,11 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 14:48:52 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/08 14:11:34 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/11 15:12:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 int	scanner_comment(char *str, int start, t_shell *store)
 {

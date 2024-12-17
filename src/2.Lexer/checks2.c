@@ -6,11 +6,11 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 06:54:32 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 10:21:38 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 15:24:25 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 // also for starting with pipe operator
 int	check_invalid_pipe(char *input)
@@ -48,11 +48,17 @@ int	check_quotes(char *line)
 }
 
 // wrapper for check_quotes and check_invalid_pipe
-int	check_error(char *input)
+int	check_error(t_shell *store, char *input)
 {
 	if (!check_quotes(input))
+	{
+		store->exit_status = 2;
 		return (1);
+	}
 	if (check_invalid_pipe(input))
+	{
+		store->exit_status = 2;
 		return (1);
+	}
 	return (0);
 }

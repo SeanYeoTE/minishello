@@ -6,12 +6,24 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:30:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/02 12:15:03 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
+/**
+ * @brief Handles different types of expansion characters in the input
+ *
+ * This function processes special characters like $", $?, and $ followed by
+ * variable names. It delegates the handling to appropriate functions based on
+ * the type of expansion needed and the current quote state.
+ *
+ * @param input Pointer to the input string being processed
+ * @param i Pointer to the current position in the input string
+ * @param store Shell structure containing environment and state information
+ * @param quote_state Structure containing the current quote state
+ */
 static void	handle_expansion_char(char **input, int *i, t_shell *store,
 	t_quote_state *quote_state)
 {
@@ -36,6 +48,17 @@ static void	handle_expansion_char(char **input, int *i, t_shell *store,
 		(*i)++;
 }
 
+/**
+ * @brief Main function for handling variable expansions in the input string
+ *
+ * This function processes the entire input string, handling variable expansions
+ * while respecting quote states. It expands environment variables, the exit
+ * status variable ($?), and handles special quote cases.
+ *
+ * @param store Shell structure containing environment and state information
+ * @param input The input string to process
+ * @return char* The processed string with all expansions performed
+ */
 char	*expansions(t_shell *store, char *input)
 {
 	int				i;

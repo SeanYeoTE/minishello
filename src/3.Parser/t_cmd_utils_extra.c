@@ -10,8 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h" 
 
+/**
+ * @brief Sets the parent command for a sequence of nodes
+ * @param node Starting node in the sequence
+ * @param cmd Command structure to set as parent
+ * @details Iterates through linked list of nodes, setting each node's parent
+ * pointer to the provided command structure
+ */
 void	set_parent(t_node *node, t_cmd *cmd)
 {
 	t_node	*current;
@@ -24,6 +31,14 @@ void	set_parent(t_node *node, t_cmd *cmd)
 	}
 }
 
+/**
+ * @brief Removes redirection and file nodes from command sequence
+ * @param start Pointer to start of command sequence
+ * @param redir Redirection node to remove
+ * @param file File node associated with redirection to remove
+ * @details Updates node links to maintain list integrity after removal
+ * Handles cases where nodes are at start, middle, or end of sequence
+ */
 void	remove_nodes(t_node **start, t_node *redir, t_node *file)
 {
 	if (redir->prev)
@@ -47,6 +62,14 @@ void	remove_nodes(t_node **start, t_node *redir, t_node *file)
 		file->next = NULL;
 }
 
+/**
+ * @brief Adds redirection and file nodes to redirection list
+ * @param redir Pointer to redirection list head
+ * @param new_redir New redirection node to add
+ * @param new_file New file node associated with redirection
+ * @details If list is empty, sets new nodes as head
+ * Otherwise appends nodes to end of existing list
+ */
 void	add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file)
 {
 	t_node	*last;
@@ -73,34 +96,39 @@ void	add_to_redir(t_node **redir, t_node *new_redir, t_node *new_file)
 	}
 }
 
-int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
+/**
+ * @brief Finds the last command in a command list
+ * @param cmd Starting command in the list
+ * @return Pointer to last command in list
+ * @details Traverses command list following next pointers until end is reached
+ */
+t_cmd	*get_last_cmd(t_cmd *cmd)
 {
-	t_cmd	*new;
+	t_cmd	*current;
 
-	if (!start)
-		return (1);
-	new = init_cmd(store, start, end, create);
-	if (!new)
-		return (1);
-	return (0);
+	current = cmd;
+	while (current && current->next)
+		current = current->next;
+	return (current);
 }
 
-void	detach_redir(t_cmd *new)
+/**
+ * @brief Counts total number of commands in shell
+ * @param store Main shell data structure
+ * @return Number of commands in command list
+ * @details Traverses command list from head to tail, counting each command
+ */
+int	count_cmds(t_shell *store)
 {
-	t_node	*temp;
-	t_node	*file;
+	t_cmd	*iter;
+	int		count;
 
-	temp = new->command;
-	while (temp)
+	count = 0;
+	iter = store->cmd_head;
+	while (iter)
 	{
-		if (redir_checker(temp) == 1)
-		{
-			file = temp->next;
-			remove_nodes(&new->command, temp, file);
-			add_to_redir(&new->redir, temp, file);
-			temp = new->command;
-		}
-		else
-			temp = temp->next;
+		count++;
+		iter = iter->next;
 	}
+	return (count);
 }

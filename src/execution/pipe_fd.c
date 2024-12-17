@@ -6,39 +6,21 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:55:10 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/11/27 17:46:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
-
+#include "../../includes/minishell.h" 
 /**
  * @brief Safely closes a file descriptor if it's not a standard stream
  *
  * @param fd File descriptor to close
  * @note Only closes fd if it's greater than 2 (not stdin/stdout/stderr)
  */
-static void	close_fd_if_valid(int fd)
+void	close_fd_if_valid(int fd)
 {
 	if (fd > 2)
 		close(fd);
-}
-
-/**
- * @brief Sets up heredoc input redirection
- *
- * @param cmd Command structure containing heredoc file descriptor
- * @note Duplicates heredoc fd to stdin and closes original if present
- */
-static void	setup_heredoc_fd(t_cmd *cmd)
-{
-	if (cmd->heredoc_fd != -1)
-	{
-		if (dup2(cmd->heredoc_fd, STDIN_FILENO) == -1)
-			print_error("dup2 failed on heredoc input", strerror(errno));
-		close_fd_if_valid(cmd->heredoc_fd);
-		cmd->heredoc_fd = -1;
-	}
 }
 
 /**
@@ -50,17 +32,12 @@ static void	setup_heredoc_fd(t_cmd *cmd)
  */
 static void	setup_input_fd(int in_fd, t_cmd *cmd)
 {
+	(void)cmd;
 	if (in_fd != STDIN_FILENO)
 	{
 		if (dup2(in_fd, STDIN_FILENO) == -1)
 			print_error("dup2 failed on input", strerror(errno));
 		close_fd_if_valid(in_fd);
-	}
-	if (cmd->redir && cmd->input_fd != STDIN_FILENO)
-	{
-		if (dup2(cmd->input_fd, STDIN_FILENO) == -1)
-			print_error("dup2 failed on redirected input", strerror(errno));
-		close_fd_if_valid(cmd->input_fd);
 	}
 }
 
@@ -73,13 +50,8 @@ static void	setup_input_fd(int in_fd, t_cmd *cmd)
  */
 static void	setup_output_fd(int out_fd, t_cmd *cmd)
 {
-	if (cmd->redir && cmd->output_fd != STDOUT_FILENO)
-	{
-		if (dup2(cmd->output_fd, STDOUT_FILENO) == -1)
-			print_error("dup2 failed on redirected output", strerror(errno));
-		close_fd_if_valid(cmd->output_fd);
-	}
-	else if (out_fd != STDOUT_FILENO)
+	(void)cmd;
+	if (out_fd != STDOUT_FILENO)
 	{
 		if (dup2(out_fd, STDOUT_FILENO) == -1)
 			print_error("dup2 failed on output", strerror(errno));
@@ -97,7 +69,7 @@ static void	setup_output_fd(int out_fd, t_cmd *cmd)
  */
 void	setup_pipes(int in_fd, int out_fd, t_cmd *cmd)
 {
-	setup_heredoc_fd(cmd);
+	(void)cmd;
 	setup_input_fd(in_fd, cmd);
 	setup_output_fd(out_fd, cmd);
 }

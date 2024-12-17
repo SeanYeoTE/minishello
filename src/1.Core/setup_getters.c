@@ -1,46 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setup_utils.c                                      :+:      :+:    :+:   */
+/*   setup_getters.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 19:46:54 by seayeo           ###   ########.fr       */
+/*   Created: 2024/11/11 12:53:02 by seayeo            #+#    #+#             */
+/*   Updated: 2024/12/17 15:40:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/**
- * @brief Initializes the shell's variables and state
- * @param store Main shell data structure
- * @param env_head Environment variables list
- * @param var_head Shell variables list
- * @details Sets up initial shell state including:
- *          - File descriptors for I/O
- *          - Command and token linked lists
- *          - Environment variables
- *          - PATH variable and its components
- */
-void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
-{
-	store->exit_status = 0;
-	store->input_reset = dup(STDIN_FILENO);
-	store->output_reset = dup(STDOUT_FILENO);
-	store->head = NULL;
-	store->tail = NULL;
-	store->fd_in = STDIN_FILENO;
-	store->quotes = false;
-	store->expanded = false;
-	store->cmd_head = NULL;
-	store->cmd_tail = NULL;
-	store->env = env_head;
-	store->var = var_head;
-	store->path = ft_strdup(cgetenv("PATH", env_head));
-	store->paths = ft_split(store->path, ':');
-	store->envp = ccreatearray(env_head);
-}
 
 /**
  * @brief Custom getenv implementation for the shell
@@ -50,7 +20,7 @@ void	init_var(t_shell *store, t_env *env_head, t_var *var_head)
  * @details Searches through the environment list for a variable
  *          matching the provided name and returns its value
  */
-char	*cgetenv(char *var, t_env *env)
+char	*ft_getenv(char *var, t_env *env)
 {
 	t_env	*current;
 
@@ -94,7 +64,7 @@ static int	count_env_entries(t_env *env)
  * @details Converts the linked list of environment variables into
  *          an array format suitable for execve and other functions
  */
-char	**ccreatearray(t_env *env)
+char	**ft_createarray(t_env *env)
 {
 	t_env	*current;
 	char	**new_env;
@@ -126,17 +96,26 @@ char	**ccreatearray(t_env *env)
  * @details Creates a prompt string in the format "username:cwd$ "
  *          The returned string must be freed by the caller
  */
-char	*form_prompt(char *cwd)
+char	*form_prompt(char *cwd, t_shell *store)
 {
 	char	*username;
 	char	*temp;
 	char	*ret;
+	char	*home;
+	bool	should_free;
 
+	should_free = false;
 	username = getenv("USER");
-	ret = ft_strjoin(username, " ");
-	temp = ft_strjoin(ret, ":");
-	free(ret);
+	home = ft_getenv("HOME", store->env);
+	if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
+	{
+		cwd = ft_strjoin("~", cwd + ft_strlen(home));
+		should_free = true;
+	}
+	temp = ft_strjoin(username, ":");
 	ret = ft_strjoin(temp, cwd);
+	if (should_free)
+		free(cwd);
 	free(temp);
 	temp = ft_strjoin(ret, "$ ");
 	free(ret);

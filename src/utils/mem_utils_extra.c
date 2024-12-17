@@ -6,11 +6,11 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 14:58:10 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/10 10:10:12 by mchua            ###   ########.fr       */
+/*   Updated: 2024/12/15 16:21:32 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../core/minishell.h"
+#include "../../includes/minishell.h"
 
 void	free_env(t_env **env)
 {
