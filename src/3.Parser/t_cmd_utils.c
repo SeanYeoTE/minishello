@@ -6,11 +6,43 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 12:14:41 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/17 13:01:18 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h" 
+
+/**
+ * @brief Removes pipe operators from the command node list
+ * @param cmd_head Pointer to the head of command node list
+ * @details Iterates through nodes and removes any pipe operators
+ */
+// static void	remove_pipe_operators(t_node **cmd_head)
+// {
+// 	t_node	*current;
+// 	t_node	*next;
+
+// 	current = *cmd_head;
+// 	while (current)
+// 	{
+// 		next = current->next;
+// 		if (current->type == 3 && current->data && current->data[0] == '|')
+// 		{
+// 			if (current == *cmd_head)
+// 				*cmd_head = next;
+// 			else
+// 			{
+// 				t_node *prev = *cmd_head;
+// 				while (prev->next != current)
+// 					prev = prev->next;
+// 				prev->next = next;
+// 			}
+// 			free(current->data);
+// 			free(current);
+// 		}
+// 		current = next;
+// 	}
+// }
 
 /**
  * @brief Initializes a new command structure
@@ -37,8 +69,9 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	setup_cmd_links(store, cmd, create);
 	cmd->command = start;
 	cmd->input_changed = false;
+	// remove_pipe_operators(&cmd->command);
 	set_parent(cmd->command, cmd);
-	if (end->next)
+	if (end && end->next)
 		end->next = NULL;
 	detach_redir(cmd);
 	init_cmd_fds(cmd);

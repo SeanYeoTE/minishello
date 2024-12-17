@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:16:50 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 21:29:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 14:31:50 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int			handle_input_redirection(t_cmd *cmd, char *filename);
 
 // redir_utils.c
 void		reset_fds(t_shell *store, int check);
+bool		are_same_resource(int fd1, int fd2);
 
 // heredoc_utils.c
 void		close_heredoc_write(t_cmd *cmd);

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:15:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 12:12:53 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/15 14:42:07 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int			is_double_operator(const char *input, int i);
 
 // checks2.c
 int			check_quotes(char *line);
-int			check_error(char *input);
+int			check_error(t_shell *store, char *input);
 
 // input_utils.c
 char		*input_spacer(char *input);
