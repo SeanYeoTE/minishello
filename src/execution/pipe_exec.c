@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 16:34:50 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/17 13:11:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,10 @@ static void	process_pipe_token(t_shell *store, t_node **front,
 	t_node	*temp;
 
 	temp = back->next;
-	if (back->prev == NULL)
-		create_cmd(store, *front, NULL, *create);  // Create empty command for leading pipe
-	else
-		create_cmd(store, *front, back->prev, *create);
+	// if (back->prev == NULL)
+	// 	create_cmd(store, *front, NULL, *create);  // Create empty command for leading pipe
+	// else
+	create_cmd(store, *front, back->prev, *create);
 	*create = false;
 	free(back->data);
 	free(back);
@@ -126,7 +126,7 @@ int	multiple_function(t_shell *store)
 		if (ft_strcmp(back->data, "|") == 0)
 		{
 			process_pipe_token(store, &front, back, &create);
-			print_cmd_stack(&store->cmd_head);
+			// print_cmd_stack(&store->cmd_head);
 			back = front;
 		}
 		else

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:54:42 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 14:29:32 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/17 13:19:35 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static bool	check_redir_ambiguity(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if ((str[i] == '<' || str[i] == '>') && str[i + 1])
+		if ((str[i] == '<' || str[i] == '>') && str[i + 1] && str[i - 1] != '-')
 		{
 			if (str[i + 1] == str[i])
 				i += 2;
@@ -47,7 +47,7 @@ static bool	check_redir_ambiguity(char *str)
 				i++;
 			while (is_space(str[i]))
 				i++;
-			if (str[i] == '$' && str[i + 1] && !is_space(str[i + 1]) 
+			if (str[i] == '$' && str[i + 1] && !is_space(str[i + 1])
 				&& str[i + 1] != '/' && str[i + 1] != '$')
 			{
 				print_erroronly("ambiguous redirect", &str[i]);
