@@ -6,7 +6,7 @@
 /*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/19 15:34:18 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/14 21:43:27 by mchua            ###   ########.fr       */
+/*   Updated: 2024/12/15 14:52:46 by mchua            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,10 @@ int	handle_export(t_shell *store, char *current_arg)
 	ret_value = 0;
 	arg = current_arg;
 	ret_value = check_arg(arg);
-	if (!ft_strchr (arg, '=') && ret_value == 0)
-		return (0);
-	if (ft_strchr (arg, '=') && ret_value == 3)
-		return (0);
+	// if (!ft_strchr (arg, '=') && ret_value == 0)
+	// 	return (0);
+	// if (ft_strchr (arg, '=') && ret_value == 3)
+	// 	return (0);
 	print_error_msg(arg, ret_value);
 	if (ret_value == 0)
 		set_export(store, arg);
