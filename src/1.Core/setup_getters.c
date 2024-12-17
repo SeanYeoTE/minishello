@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 12:53:02 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 15:13:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/17 15:40:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,17 +96,26 @@ char	**ft_createarray(t_env *env)
  * @details Creates a prompt string in the format "username:cwd$ "
  *          The returned string must be freed by the caller
  */
-char	*form_prompt(char *cwd)
+char	*form_prompt(char *cwd, t_shell *store)
 {
 	char	*username;
 	char	*temp;
 	char	*ret;
+	char	*home;
+	bool	should_free;
 
+	should_free = false;
 	username = getenv("USER");
-	ret = ft_strjoin(username, " ");
-	temp = ft_strjoin(ret, ":");
-	free(ret);
+	home = ft_getenv("HOME", store->env);
+	if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
+	{
+		cwd = ft_strjoin("~", cwd + ft_strlen(home));
+		should_free = true;
+	}
+	temp = ft_strjoin(username, ":");
 	ret = ft_strjoin(temp, cwd);
+	if (should_free)
+		free(cwd);
 	free(temp);
 	temp = ft_strjoin(ret, "$ ");
 	free(ret);

@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 12:50:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 14:45:12 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/17 15:31:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int	minishell_loop(t_shell *store, t_shell_state *state)
 	while (1)
 	{
 		should_continue = false;
-		prompter_init(&prompt);
 		init_var(store, state);
+		prompter_init(&prompt, store);
 		if (!prompter_input(store, prompt))
 		{
 			free_nonessential(store);

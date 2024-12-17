@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 14:04:27 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 14:47:00 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/17 15:19:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,14 +60,14 @@ void	update_shell_state(t_shell *store, t_shell_state *state)
  * @param prompt Pointer to the prompt string to initialize
  * @details Sets the prompt to the current working directory
  */
-void	prompter_init(char **prompt)
+void	prompter_init(char **prompt, t_shell *store)
 {
 	char	cwd[1024];
 
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, SIG_IGN);
 	getcwd(cwd, sizeof(cwd));
-	*prompt = form_prompt(cwd);
+	*prompt = form_prompt(cwd, store);
 }
 
 /**
