@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/17 13:11:27 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/18 14:08:21 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,9 +118,16 @@ int	multiple_function(t_shell *store)
 	t_node	*back;
 	bool	create;
 
+	create = true;
+	if (ft_strcmp(store->head->data, "|") == 0)
+	{
+		front = store->head;
+		store->head = store->head->next;
+		free(front->data);
+		free(front);	
+	}
 	front = store->head;
 	back = store->head;
-	create = true;
 	while (back->next)
 	{
 		if (ft_strcmp(back->data, "|") == 0)

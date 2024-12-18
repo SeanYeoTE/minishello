@@ -6,7 +6,7 @@
 /*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/27 17:47:21 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/18 13:09:16 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,12 @@ static int	run_execve(t_shell *store, char *exepath, char **argv)
 	if (execve(exepath, argv, store->envp) == -1)
 	{
 		free_all(store);
-		print_erroronly(strerror(errno), argv[0]);
+		if (errno == EACCES)
+			print_erroronly("permission denied", argv[0]);
+		else if (errno == EBADF)
+			return (126);
+		else
+			print_erroronly(strerror(errno), argv[0]);
 		return (126);
 	}
 	return (EXIT_SUCCESS);
