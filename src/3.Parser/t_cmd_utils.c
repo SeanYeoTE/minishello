@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/18 14:11:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/18 16:13:19 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,10 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	set_parent(cmd->command, cmd);
 	if (end && end->next)
 		end->next = NULL;
+	remove_pipe_operators(&cmd->command);
 	detach_redir(cmd);
 	init_cmd_fds(cmd);
-	remove_pipe_operators(&cmd->command);
+	
 	return (cmd);
 }
 

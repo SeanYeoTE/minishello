@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checks2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 06:54:32 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 15:24:25 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/18 15:53:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,10 @@ int	check_error(t_shell *store, char *input)
 		store->exit_status = 2;
 		return (1);
 	}
-	if (check_invalid_pipe(input))
-	{
-		store->exit_status = 2;
-		return (1);
-	}
+	// if (check_invalid_pipe(input))
+	// {
+	// 	store->exit_status = 2;
+	// 	return (1);
+	// }
 	return (0);
 }
