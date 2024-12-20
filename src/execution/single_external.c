@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_external.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 16:30:04 by mchua            ###   ########.fr       */
+/*   Updated: 2024/12/20 17:49:13 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ static int	setup_child_io(t_shell *store, t_cmd *cmd)
 	redir_handler(store, cmd, cmd->redir, NULL);
 	if (store->exit_status != 0)
 		return (store->exit_status);
-	if (cmd->command == NULL)
-		return (store->exit_status);
 	return (EXIT_SUCCESS);
 }
 
@@ -53,6 +51,11 @@ static void	execute_child_process(t_shell *store, t_cmd *cmd)
 	{
 		free_all(store);
 		exit(setup_status);
+	}
+	if (cmd->command == NULL)
+	{
+		free_all(store);
+		exit(store->exit_status);
 	}
 	store->exit_status = executor(store, cmd);
 	exit(store->exit_status);
@@ -99,8 +102,8 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		if (heredoc_status != 0)
 			return (heredoc_status);
 	}
-	if (cmd->command == NULL)
-		return (heredoc_status);
+	// if (cmd->command == NULL)
+	// 	return (heredoc_status);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_main.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/18 13:09:16 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 16:27:55 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,7 @@ static int	run_execve(t_shell *store, char *exepath, char **argv)
 	if (execve(exepath, argv, store->envp) == -1)
 	{
 		free_all(store);
-		if (errno == EACCES)
-			print_erroronly("permission denied", argv[0]);
-		else if (errno == EBADF)
-			return (126);
-		else
-			print_erroronly(strerror(errno), argv[0]);
+		print_erroronly(strerror(errno), argv[0]);
 		return (126);
 	}
 	return (EXIT_SUCCESS);

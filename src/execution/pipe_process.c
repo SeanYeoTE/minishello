@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/18 17:07:11 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 18:08:18 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	run_cmd(t_cmd *cmd, t_shell *store)
 	}
 	else if (store->cmd_head->command == NULL && store->cmd_head->redir)
 	{
-		// store->exit_status = executor(store, cmd);
 		print_erroronly("syntax error", "unexpected token");
 		store->exit_status = 2;
 		free_all(store);

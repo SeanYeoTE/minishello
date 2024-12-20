@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_core.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 18:11:23 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 21:37:46 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 18:02:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,18 @@
 int	expandforheredoc(t_cmd *cmd)
 {
 	char	*delimiter;
-	int		i;
-	int		in_single_quotes;
-	int		in_double_quotes;
+	int		len;
 
 	delimiter = cmd->heredoc_delimiter;
-	i = 0;
-	in_single_quotes = 0;
-	in_double_quotes = 0;
-	while (delimiter[i])
-	{
-		if (delimiter[i] == '\'' && !in_double_quotes)
-			in_single_quotes = !in_single_quotes;
-		else if (delimiter[i] == '"' && !in_single_quotes)
-			in_double_quotes = !in_double_quotes;
-		i++;
-	}
-	if (in_single_quotes)
+	len = ft_strlen(delimiter);
+	if (len < 2)
+		return (1);
+	if ((delimiter[0] == '"' && delimiter[len - 1] == '"') || 
+		(delimiter[0] == '\'' && delimiter[len - 1] == '\'') ||
+		(delimiter[0] == '"' && delimiter[1] == '"') ||
+		(delimiter[0] == '\'' && delimiter[1] == '\'') ||
+		(delimiter[len - 2] == '"' && delimiter[len - 1] == '"') ||
+		(delimiter[len - 2] == '\'' && delimiter[len - 1] == '\''))
 		return (0);
 	return (1);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_setup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/13 15:16:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 19:07:27 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	handle_command(t_shell *store, t_cmd *cmd, int *in_fd, int *out_fd)
 	int		is_last_cmd;
 
 	is_last_cmd = (cmd->next == NULL);
-	if (!is_last_cmd)
+	if (!is_last_cmd || cmd->order == 0)
 	{
 		if (setup_pipe(pipe_fds) == EXIT_FAILURE)
 			return (EXIT_FAILURE);

@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 15:32:14 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/18 16:27:59 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 19:23:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	parser(t_shell *store, bool *should_continue)
  * @details Initializes new command structure using provided nodes
  * Returns error if start node is NULL or command initialization fails
  */
-int	create_cmd(t_shell *store, t_node *start, t_node *end, bool create)
+int	create_cmd(t_shell *store, t_node *start, t_node *end, int create)
 {
 	t_cmd	*new;
 

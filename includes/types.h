@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 12:03:32 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 12:09:45 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 18:57:03 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_cmd
 	t_node			*redir;
 	bool			input_changed;
 	pid_t			pid;
+	int				order;
 	int				input_fd;
 	int				output_fd;
 	int				heredoc_fd;

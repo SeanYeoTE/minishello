@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/20 14:00:33 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 19:24:47 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,16 +91,16 @@ int	multi_executor(t_shell *store)
  * @note Creates command structure and updates token list pointers
  */
 static void	process_pipe_token(t_shell *store, t_node **front,
-	t_node *back, bool *create)
+	t_node *back, int *create)
 {
 	t_node	*temp;
 
 	temp = back->next;
 	if (*front != back)
 	{
-		create_cmd(store, *front, back->prev, *create);
-		*create = false;
+		create_cmd(store, *front, back->prev, *create);	
 	}
+	(*create)++;
 	free(back->data);
 	free(back);
 	if (temp)
@@ -119,9 +119,9 @@ int	multiple_function(t_shell *store)
 {
 	t_node	*front;
 	t_node	*back;
-	bool	create;
+	int		create;
 
-	create = true;
+	create = 0;
 	front = store->head;
 	back = store->head;
 	while (back->next)

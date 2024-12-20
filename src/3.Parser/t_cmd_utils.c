@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/18 16:13:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 19:22:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static void	remove_pipe_operators(t_node **cmd_head)
  * @details Allocates memory for a new command structure, sets up redirection,
  * links, file descriptors and command nodes
  */
-t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
+t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, int create)
 {
 	t_cmd	*cmd;
 
@@ -68,15 +68,14 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
 	cmd->redir = NULL;
 	setup_cmd_links(store, cmd, create);
 	cmd->command = start;
+	cmd->order = create;
 	cmd->input_changed = false;
-	
 	set_parent(cmd->command, cmd);
 	if (end && end->next)
 		end->next = NULL;
 	remove_pipe_operators(&cmd->command);
 	detach_redir(cmd);
 	init_cmd_fds(cmd);
-	
 	return (cmd);
 }
 
@@ -88,11 +87,11 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, bool create)
  * @details If create is true, sets cmd as head of command list
  * Otherwise, appends cmd to end of existing command list
  */
-void	setup_cmd_links(t_shell *store, t_cmd *cmd, bool create)
+void	setup_cmd_links(t_shell *store, t_cmd *cmd, int create)
 {
 	t_cmd	*last;
-
-	if (create)
+	(void)create;
+	if (store->cmd_head == NULL)
 	{
 		cmd->prev = NULL;
 		cmd->next = NULL;
