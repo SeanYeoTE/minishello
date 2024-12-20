@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/20 19:24:47 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 20:02:34 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,26 @@ static int	wait_for_processes(t_shell *store, t_cmd *cmd)
 }
 
 /**
+ * @brief Checks for heredocs in all commands in the pipeline
+ *
+ * @param store Shell data structure containing commands
+ * @return int 1 if any command has heredoc, 0 otherwise
+ */
+static int	check_pipeline_heredocs(t_shell *store)
+{
+	t_cmd	*cmd;
+
+	cmd = store->cmd_head;
+	while (cmd)
+	{
+		if (checkforheredoc(cmd))
+			return (1);
+		cmd = cmd->next;
+	}
+	return (0);
+}
+
+/**
  * @brief Executes multiple commands connected by pipes
  *
  * @param store Shell data structure containing commands
@@ -64,10 +84,10 @@ int	multi_executor(t_shell *store)
 
 	in_fd = STDIN_FILENO;
 	cmd = store->cmd_head;
-	if (checkforheredoc(cmd))
+	if (check_pipeline_heredocs(store))
 	{
 		if (heredoc_child_loop(store) != 0)
-		return (EXIT_FAILURE);
+			return (EXIT_FAILURE);
 	}
 	while (cmd)
 	{
