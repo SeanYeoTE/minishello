@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_getters.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 12:53:02 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/17 15:40:19 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 16:09:43 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,26 @@ char	**ft_createarray(t_env *env)
 }
 
 /**
+ * @brief Compares path with home directory
+ * @param path Path to compare
+ * @param home Home directory path
+ * @return True if path starts with home and has '/' after, false otherwise
+ */
+static bool	compare_paths(const char *path, const char *home)
+{
+	int	i;
+
+	i = 0;
+	while (home[i])
+	{
+		if (path[i] != home[i])
+			return (false);
+		i++;
+	}
+	return (path[i] == '/');
+}
+
+/**
  * @brief Forms the shell prompt string
  * @param cwd Current working directory
  * @return Formatted prompt string
@@ -107,7 +127,7 @@ char	*form_prompt(char *cwd, t_shell *store)
 	should_free = false;
 	username = getenv("USER");
 	home = ft_getenv("HOME", store->env);
-	if (home && ft_strncmp(cwd, home, ft_strlen(home)) == 0)
+	if (home && compare_paths(cwd, home))
 	{
 		cwd = ft_strjoin("~", cwd + ft_strlen(home));
 		should_free = true;

@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/18 17:52:33 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/20 14:00:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,11 @@ int	multi_executor(t_shell *store)
 
 	in_fd = STDIN_FILENO;
 	cmd = store->cmd_head;
-	if (heredoc_child_loop(store) != 0)
+	if (checkforheredoc(cmd))
+	{
+		if (heredoc_child_loop(store) != 0)
 		return (EXIT_FAILURE);
+	}
 	while (cmd)
 	{
 		if (handle_command(store, cmd, &in_fd, &out_fd) == EXIT_FAILURE)
@@ -93,8 +96,11 @@ static void	process_pipe_token(t_shell *store, t_node **front,
 	t_node	*temp;
 
 	temp = back->next;
-	create_cmd(store, *front, back->prev, *create);
-	*create = false;
+	if (*front != back)
+	{
+		create_cmd(store, *front, back->prev, *create);
+		*create = false;
+	}
 	free(back->data);
 	free(back);
 	if (temp)
@@ -116,13 +122,6 @@ int	multiple_function(t_shell *store)
 	bool	create;
 
 	create = true;
-	if (ft_strcmp(store->head->data, "|") == 0)
-	{
-		front = store->head;
-		store->head = store->head->next;
-		free(front->data);
-		free(front);
-	}
 	front = store->head;
 	back = store->head;
 	while (back->next)
