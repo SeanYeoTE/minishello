@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: melvin <melvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/29 15:04:19 by mchua             #+#    #+#             */
-/*   Updated: 2024/11/27 17:48:02 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/21 12:59:34 by melvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	print_exit_error(t_shell *store, int fd)
 		free_all(store);
 		exit (fd);
 	}
-	else
+	else if (fd == 1)
 	{
 		ft_putstr_fd("exit\n", 1);
 		ft_putstr_fd("exit: too many arguments\n", 2);
@@ -52,6 +52,7 @@ int	exit_handler(t_shell *store)
 	status = 0;
 	if (!(store->cmd_head->command->next))
 	{
+		ft_putstr_fd("exit\n", 0);
 		free_all(store);
 		exit(status);
 	}
