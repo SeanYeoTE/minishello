@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/23 18:04:04 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/23 18:09:30 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,6 @@ static int	get_lvl(const char *str)
 	i = 0;
 	sign = 1;
 	num = 0;
-	// ft_skip_spacenl(str, &i);
-	// if (invalid_lvl(str))
-	// 	return (0);
 	if (str[i] == '-')
 		sign = -1;
 	if (str[i] == '-' || str[i] == '+')
@@ -63,6 +60,7 @@ static void	increment_shl_level(t_env *env)
 		env = env->next;
 	}
 }
+
 /**
  * @brief Entry point of the minishell program
  * @param argc Number of command line arguments

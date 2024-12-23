@@ -103,7 +103,6 @@ t_env	*env_init(char **envp)
 
 	head = NULL;
 	i = 0;
-	// handle_shlvl(head);
 	while (envp && envp[i])
 	{
 		new_node = create_env_node(envp[i]);
