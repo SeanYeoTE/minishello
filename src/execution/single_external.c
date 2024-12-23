@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 13:56:06 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/20 17:49:13 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/23 18:05:39 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,6 @@ int	execute_external_command(t_shell *store, t_cmd *cmd)
 		if (heredoc_status != 0)
 			return (heredoc_status);
 	}
-	// if (cmd->command == NULL)
-	// 	return (heredoc_status);
 	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == -1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 14:14:30 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/02 11:49:26 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/23 17:53:59 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int			execute_and_wait(t_shell *store, t_cmd *cmd, int in_fd, int out_fd);
 // pipe_exec.c
 int			multi_executor(t_shell *store);
 int			multiple_function(t_shell *store);
+int			check_pipeline_heredocs(t_shell *store);
 
 // single.c
 void		set_builtin_fd(t_cmd *cmd);

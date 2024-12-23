@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:38:43 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 13:43:22 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/23 17:51:33 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	set_builtin_fd(t_cmd *cmd)
 int	execute_builtin_command(t_shell *store, t_cmd *cmd)
 {
 	redir_handler(store, cmd, cmd->redir, NULL);
-	// printf("exit_status: %d\n", store->exit_status);
 	if (store->exit_status == 0)
 	{
 		if (heredoc_child(cmd, store) != 0)
@@ -71,9 +70,7 @@ int	execute_builtin_command(t_shell *store, t_cmd *cmd)
  */
 int	single_function(t_shell *store, t_node *head, t_node *tail)
 {
-	// print_stack(&head);
 	create_cmd(store, head, tail, true);
-	// print_cmd_stack(&store->cmd_head);
 	if (store->cmd_head->command == NULL && store->cmd_head->redir == NULL)
 	{
 		print_erroronly("syntax error", "newline");

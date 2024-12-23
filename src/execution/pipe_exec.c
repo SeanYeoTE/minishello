@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:26:54 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/20 20:02:34 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/23 17:54:05 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,26 +46,6 @@ static int	wait_for_processes(t_shell *store, t_cmd *cmd)
 			cmd = cmd->next;
 	}
 	signal(SIGINT, ctrl_c_handler);
-	return (0);
-}
-
-/**
- * @brief Checks for heredocs in all commands in the pipeline
- *
- * @param store Shell data structure containing commands
- * @return int 1 if any command has heredoc, 0 otherwise
- */
-static int	check_pipeline_heredocs(t_shell *store)
-{
-	t_cmd	*cmd;
-
-	cmd = store->cmd_head;
-	while (cmd)
-	{
-		if (checkforheredoc(cmd))
-			return (1);
-		cmd = cmd->next;
-	}
 	return (0);
 }
 
@@ -118,7 +98,7 @@ static void	process_pipe_token(t_shell *store, t_node **front,
 	temp = back->next;
 	if (*front != back)
 	{
-		create_cmd(store, *front, back->prev, *create);	
+		create_cmd(store, *front, back->prev, *create);
 	}
 	(*create)++;
 	free(back->data);

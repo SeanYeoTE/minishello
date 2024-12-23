@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mchua <mchua@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 18:11:01 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/15 16:29:47 by mchua            ###   ########.fr       */
+/*   Updated: 2024/12/23 18:04:04 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 volatile sig_atomic_t	g_sig;
 
-static int			get_lvl(const char *str)
+static int	get_lvl(const char *str)
 {
 	int	i;
 	int	sign;
@@ -69,10 +69,10 @@ static void	increment_shl_level(t_env *env)
  * @param argv Array of command line argument strings
  * @param envp Array of environment variables
  * @return Exit status of the shell program
- * @details Initializes the shell environment and starts the main command loop.
- *          Validates that no command line arguments are provided, as the shell
- *          should be run without arguments. Sets up the environment variables
- *          and launches the main shell prompt.
+ * @details Initializes the shell environment and starts the main command 
+ *			loop. Validates that no command line arguments are provided, as 
+ * 			the shell should be run without arguments. Sets up the 
+ * 			environment variables and launches the main shell prompt.
  */
 int	main(int argc, char **argv, char **envp)
 {

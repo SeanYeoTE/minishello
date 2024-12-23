@@ -6,7 +6,7 @@
 /*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 18:40:20 by seayeo            #+#    #+#             */
-/*   Updated: 2024/12/20 19:22:39 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/23 18:00:40 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ static void	remove_pipe_operators(t_node **cmd_head)
 {
 	t_node	*current;
 	t_node	*next;
+	t_node	*prev;
 
 	current = *cmd_head;
 	while (current)
@@ -32,7 +33,7 @@ static void	remove_pipe_operators(t_node **cmd_head)
 				*cmd_head = next;
 			else
 			{
-				t_node *prev = *cmd_head;
+				prev = *cmd_head;
 				while (prev->next != current)
 					prev = prev->next;
 				prev->next = next;
@@ -66,7 +67,7 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, int create)
 		return (NULL);
 	}
 	cmd->redir = NULL;
-	setup_cmd_links(store, cmd, create);
+	setup_cmd_links(store, cmd);
 	cmd->command = start;
 	cmd->order = create;
 	cmd->input_changed = false;
@@ -87,10 +88,10 @@ t_cmd	*init_cmd(t_shell *store, t_node *start, t_node *end, int create)
  * @details If create is true, sets cmd as head of command list
  * Otherwise, appends cmd to end of existing command list
  */
-void	setup_cmd_links(t_shell *store, t_cmd *cmd, int create)
+void	setup_cmd_links(t_shell *store, t_cmd *cmd)
 {
 	t_cmd	*last;
-	(void)create;
+
 	if (store->cmd_head == NULL)
 	{
 		cmd->prev = NULL;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seayeo <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: seayeo <seayeo@42.sg>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 13:41:40 by seayeo            #+#    #+#             */
-/*   Updated: 2024/11/11 14:28:35 by seayeo           ###   ########.fr       */
+/*   Updated: 2024/12/23 17:52:44 by seayeo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,24 @@ int	is_directory(const char *path)
 	if (stat(path, &path_stat) != 0)
 		return (-1);
 	return (S_ISDIR(path_stat.st_mode));
+}
+
+/**
+ * @brief Checks for heredocs in all commands in the pipeline
+ *
+ * @param store Shell data structure containing commands
+ * @return int 1 if any command has heredoc, 0 otherwise
+ */
+int	check_pipeline_heredocs(t_shell *store)
+{
+	t_cmd	*cmd;
+
+	cmd = store->cmd_head;
+	while (cmd)
+	{
+		if (checkforheredoc(cmd))
+			return (1);
+		cmd = cmd->next;
+	}
+	return (0);
 }
