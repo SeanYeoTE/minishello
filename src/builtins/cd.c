@@ -17,10 +17,7 @@ int	cd_handler(t_node *current)
 	char	*home;
 
 	if (current->next && current->next->next != NULL)
-	{
-		ft_putstr_fd("cd: too many arguments", 2);
-		return (EXIT_FAILURE);
-	}
+		return (ft_putstr_fd("cd: too many arguments\n", 2), EXIT_FAILURE);
 	if (current->next == NULL)
 	{
 		home = getenv("HOME");
@@ -29,8 +26,9 @@ int	cd_handler(t_node *current)
 			perror("no home");
 			return (BUILTIN_FAILURE);
 		}
+		return (0);
 	}
-	if (ft_strcmp(current->next->data, "~") == 0)
+	if (ft_strchr(current->next->data, '~') != 0)
 		ft_putstr_fd("This will not be handled in this minishell\n", 1);
 	else if ((current->next->data)[0] == '\0')
 		return (EXIT_SUCCESS);
